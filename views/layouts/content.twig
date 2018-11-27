@@ -1,0 +1,48 @@
+{% use "@layouts/header.twig" %}
+{% use "@layouts/menu.twig" %}
+{% use "@layouts/footer.twig" %}
+{% block content_container %}
+		<div class="main-wrapper">
+			{% block header %}	
+			{{ parent() }}
+			{% endblock %}
+		<div class="body">
+			<div class="subheader">
+				<div class="subheader-wrapper clearfix">			
+					<div class="subheader-banner-wrapper fl">
+					<a href="/">
+						<div class="subheader-banner">
+						</div></a>
+					</div>
+					<div class="subheader-title-wrapper fl">
+					{% if test_base %}
+						<div class="alert"><strong>{{ messages.attention }}!</strong>
+						Вы подключены к тестовой БД. Данные в отчетах могут отличаться от реальных.
+						<button type="button" class="j-close" data-dismiss="alert">×</button>
+						</div>
+					{% endif %}
+						<div class="subheader-title">
+						<h2>РОССПЕЦМАШ-СТАТ</h2>
+						<h3>Рынок и производство специализированной техники<br> и оборудования в Российской Федерации</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% block menu %}	
+			{{ parent() }}
+			{% endblock %}
+			<div class="main-container">
+                            {{ this.beginBody() }}
+			{% block content %} Основное содержимое 
+			{% endblock %}
+                        
+			{% block footer %}
+			{{ parent() }}
+			{% endblock %}
+                        {{ this.endBody() }}
+			</div>
+		</div>
+
+		<div class="mb_generate"></div>
+		</div>
+{% endblock %}

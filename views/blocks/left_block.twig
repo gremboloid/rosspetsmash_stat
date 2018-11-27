@@ -1,0 +1,115 @@
+{%if blocks_list is iterable %}
+	{% for block in blocks_list %}
+		<div class="left-block{% if block.hide %} hide{% endif %}">
+		{% if block.block_name %}
+			<div class="content-header">
+				<p>{{ block.block_name }}</p>
+			</div>
+		{% endif %}
+		{% if block.type == 'ref_list' %}
+			<div class="links">	
+				{% if block.refs is iterable %}
+					{% for ref in block.refs %}
+					<a class="clickable" href="/{{ controller_name }}/{{ ref.link }}{% if ref.action %}/{{ ref.action }}{% endif%}">{{ ref.name }}</a>
+					{% endfor %}
+				{% endif %}
+			</div>
+		{% elseif block.type == 'filters' %}
+		<form id="{{ block.form_id }}" method="GET" action="">
+			{% if chpu == false %}
+			<input id="controller" name="controller" value="admin" type="hidden">
+			{% endif %}
+			
+			<input id="element" name="element" value="{{ block.model }}" type="hidden">			
+			<input id="current_page" name="page" value="1" type="hidden">
+			<input id="search" name="search" value="{{ search }}" type="hidden">
+			<input id="rows_count" name="rows" value="{{ rows_count }}" type="hidden">
+			<input id="sortColumn" name="sortColumn" value="{{ sort_column }}" type="hidden">
+			<input id="sortType" name="sortType" value="{{ sort_type }}" type="hidden">
+			{% if hidden_inputs is iterable %}
+				{% for input in hidden_inputs %}
+				<input id="{{ input.id }}" name="{{ input.name }}" value="{{ input.value }}" type="hidden">
+				{% endfor %}
+			{% endif %}
+			{% if block.elements is iterable %}
+				{% for filter in block.elements %}					
+				<div class="left_sub_block">
+					{% if filter.header_text %}
+					<div class="sub_block_header">
+						<p>{{ filter.header_text }}</p>
+					</div>					
+					{% endif %}
+					{% if filter.type == 'change_button' %}
+						{% if filter.button_element is iterable %}
+						<i id="{{ filter.button_element.id }}" class="fa fa-pencil-alt {{ filter.button_element.class_name }}" aria-hidden="true" title="{{ filter.button_element.text }}"></i>
+						{% endif %}
+						{% if filter.text_element is iterable %}						
+						<div id="{{ filter.text_element.id }}" class="sub_block_body">{{ filter.text_element.text }}</div>
+						{% endif %}	
+						
+					{% endif %}						
+					{% if filter.type == 'select' %}
+					<div class="sub_block_body">
+						{% if filter.options is iterable %}
+						<select{% if filter.id %} id="{{ filter.id }}"{% endif %}{% if filter.class_name %} class="{{ filter.class_name }}"{% endif %}{% if filter.name %} name="{{ filter.name }}">{% endif %}
+						{% for option in filter.options %}
+						<option value="{{ option.value }}"{% if option.value == filter.selected %} selected=""{% endif %}>{{ option.text }}</option>
+						{% endfor %}
+						</select>
+						{% endif %}
+					</div>					
+					{% endif %}					
+					
+					{% if filter.type == 'test' %}
+					<p>Тест</p>					
+					{% endif %}
+					
+				</div>
+				{% endfor %}
+			{% endif %}
+		<input id="dyr-filter-submit" class="hide" value="Выбрать" type="submit">
+		</form>
+		{% elseif block.type == 'ul_list' %}
+		<div  id="{{ block.block_alias }}">
+			{% if block.elements is iterable %}
+			<ul>
+				{% for k,v in block.elements %}
+				<li data-value="{{ k }}">{{ k }}
+					<ul>
+					{% for val in v %}
+						<li class="child-element" data-value="{{ val }}" data-jstree='{"icon":"glyphicon glyphicon-signal"}'>{{ val }}</li>				
+					{% endfor %}
+					</ul>
+				</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		</div>
+		{% elseif block.type == 'form' %}
+		<form id="{{ block.form_id }}" method="{% if block.method %}{{ block.method }}{% else %}GET{% endif %}" action="">
+			{% if block.elements is iterable %}
+			{% for element in block.elements %}
+			<div class="sub_block_body">
+				{% if element.label %}
+				<label{% if element.label.class %} class="{{ element.label.class }}"{% endif %}{% if element.id %} for="{{ element.id }}"{% endif %}>{{ element.label.text }}</label>
+				{% endif %}
+				{% if element.type == 'date' %}
+				<input{% if element.id %} id="{{ element.id }}"{% endif %} class="format-date" type="text" name="{{ element.name }}"{% if element.value %} value="{{ element.value }}"{% endif %}>
+				{% endif %}
+				{% if element.type == 'hidden' %}
+				<input{% if element.id %} id="{{ element.id }}"{% endif %} type="hidden" name="{{ element.name }}"{% if element.value %} value="{{ element.value }}"{% endif %}>
+				{% endif %}
+			</div>
+			{% endfor %}
+			{% endif %}
+		{% if block.submit_button.enable %}	
+		<div class="cl"></div>
+		<input class="btn btn-default lf-btn-submit" data-form="{{ block.form_id }}" value="{{ block.submit_button.text }}" type="submit">
+		{% endif %}
+		</form>
+		{% endif%}
+			
+		</div>
+
+	{% endfor %}
+{% endif %}

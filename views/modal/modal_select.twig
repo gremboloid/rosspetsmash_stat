@@ -1,0 +1,50 @@
+﻿<div class="selector modal{% if alias %} {{ alias }}{% endif %}">
+	<div class="selector-header">
+		<div class="selector-upper-panel">{{ head }}</div>
+	</div>
+	<div class="selector-content-block">
+		<div class="selector-left">
+			<div class="selector-left-header">{{ left_column_head }}</div>
+				<div id="selector-filter-container">
+				{% if contractors %}
+				<select name="contractor" id="j-selector-contractor" class="select-inline-element">
+				{% for el in contractors %}
+				<option value="{{ el.value }}">{{ el.text }}</option>
+				{% endfor %}
+				</select>
+				{% endif %}
+				<input id="j-selector-filter" class="input-width-image search-input" tabindex="1" title="Поиск" placeholder="" name="search" value="" type="text">
+				</div>
+				<div class="selector-list-items left-column">
+					{% for elem in left_list %}
+					<div id="id{{ elem.Id }}" data-position="{% if elem.position %}{{ elem.position }}{% else %}{{ loop.index0 }}{% endif %}"{% if elem.ContractorId %} data-contractor="{{ elem.ContractorId }}"{% endif %} class="selectable">{{ elem.Name }}</div>
+					{% endfor %}
+				</div>
+			<div id="select-all" class="modal-btn btn-default btn">Выделить все</div>							
+		</div>
+		<div class="selector-right">
+			<div id="{{ alias }}" class="selector-right-header">{{ right_column_head }}</div>			
+			<div class="selector-list-items right-column">
+			{% if (right_list is iterable and right_list is not empty) %}
+				{% for elem in right_list %}
+					<div id="id{{ elem.Id }}" data-position="{% if elem.position %}{{ elem.position }}{% else %}{{ loop.index0 }}{% endif %}"{% if elem.ContractorId %} data-contractor="{{ elem.ContractorId }}"{% endif %} class="selectable">{{ elem.Name }}</div>
+				{% endfor %}
+			{% else %}
+				<div class="all-select-row">{{ select_all }}</div>
+			{% endif %}
+			</div>
+			<div id="clear-all" class="modal-btn btn-default btn">Снять выделение</div>
+		</div>
+	</div>
+	<div class="modal-buttons-block report-modal clearfix">
+		<div class="btn_side-2">
+			<div id="btncancel" class="btn btn-cancel">{{ btns.cancel }}</div>
+		</div>
+		<div class="btn_side-2">
+			<div id="btnok" class="btn btn-selector">{{ btns.select }}</div>
+		</div>
+		
+	</div>
+	
+
+</div>

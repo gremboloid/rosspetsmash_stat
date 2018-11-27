@@ -1,0 +1,55 @@
+{% block countries %}
+{% if list_of_countries is iterable %}
+	{% for cid,el in list_of_countries %}
+<tbody id="country_block_{{ cid }}" class="country_block{% if loop.index != 1%} hide{% endif %}" data-country="{{ cid }}">
+	<tr id="classifier41{% if cid !=0 %}_{{ cid }}{% endif %}" class="clcontainer{% if cid !=0 %}_{{ cid }}{% endif %}">
+		<th class="country_head" colspan="3">
+		{% if el.Iso is not empty %}
+			<img src="{{ flags_url }}{{ el.Iso }}.png" title="{{el.Name }}" alt="{{el.Name }}">
+		{% endif %}
+		{% if cid == 0 %}
+		{{ summary_header }}
+		{% else %}
+		{{ el.Name }}
+		{% endif %}
+		</th>
+	</tr>
+		{% if list_models[cid] is iterable %}
+		{% set first_elem = 0 %}
+		{% set rank = 0 %}
+			{% for elm in list_models[cid] %}
+				{% if rank != elm.Rank %}
+				<tr id="classifierid{{ elm.ClassifierId }}{% if cid != 0 %}_{{ cid }}{% endif %}" class="classifier narrow">
+					<td colspan="3">{{ elm.Classifier }}</td>
+				</tr>
+				{% set rank = elm.Rank %}
+				{% endif %}
+				{% if cid == 0 %}
+				<tr class="summary">					
+					<td id="id{{ elm.ModelId }}" class="model_summary" data-model="{{ elm.ModelId }}">
+					<div class="inform-block model-inform-container">
+						<span class="model_name ib-clickable" data-model="Models" data-id="{{ elm.ModelId }}">{{ elm.Model }}</span>
+					{% if (table_id == 'new_form' or user_role == 1) %}<span title="{{ REMOVE_MODEL_FROM_FORM }}" class="glyphicon glyphicon-remove-sign if-model-remove"></span>{% endif %}
+						<div class="informer hide"></div>
+					</div>
+					</td>
+					<td class="count_model">{{ elm.Count }}</td>
+					<td class="price_model">{{ elm.Price }}</td></tr>
+				{% else %}
+				<tr class="el_of_form"{% if if_id %} id="id{{ elm.ProductionId }}_{{ cid }}"{% endif %}>
+					<td class="frm_model" id="id{{ elm.ModelId }}_{{ cid }}" data-model="{{ elm.ModelId }}">
+						<div class="inform-block model-inform-container">
+							<span class="model_name ib-clickable" data-model="Models" data-id="{{ elm.ModelId }}">{{ elm.Model }}</span>
+						{% if (table_id == 'new_form' or user_role == 1) %}<span title="{{ REMOVE_MODEL_FROM_FORM }}" class="glyphicon glyphicon-remove-sign if-model-remove"></span>{% endif %}
+							<div class="informer hide"></div>
+						</div>
+					</td>
+					<td class="center count"><input {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}name="count" type="text" value="{{ elm.Count }}"></td>
+					<td class="center"><input {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}name="price" type="text" value="{{ elm.Price }}"></tr>
+				{% endif %}
+			{% endfor %}
+		{% endif %}	
+</tbody>
+	{% endfor %}
+{% endif %}
+{% endblock %}

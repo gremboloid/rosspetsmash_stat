@@ -1,0 +1,13 @@
+<div class="content-header">
+	<p>Классификатор</p>
+</div>
+	<div class="classifier_upblock">
+		<input id="classifier-search" class="input-width-image search-input" tabindex="1" title="Поиск" placeholder="Поиск" name="search" type="text">
+		<span id="getclassifier" title="Выгрузить классификатор"><img src="/img/excel-icon64.png" alt="" width="24" height="24" border="0"></span>
+	</div>
+	<div id="classifier_tree">
+	
+	</div>
+<script>
+	var global_classifier_tree = {{ classifier_json|raw }}
+</script>

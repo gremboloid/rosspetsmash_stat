@@ -1,0 +1,38 @@
+{% block units %}
+	{% if dimension_elements %}
+		<fieldset class="units"><legend>{{ units }}</legend>
+			<div class="dimensions-block">
+			{% for unit_name, unit in dimension_elements %}
+				<div class="param clearfix{% if unit.class %} {{ unit.class }}{% endif %}">
+					{% if unit.type == 'checkbox' %}
+					<div class="cl6 d-unit clearfix">
+						<div class="label">{{ unit.label }}</div>
+						<input id="{{ unit_name|lower }}" {%if unit.class %}class="{{ unit.class }}" {% endif %}name="{{ unit_name }}" name="{{ unit_name }}" value="on" {%if unit.checked %}checked="checked"{% endif %} type="checkbox">
+					</div>
+					{% endif %}
+				{% if unit.type == 'list' %}
+				<div class="cl6 d-unit clearfix">
+					<div class="label">{{ unit.root_element.label }}</div>
+					{% if unit.root_element.type == 'checkbox' %}
+					<input id="{{ unit.root_element.name|lower }}" {%if unit.root_element.class %}class="{{ unit.root_element.class }}" {% endif %}name="{{ unit.root_element.name }}" value="on" {%if unit.root_element.checked %}checked="checked"{% endif %} type="checkbox">
+					{% endif %}			
+				<div class="price_dimensions cl6 fl clearfix{% if unit.hide %} hide{% endif %}">
+					<div class="label">{{ unit.label_group }}</div>
+					{% for name,elem in unit.elements %}
+						{% if elem.type == 'select' %}
+						
+					<select class="values" name="{{ name|lower }}">
+						{% for option in elem.options %}
+							<option value="{{ option.value }}"{% if option.selected %} selected{% endif %}>{{ option.text }}</option>
+						{% endfor %}
+					</select>
+						{% endif %}
+					{% endfor %}
+				</div>
+				{% endif %}
+				</div>
+			{% endfor %}
+			</div>
+		</fieldset>
+	{% endif %}
+{% endblock %}

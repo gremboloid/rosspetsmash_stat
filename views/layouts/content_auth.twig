@@ -1,0 +1,9 @@
+{% block content_container %}
+		<div class="main-wrapper auth">
+{{ this.beginBody() }}
+		{% block content %} Основное содержимое 
+		{% endblock %}
+{{ this.endBody() }}              
+		<div class="mb_generate"></div>
+		</div>
+{% endblock %}

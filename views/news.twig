@@ -1,0 +1,47 @@
+{% extends "@layouts/main.twig" %}
+	{% use "@layouts/content.twig" %}
+	{% block html_title %}
+		{{ title }}
+	{% endblock %}
+	{% block content_coontainer %}
+		{{ parent() }}
+	{% endblock %}
+	{% block content %}					
+	<div class="main-block">
+		<div class="content-wrapper">		
+		<div class="content-header"><h2>{{ news_header }}</h2></div>
+			<div class="content">	
+				<div class="main-content fullscreen">
+					{% if show_news_list %}
+					{% else %}
+					<div class="content-block">
+						<div class="content-header">
+							<h2>{{ current_news.head }}</h2>
+						</div>
+						<div class="news-content content-body">
+						{{ current_news.content|raw }}					
+						</div>
+					</div>					
+					<div class="news-navigation clearfix">
+					{% if prev_next.prev %}
+						<div class="fl cl6 tal">	
+						<a href="/news/{{ prev_next.prev }}">{{ button_prev }}</a>						
+						</div>
+					{% endif %}
+					{% if prev_next.next %}
+						<div class="fr cl6 tar">
+						<a href="/news/{{ prev_next.next }}">{{ button_next }}</a>
+						</div>
+					{% endif %}
+					</div>
+			{% endif %}
+			</div>
+                    </div>
+		</div>		
+            </div>
+		<div class="modals-container">
+		{% block modals %}
+		
+		{% endblock %}
+		</div>
+	{% endblock %}

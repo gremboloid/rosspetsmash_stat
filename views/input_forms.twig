@@ -1,0 +1,257 @@
+{% extends "@layouts/main.twig" %}
+{% use "@layouts/content.twig" %}
+	{% block html_title %}
+		{{ title }}
+	{% endblock %}
+	{% block content_coontainer %}
+		{{ parent() }}
+	{% endblock %}
+	{% block content %}
+	<div class="main-block">
+		<div class="content-wrapper">
+			<div class="content-header">
+				<h2>{{ content_header }}</h2>
+			</div>
+			<div class="content columns">
+			
+				<div class="left-sidebar">
+					<div class="left-block">
+						<div class="content-header">
+							<p>{{ filters }}</p>
+						</div>
+						<form id="filterDataForm" method="GET" action="">
+						{% if chpu == false %}
+						<input id="controller" name="controller" value="forms" type="hidden">
+						<input id="current_page" name="page" value="1" type="hidden">					
+						{% endif %}
+						{% if sort_elements is iterable %}
+							{% if sort_elements.column %}
+								{{ sort_elements.column|raw }}
+							{% endif %}
+							{% if sort_elements.type %}
+								{{ sort_elements.type|raw }}
+							{% endif %}
+						{% endif %}
+						{% if user_role == 1 %}
+						<div class="left_sub_block">
+							<div class="sub_block_header">
+								<p>{{ select_contractors }}</p>
+							</div>
+							<div class="sub_block_body">
+								<select class="rs-form-control" name="contractor">
+								{% for cntr in all_contractors %}
+									<option{% if filters_array is not empty %}{% if filters_array.contractor == cntr.Id %} selected{% endif %}{% endif %} value="{{ cntr.Id }}">{{ cntr.Name }}</option>
+								{% endfor %}
+								</select>
+							</div>
+						</div>
+						{% endif %}
+						<div class="left_sub_block">
+							<div class="sub_block_header">
+								<p>{{ visible_forms }}</p>
+							</div>
+							<div class="sub_block_body">
+								<select name="formType" class="rs-form-control">
+								{% for frms in all_forms_list %}
+									<option{% if filters_array is not empty %}{% if filters_array.formType == frms.Id %} selected{% endif %}{% endif %} value="{{ frms.Id }}">{{ frms.Name }}</option>
+								{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="left_sub_block last">
+							<div class="sub_block_header">
+								<p>{{ date_interval }}</p>
+							</div>
+							<div class="sub_block_body">
+								<div class="sub-block-elements-wrapper date-intervals">
+									<div id="start-interval" class="sub_block_list_element"><span class="time-label">с:</span>
+										<select class="select-inline-element month" name="startMonth">
+										{% for key,val in months %}
+										<option{% if filters_array is not empty %}{% if filters_array.dateFilter.start.month == key %} selected{% endif %}{% endif %} value="{{ key }}">{{ val }}</option>
+										{% endfor %}
+										
+										</select>
+										<select class="select-inline-element year" name="startYear">
+										{% for y in years.start..years.end %}
+										<option{% if filters_array is not empty %}{% if filters_array.dateFilter.start.year == y %} selected{% endif %}{% endif %} value="{{ y }}">{{ y }}</option>
+										{% endfor %}
+										</select>
+									</div>
+									<div id="end-interval" class="sub_block_list_element"><span class="time-label">по:</span>
+										<select class="select-inline-element month" name="endMonth">
+										{% for key,val in months %}
+										<option{% if filters_array is not empty %}{% if filters_array.dateFilter.end.month == key %} selected{% endif %}{% endif %} value="{{ key }}">{{ val }}</option>
+										{% endfor %}
+										</select>
+										<select class="select-inline-element year" name="endYear">
+										{% for y in years.start..years.end %}
+											<option{% if filters_array is not empty %}{% if filters_array.dateFilter.end.year == y %} selected{% endif %}{% endif %} value="{{ y }}">{{ y }}</option>
+										{% endfor %}
+										</select>
+									</div>
+								</div>
+							<!--	<div class="sub-block-elements-wrapper clearfix">
+									<input id="time_filter" class="rs-checkbox" name="time_filter" value="on" type="checkbox"{% if date_filter is defined %} checked {% endif %}>
+									<label for="time_filter">
+										<span class="time-filter-caption">{{ append_date_interval }}</span>
+									</label>	
+								</div>-->
+							</div>
+						</div>
+						<input id="if-submit" class="hide" value="{{ actions_list.select }}" type="submit">
+						</form>
+					</div>
+					<div class="left-block">
+						<div class="content-header">
+							<p>{{ new_form }}</p>
+						</div>
+						{% if user_role == 1 %}
+						<div class="left_sub_block">
+							<div class="sub_block_header">
+								<p>{{ select_contractors }}</p>
+							</div>
+							<div class="sub_block_body">
+								<select id="new-form-ctr" class="rs-form-control" name="contractor">
+								{% for cntr in actual_contractors %}
+									<option value="{{ cntr.Id }}">{{ cntr.Name }}</option>
+								{% endfor %}
+								</select>
+							</div>
+						</div>
+						{% else %}
+						<input type="hidden" class="current-contractor" id="new-form-ctr" value="{{ current_contractor_id }}">
+						{% endif %}
+						<div class="left_sub_block">
+							<div class="sub_block_header">
+								<p>{{ report_period }}</p>
+							</div>
+							<div id="nf_period_block" class="sub_block_body">
+								<select class="select-inline-element month" name="startMonth">
+								{% for key,val in months %}
+									<option{% if nf_parameters is not empty %}{% if nf_parameters.date.month == key %} selected{% endif %}{% endif %} value="{{ key }}">{{ val }}</option>
+								{% endfor %}
+								</select>
+								<select class="select-inline-element year" name="startYear">
+								{% for y in years.start..years.end %}
+									<option{% if nf_parameters is not empty %}{% if nf_parameters.date.year == y %} selected{% endif %}{% endif %} value="{{ y }}">{{ y }}</option>
+								{% endfor %}
+								</select>								
+							</div>
+						</div>
+						<div class="left_sub_block">
+							<div class="sub_block_header">
+								<p>Список форм</p>
+							</div>	
+							<div class="sub_block_body">
+								<div class="list-of-forms">
+								{% for frms in forms_list %}
+									<div class="new-form clickable" data-type="{{ frms.Id }}">{{  frms.Name }}</div>
+								{% endfor %}
+							</div>
+							</div>
+						</div>
+					</div>					
+				</div>
+				
+				<div class="main-content">
+					<div class="content-block">
+						<div class="content-header">
+							<p>{{ edit_forms }}</p>
+						</div>
+						
+						{% if pagination is iterable%}
+							<div class="pagination">
+								<ul>
+								{% for val in pagination %}
+									{%if chpu %}
+									<li {% if val.active %}id="active"{% endif %}><a href="/forms/{{ val.page }}">{{ val.val }}</a></li>
+									{% else %}									
+									<li {% if val.active %}id="active"{% endif %}><a class="pagination-click" data-page="{{ val.page }}" href="#">{{ val.val }}</a></li>
+									{% endif %}
+								{% endfor %}							
+								</ul>
+							</div>
+						{% endif %}
+						<div class="table_wrapper">
+						{% if table_array is iterable %}
+							<table class="directory_tbl input-form-list"><thead>
+							{% if table_cols_headers is iterable %}
+							<tr class="tbl-head">
+							{% for key, val1 in table_cols_headers %}
+								<th class="{{ key }}{% if key == order_params.name %} order_{{ order_params.sort }}{% endif %}"
+								{% if key in cols_to_sort %} data-sort="{{ key }}"{% endif %}>{{ val1|raw }}</th>
+							{% endfor %}
+							</tr></thead>
+							<tbody>
+							{% for val in table_array %}
+								{% if val is iterable %}
+									<tr class="element{{ val.Id }}">
+									{% for key,val2 in table_cols_headers %}
+										{% if key in table_filter %}
+											{% if key == 'Actuality' %}
+												{% if val[key] == 1 %}
+													<td class="adm_check"><span title="{{ check_admon }}" class="glyphicon glyphicon-ok icon-green"></span></td>
+												{% elseif val[key] == 0 %}
+													<td class="adm_check"><span title="{{ not_check_admon }}" class="glyphicon glyphicon-exclamation-sign icon-error"></span></td>
+												{% endif %}
+											{% elseif key == 'Actions' %}
+												<td class="actions_list">
+													{% if action_list is iterable %}											
+														{% for val3 in action_list %}
+															<a class="{{val3.action}}" href="#"><img width="16" height="16" title="{{val3.name}}" src="/img/{{val3.image}}"></a>
+														{% endfor %}											
+													{% endif %}
+												</td>											
+											{% else %}
+												<td> {{ val[key] }}</td>
+											{% endif %}
+										{% endif %}
+									{% endfor %}										
+								{% endif %}
+							{% endfor %}
+							{% endif %}
+							</tbody>
+							</table>
+						{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endblock %}
+		{% block modals %}
+				<a id="saveOk-activate" class="hide noclose" data-modal href="#saveOk"></a>
+				<a id="confirmSave-activate" class="hide noclose" data-modal href="#confirmSave"></a>
+				<a id="confirmDeleteModel-activate" class="hide noclose" data-modal href="#confirmDeleteModel"></a>
+				<a id="confirmDeleteForm-activate" class="hide noclose" data-modal href="#confirmDeleteForm"></a>
+				
+				<div id="saveOk" class="modal noclose" style="">
+					<h3>Форма успешно сохранена</h3>			
+					<button id="save-form-ok-button" class="btn btn-default mdl-inform-ok">OK</button>					
+				</div>
+				
+				<div id="confirmSave" class="modal noclose" style="">
+					<h3>Вы действительно хотите сохранить форму?</h3>			
+					<p class="tac"><button id="save-form-button" class="btn btn-default">OK</button>
+						<a href="#" rel="modal:close" class="btn btn-default close-button">Отмена</a>
+					</p>
+				</div>
+				<div id="confirmDeleteModel" class="modal noclose" style="">
+					<h3>Вы действительно хотите удалить модель?</h3>			
+					<p class="tac"><button id="delete-model-from-form" class="btn btn-default">OK</button>
+						<a href="#" rel="modal:close" class="btn btn-default close-button">Отмена</a>
+					</p>
+				</div>
+				<div id="confirmDeleteForm" class="modal noclose" style="">
+					<h3>Вы действительно хотите удалить форму?</h3>			
+					<p class="tac"><button id="delete-form" class="btn btn-default">OK</button>
+						<a href="#" rel="modal:close" class="btn btn-default close-button">Отмена</a>
+					</p>
+				</div>
+				
+				
+		{% endblock %}
+
+
+	

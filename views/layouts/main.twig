@@ -1,0 +1,72 @@
+{{ use('app/assets/AppAsset') }}
+{{ register_app_asset() }}
+{% if js_files and js_files is iterable %}
+    {% for js_elem in js_files %}
+    {{ this.registerJsFile(root_uri ~ js_elem.uri,{'depends' : 'app\\assets\\JqueryAsset'}) }}	
+    {% endfor %}
+{% endif %}
+{% if css_files and css_files is iterable %}
+    {% for css_elem in css_files %}
+    {{ this.registerCssFile(root_uri ~ css_elem.uri ,{'depends' : 'app\\assets\\JqueryAsset'}) }}			
+    {% endfor %}
+{% endif %}
+
+{% if (controller == 'reports') %}
+{{ this.registerJsFile('@web/js/reports.js',{'depends' : 'app\\assets\\JqueryAsset'}) }}
+{% endif %}
+{% if (controller == 'admin') %}
+{{ this.registerJsFile('@web/js/admin.js',{'depends' : 'app\\assets\\JqueryAsset'}) }}
+    {% if is_directory %}
+    {{ this.registerJsFile('@web/js/admin_directory.js',{'depends' : 'app\\assets\\JqueryAsset'}) }}
+    {% endif %}
+    {% if is_news %}
+    {{ this.registerJsFile('@web/js/tinyMCE/tinymce.min.js',{'depends' : 'app\\assets\\JqueryAsset'}) }}
+    {{ this.registerJsFile('@web/js/tinyMCE/jquery.tinymce.min.js',{'depends' : 'app\\assets\\JqueryAsset'}) }}
+    {% endif %}
+{% endif %}
+{{ this.beginPage() }}
+<!doctype html>
+<html lang="ru">
+	<head>            
+		<meta charset="UTF-8">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<link rel="shortcut icon" href="/favicon.ico">
+		<title>		
+			{% block html_title %}Заголовок по умолчанию 
+			{% endblock %}
+		</title>
+{{ this.head() }}
+	</head>
+	<body>          
+		{% block content_container %}Контейнер для содержимого
+		{% endblock %}
+		<div class="modals-container">			 
+			<div id="modal-inform" style="display:none;">
+				<h3 id="modal-text"></h3>
+				<p><a href="#" rel="modal:close" class="btn btn-default close-button">OK</a></p>
+			</div>
+		<a href="#modal-inform" rel="modal:open"></a>
+			{% block modals %}
+			{% endblock %}
+		</div>
+		<script type="text/javascript">
+	// <![CDATA[
+			var global_data = {
+				baseURI : '{{ base_uri|raw }}',
+				reportsURI : '{{ reports_uri|raw }}',
+				formsURI : '{{ forms_uri|raw }}',
+				chpu : '{{ chpu }}',
+				messages : '{{ messagesJSON|raw }}',
+				utils: {},
+				role: '{{ user_role }}',
+				close_button: '<a href="#" rel="modal:close" class="btn btn-default close-button">OK</a>'
+			}
+	// ]]>
+		</script>
+
+	
+	{% block scripts %}
+	{% endblock %}
+	</body>
+</html>	
+{{ this.endPage() }}

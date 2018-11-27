@@ -1,0 +1,73 @@
+{% extends "template.twig" %}
+{% block content %}
+<thead>
+	<tr class="form-head1">
+		<th id="of_head" colspan="3">{{ form_name }}</th>
+	</tr>
+{% if user_role == 1%}	
+	<tr class="form-head3">
+		<th colspan="3">
+			<div class="row">
+				<span>{{ company }}: </span><div class="inform-block"><span class="ib-clickable"  data-model="Contractor" data-id="{{ contractor_id }}">{{ company_name }}</span><div class="informer hide"></div></div>
+				<span>{{ editor }}: </span><div class="inform-block"><span class="ib-clickable"  data-model="User" data-id="{{ editor_id }}">{{ editor_name }}</span><div class="informer hide"></div></div>
+			</div>
+		</th>
+	</tr>
+	{% endif %}
+	<tr class="form-head4">
+		<th id="row-models">
+			{% if (table_id == 'new_form' or user_role == 1) %}<a id="all-models" class="btn btn-selector add-model" data-classifier="41">{{ add_model }}</a>{% endif %}
+			<input id="models-filter" class="input-width-image search-input fr" tabindex="1" title="Поиск" placeholder="" name="search" value="" type="text">
+		</th>
+		<th></th>
+		<th></th>
+	</tr>
+		<tr class="form-head4 clcontainer">
+            <th id="ModelName">{{ if_model }}</th>
+            <th id="ModelsCount">{{ if_count }},{{ amount }}</th>
+            <th id="ModelsPrice">{{ if_price }},{{ currency }}</th>
+	</tr>
+</thead>
+{% if list_models is iterable %}
+{% set rank = 0 %}
+	{% for elm in list_models %}
+		{% if rank != elm.Rank %}
+			{% set rank = elm.Rank %}
+			<tr id="classifierid_{{ elm.ClassifierId }}" class="classifier narrow">
+				<td colspan="3">{{ elm.Classifier }}</td>
+			</tr>				
+		{% endif %}
+		<tr class="el_of_form"{% if if_id %} id="id{{ elm.ProductionId }}"{% endif %}>
+			<td class="frm_model" id="id{{ elm.ModelId }}" data-model="{{ elm.ModelId }}">
+				<div class="inform-block model-inform-container">
+					<span class="model_name ib-clickable" data-model="Models" data-id="{{ elm.ModelId }}">{{ elm.Model }}</span>				
+					{% if (table_id == 'new_form' or user_role == 1) %}
+					<span title="{{ REMOVE_MODEL_FROM_FORM }}" class="glyphicon glyphicon-remove-sign if-model-remove"></span>
+					{% endif %}
+					<div class="informer hide"></div>
+				</div>
+			</td>
+			<td class="center count">
+				<input {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}name="count" type="text" value="{{ elm.Count }}">
+			</td>
+			<td class="center">
+				<input {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}name="price" type="text" value="{{ elm.Price }}">
+			</tr>
+	{% endfor %}
+{% endif %}
+			<tr class="el_of_form hide" id="new-element-row">
+				<td class="frm_model">
+					<div class="inform-block model-inform-container">
+						<span class="model_name ib-clickable" data-model="Models"></span>
+						<span title="{{ DELETE_MODEL_FROM_FORM }}"" class="glyphicon glyphicon-remove-sign if-model-remove"></span>
+						<div class="informer hide"></div>
+					</div>
+				</td>
+				<td class="center count"><input name="count" value="0" type="text"></td>
+				<td class="center"><input name="price" value="0" type="text"></td>
+			</tr>
+			<tr id="new-classifier-row" class="classifier narrow hide">
+				<td colspan="3"></td>
+			</tr>
+{% endblock %}
+   

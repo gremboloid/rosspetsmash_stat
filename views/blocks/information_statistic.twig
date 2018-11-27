@@ -1,0 +1,48 @@
+<div class="content-header">
+	<p>Статистика использования конструктора отчетов по предприятиям</p>
+</div>
+<div class="content-body">
+{% if error %}
+	<div class="alert alert-error"><strong>{{ error_message.title }}!</strong>
+	{{ error_message.text }}
+	</div>
+{% else %}
+<h4 style="text-align:center">{{ head_text}}: {{ period1 }} - {{ period2 }}</h2>
+<table class="directory_tbl">
+<thead>
+
+	<tr><th class="head">Организация</th><th style="width:90px" class="head">Количество</th></tr>
+</thead>
+{% if elements is not empty %}
+<tbody>
+{% for el in elements %}
+<tr id="id{{ el.id }}"><td{% if el.class %} class="{{ el.class }}"{% endif %} data-unit="{{ el.id }}" style="padding-left:5%">{{ el.name }}</td><td style="text-align:center">{{ el.count }}</td>
+	{% if admin %}
+	<tr id="tr{{ el.id }}" class="hide">
+		<td colspan="2" class="dynamic">
+			<div class="block-contractor"></div>
+		</td>
+	</tr>
+	{% endif %}
+{% endfor %}
+</tbody>
+
+<tfoot>
+	<tr id="id0" class="data" style="font-weight:bold"><td{% if admin %} class="{{ total_class }}"{% endif %} data-unit="total" style="padding-left:5%">Общее количество за период</td><td style="text-align:center">{{ total_count }}</td></tr>
+		{% if admin %}
+	<tr id="tr0" class="hide">
+		<td colspan="2" class="dynamic">
+			<div class="block-contractor"></div>
+		</td>
+	</tr>
+	{% endif %}
+</tfoot>
+{% else %}
+<tbody>
+<tr class="data" style="font-weight:bold"><td colspan="2" style="text-align:center">За указанный период отчетов не создавалось</td></tr>
+</tbody>
+{% endif %}
+</table>
+{% endif %}
+</div>
+

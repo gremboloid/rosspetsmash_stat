@@ -1,0 +1,64 @@
+{% extends "@layouts/main.twig" %}
+{% use "@layouts/content_auth.twig" %}
+{% use "@layouts/footer.twig" %}
+{% block html_title %}
+    {{ title }}
+{% endblock %}
+{% block content %}
+    <div class="block-auth">
+        <div class="authorize-header">
+            {{ auth_page_head }}
+        </div>
+        <div class="authorize-content clearfix">
+            <div class="logo fl"></div>
+            <div class="auth-container fl">
+                <div class="authorize-information">{{ auth_page_subhead }}</div>
+                <div class="auth-form">
+                    {% set form = active_form_begin({
+                                                'id' : 'authorization-form',
+                                                'method' : 'POST',
+                                                'action' : 'authorization',
+
+                                            }) %}
+                    {{ form.field(userLoginForm, 'login',{ 'inputOptions' : {
+                                                        'id' : 'user-name'
+                                                    } }).label(false)
+                            .textInput({
+                                    'placeholder' : auth_page_email,
+                                    'class' : 'input-width-image'}) | raw }}                        
+                    {{ form.field(userLoginForm, 'password',{ 'inputOptions' : {
+                                                        'id' : 'user-password'
+                                                    } }).passwordInput({
+                                                        'class' : 'input-width-image',
+                                                        'placeholder' : password,
+                                                           }).label(false) | raw }}
+                    {{ html.a(forgot_password, '#ex1', {'id' : 'forgot-password','data-modal' : ''}) | raw }}
+                    {{ html.submitButton(enter, {'id' : 'btn-ok', 'class' : 'btn btn-selector','name': 'login-button' }) | raw }}
+                    
+                    {{ active_form_end() }}
+                </div>
+            </div>
+            <div class="authorization-additional-block">
+                <a href="http://www.rosspetsmash.ru/rosspetsmash-stat">Инструкция по использованию портала</a>
+                <a id="contact-information" data-modal href="#ex2">{{ contact_information }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}		    
+{% block footer %}
+{{ parent() }}
+{% endblock %}
+{% block modals %}
+<div id="ex1" class="modal" style="">
+    <form id="MailSenderForm" name="MailSenderForm" action="">
+        <h3>{{ restore_password_message }}</h3>
+        <p class="forgot-password-block"><label class="frm-label">{{ auth_page_email }}:</label><input id="user_email" class="mail req" type="text"></p>
+        <p><button class="btn btn-selector" id="SendEmail">{{ send_email }}</button></p>
+    </form>
+</div>
+<div class="modal" id="ex2">
+    <p>121609, Москва, Осенний бульвар д.23</p>
+    <p>Тел./факс: (495)781-37-56</p>
+    <p>E-mail: <a href="mailto:admin@rosagromash.ru">admin@rosagromash.ru</a>
+</div>
+{% endblock %}

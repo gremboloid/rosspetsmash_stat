@@ -1,0 +1,18 @@
+{% block header %}	
+	{% if header_elements %}
+		<div class="header_elements">
+			{% for element_name,header_element in header_elements %}
+				{% if header_element.type == 'select' %}
+					<div class="param clearfix{% if header_element.class %} {{ header_element.class }}{% endif %}">
+						<label for="{{ element_name }}">{{ header_element.label }}:</label>
+						<select id="{{ element_name }}" class="values" name="{{ element_name }}">
+							{% for option in header_element.options %}
+							<option value="{{ option.value }}">{{ option.text }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endblock %}

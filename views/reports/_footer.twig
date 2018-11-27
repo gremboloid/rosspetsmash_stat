@@ -1,0 +1,90 @@
+{% block footer %}
+	{% if column_left or column_right %}
+		<div class="column_block_elements">
+			<div class="param clearfix">
+			
+				<div class="column-side-2 first_column">				
+				{% if column_left %}				
+					{% for element_name,column_element in column_left %}
+						{% if not column_element.hide %}
+							<div class="param clearfix">
+							{% if column_element.type == 'checkbox' %}								
+							<input id="{{ element_name|lower }}" name="{% if column_element.name %}{{ column_element.name }}{% else %}{{ element_name }}{% endif %}" value="on" {% if column_element.checked %}checked="checked"{% endif %} type="checkbox">
+							<label for="{{ element_name|lower }}">{{ column_element.label }}</label>									
+							{% endif %}	
+						
+						</div>
+						{% endif %}
+					{% endfor %}					
+				{% endif %}
+				</div>				
+				<div class="column-side-2">				
+				{% if column_right %}
+					{% for element_name,column_element in column_right %}
+						<div class="param clearfix">
+						{% if column_element.type == 'checkbox' %}
+							<label for="{{ element_name|lower }}">{{ column_element.label }}</label>
+							<input id="{{ element_name|lower }}" name="{% if column_element.name %}{{ column_element.name }}{% else %}{{ element_name }}{% endif %}" value="on" {%if column_element.checked %}checked="checked"{% endif %} type="checkbox">
+						{% endif %}
+						</div>
+					{% endfor %}
+				{% endif %}
+				</div>
+			
+			</div>
+		</div>
+	{% endif %}
+	{% if footer_elements %}
+		<div class="footer_elements">
+			{% for element_name,footer_element in footer_elements %}
+			<div class="param clearfix">
+				{% if footer_element.type == 'select' %}
+						<label for="{{ element_name }}">{{ footer_element.label }}:</label>
+						<select id="{{ element_name }}" class="values" name="{{ element_name }}">
+							{% for option in footer_element.options %}
+							<option value="{{ option.value }}">{{ option.text }}</option>
+							{% endfor %}
+						</select>
+				{% endif %}
+				{% if footer_element.type == 'checkbox' %}
+						<label for="{{ element_name|lower }}">{{ footer_element.label }}: </label>
+						<input id="{{ element_name|lower }}" name="{{ element_name }}" value="on" {%if footer_element.checked %}checked="checked"{% endif %} type="checkbox">
+				{% endif %}
+				
+				{% if footer_element.type == 'select_modal' %}
+					{% if footer_element.label is not empty %}
+						<div class="label">{{ footer_element.label }}:</div>
+					{% endif %}
+					{% if footer_element.buttons %}
+						<div class="buttons-block clearfix">
+							<div class="sel-container">	
+							{% for button in footer_element.buttons %}
+							<div class="reports-settings-action btn btn-selector fl" id="{{ button.id }}" title="{{ button.text }}">{{ button.text }}</div>
+							{% endfor %}
+							</div>
+						{% if footer_element.elements %}
+						
+						<div class="fs-container">
+							<fieldset>
+								<legend><img src="img/production16.png" alt="">{{ footer_element.added_elements }}</legend>
+								<div class="all_selected{% if footer_element.list is not empty %} hide{% endif %}">{{ footer_element.all_selected }}</div>
+							<div class="list-items-block">
+							{% if footer_element.list is not empty %}
+								{% for el in footer_element.list %}{{ el.Name }}{% if not(loop.last) %}, {% endif %}{% endfor %}
+							{% else %}
+							</div>
+							</fieldset>
+							
+										
+							{% endif %}
+							
+						</div>
+						{% endif %}
+					{% endif %}
+						</div>
+				{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endblock %}

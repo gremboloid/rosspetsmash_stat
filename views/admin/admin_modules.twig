@@ -1,0 +1,48 @@
+﻿<div class="module">
+	{% if installed_modules|length > 0 %}
+	<div class="content-sub-block installed-modules">
+		<div class="sub_block_header">
+			Установленные модули
+		</div>
+		<div class="sub-block_body">
+		<table class="installed-modules-list">
+		{% for module in installed_modules %}
+			<tr id="{{ module.moduleName }}" class="installed_modules">
+				<td>{{ module.displayName }}</td>
+				<td class="module-status">
+				{% if module.active %}
+					<a class="toggle_module enable" href="#">
+						<img src="img/module_install.png" alt="Модуль включен" title="Модуль включен">
+					</a>
+				{% else %}
+					<a class="toggle_module disable" href="#">
+						<img src="img/module_disabled.png" alt="Модуль отключен" title="Модуль отключен">
+					</a>
+				{% endif %}
+				</td>
+				<td><td><input class="btn small btn-default" name="delete" value="Удалить" type="button"></td></td>
+			</tr>
+			{% endfor %}
+		</table>
+		
+		</div>
+	</div>
+	{% endif %}
+	{% if not_installed_modules|length > 0 %}
+	<div class="content-sub-block all-modules">
+		<div class="sub_block_header">
+			Доступные для установки модули
+		</div>
+		<div class="sub-block_body">
+			<table class="available-modules-list">
+			{% for module in not_installed_modules %}
+				<tr id="{{ module.moduleName }}" class="available_modules">
+					<td>{{ module.displayName }}</td><td><input class="btn small btn-default" name="install" value="Установить" type="button"></td>
+				</tr>
+			{% endfor %}	
+			</table>
+		</div>
+	</div>
+	{% endif %}
+	
+</div>

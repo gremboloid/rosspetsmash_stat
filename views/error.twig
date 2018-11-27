@@ -1,0 +1,14 @@
+{% extends "@layouts/main.twig" %}
+	{% use "@layouts/content.twig" %}
+	{% use "@layouts/footer.twig" %}
+	{% block html_title %}
+		{{ title }}
+	{% endblock %}
+        	{% block content_container %}
+	 {{ parent() }}
+	 {% endblock %}
+	{% block content %}
+<div class="error-message">
+<h1>{{ message }}</h1>
+</div>
+{% endblock %}

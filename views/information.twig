@@ -1,0 +1,32 @@
+{% extends "@layouts/main.twig" %}
+	{% use "@layouts/content.twig" %}
+	{% block html_title %}
+		{{ title }}
+	{% endblock %}
+	{% block content_coontainer %}
+		{{ parent() }}
+	{% endblock %}
+	{% block content %}					
+	<div class="main-block">
+		<div class="content-wrapper">		
+			<div class="content-header"><h2>{{ information_header }}</h2></div>
+			<div class="content columns">
+				<div class="left-sidebar">
+					<div class="left-block">
+						{{ left_block|raw }}
+					</div>
+				</div>
+				<div class="main-content">
+					<div class="content-block">
+					{{ content|raw }}
+					</div>
+				</div>			
+			</div>		
+		</div>
+	</div>
+		<div class="modals-container">
+		{% block modals %}
+		
+		{% endblock %}
+		</div>
+	{% endblock %}

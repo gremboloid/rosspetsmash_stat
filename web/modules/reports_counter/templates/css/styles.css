@@ -1,0 +1,38 @@
+.block-inform {
+	width: 100%;
+	margin: 0 auto;
+	position: relative;
+	padding: 0 10px;
+}
+/* раздел информационных блоков */
+.content > div.block-inform {
+	float: none;
+}
+.inform {
+    background-color:  #dae3ea;
+    width: auto;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+}
+.inf_lbl {
+    padding: 0 5% 0 5%;
+	
+}
+.inf_lbl h3 {
+	margin-top: 0;
+}
+.inf_num {
+    font-weight: bold;
+    font-size: 60px;
+}
+.show_graf {
+    height: 36px;
+}
+.tb {
+    background-color: #55626C;
+    background-repeat: repeat;
+    width: 10px;
+    display: inline-block;
+    margin-right: 6px;
+}

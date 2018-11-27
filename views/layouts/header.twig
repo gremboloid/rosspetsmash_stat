@@ -1,0 +1,53 @@
+{% block header %}
+<div class="header">
+	<div class="header-content">
+		<div class="header-wrapper clearfix">						
+			<div class="header-management-block">			
+				<div class="containers first-element-container js-dropdown">
+					<div class="first-element-image-container">
+						<div class="first-element-image"></div>
+					</div>
+					<div class="first-element">		
+					{{ profile_settings }}
+					</div>
+					<ul id="profile-menu" class="dropdown-menu hide">
+						<li><a tabindex="-1" href="/profile/user"><i class="rstaticon rstaticon-user"></i>{{ header_user_profile }}</a></li>
+						<li class="divider"></li>
+						<li><a tabindex="-1" href="/profile/company"><i class="rstaticon rstaticon-company"></i>{{ header_company_profile }}</a></li>						
+					</ul>
+				</div>
+				{% if admin %}
+				<a href="/admin"><div class="containers last-element-container">
+					<div class="last-element-image-container">
+						<div class="last-element-image"></div>
+					</div>
+					<div class="last-element">
+						{{ administration }}
+					</div>
+				</div></a>
+				{% endif %}
+			</div>
+			
+			<div class="header-user-block">
+				<div class="user-block-container">
+					<div class="block-user-info iflx">				
+						<ul class="nav">
+							<li><i class="rstaticon rstaticon-user"></i>{{ fio }}</li>
+							<li id="company"><i class="rstaticon rstaticon-company"></i>{{ contractor_name }}</li>
+						</ul>
+					</div>
+					<a href="/logout">
+						<div class="block-logout-container">
+							<div class="block-logout-image-container">
+								<div class="block-logout-image"></div>
+							<div class="logout-element">{{ user_block_exit }}</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>
+{% endblock %}
+			

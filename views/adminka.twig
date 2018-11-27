@@ -1,0 +1,103 @@
+{% extends "@layouts/main.twig" %}
+	{% use "@layouts/content.twig" %}
+	{% block html_title %}
+		{{ title }}
+	{% endblock %}
+	{% block content_container %}
+	 {{ parent() }}
+	 {% endblock %}
+	{% block content %}
+	<div class="main-block">
+		<div class="content-wrapper">
+			<div class="content-header"><h2>{{ content_header }}</h2>
+			</div>
+			{% if admin_menu is iterable %}
+				<div class="admin_menu clearfix">
+				{% for val1 in admin_menu %}
+					<div class="module">
+						<h3>{{ val1.text }}</h3>
+						{% if val1.submenu is iterable %}
+							<ul class="nav menu hide">
+								{% for val2 in val1.submenu %}
+                                                                    <li class="i"><a href="/admin/{{ val2.element }}">{{ val2.text }}</a></li>								
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</div>
+				{% endfor %}                        
+				</div>
+		{% endif %}
+	{% if breadcrumbs is iterable %}	
+		<div class="breadcrumbs_bar">	
+			{% for val in breadcrumbs %}
+				{% if chpu %}
+					<a href="/admin/{{ val.link }}">{{ val.name }}</a>
+				{% else %}
+					<a href="?controller=admin&element={{ val.link }}">{{ val.name }}</a>
+				{% endif %}
+				{% if loop.last == false %}
+				<img src="/img/separator_breadcrum.png" style="margin-right:5px" alt=">">
+				{% endif %}
+			{% endfor %}
+		</div>
+	{% endif %}
+        {% if modal_flash %}
+	<div class="message-window{% if modal_flash_message.className %} {{ modal_flash_message.className }}{% endif %}">{{ modal_flash_message.message }}</div>
+	{% endif %}
+			<div class="content{% if left_block_enable %} columns{% else %} clearfix{% endif %}">
+			{% if left_block_enable %}
+				<div class="left-sidebar">
+					{{ left_block|raw }}
+				</div>
+				{% endif %}
+				<div class="main-content{% if not left_block_enable %} fullscreen{% endif %}">
+					<div class="content-block">
+						<div class="content-header"><p>{{ block_name }}</p></div>{{ admin_template|raw }}</div>
+				</div>
+			</div>
+			{% if test %}
+			<p>{{ test }}</p>
+			{% endif %}
+		</div>
+	</div>
+		{% endblock %}
+		{% block footer %}
+			{{ parent() }}
+		{% endblock %}
+		{% if modals_list|length != 0 %}
+		{% block modals %}
+			{% for modal in modals_list %}
+				{% if modal.type == 'message' %}
+				<a id="{{ modal.id }}-activate"{% if modal.noclose == true %} class="noclose"{% endif %} data-modal href="#{{ modal.id }}"></a>
+				<div id="{{ modal.id }}" class="modal noclose" style="">
+					<h3>{{ modal.message }}</h3>			
+					<p class="tac">
+						<button id="{{ modal.btnok_id }}" class="btn btn-default">OK</button>
+						<a href="#" rel="modal:close" class="btn btn-default close-button">Отмена</a>
+					</p>
+				</div>
+				{% endif %}
+				{% if modal.type == 'ajax-modal' %}
+				<a id="{{ modal.id }}-activate"{% if modal.noclose == true %} class="noclose"{% endif %} data-modal href="#{{ modal.id }}"></a>
+				<div id="{{ modal.id }}" class="ajax-modal modal">
+					{% if modal.head_message %}
+					<h3>{{ modal.head_message }}</h3>
+					{% endif %}
+					{% if modal.search_elem %}
+					<div>
+						<input id="{{ modal.search_elem }}" class="input-width-image search-input" tabindex="1" title="Поиск" placeholder="Поиск" name="search" type="text">
+					</div>
+					{% endif %}
+					<div class="modal-content{% if modal.class %} {{ modal.class }}{% endif %}">
+					</div>
+					{% if modal.btnok_id %}
+					<button id="{{ modal.btnok_id }}" class="btn btn-default">{{ modal.btnok_text }}</button>
+					{% endif %}
+				</div>
+				{% endif %}
+			{% endfor %}
+		{% endblock %}
+		{% endif %}
+		
+		{% block scripts %}	
+		{% endblock %}

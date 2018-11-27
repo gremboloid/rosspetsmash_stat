@@ -1,0 +1,17 @@
+<div class="change-data-block">
+	<form id="change-period-form" action="#">
+		<fieldset><legend>{{ legend }}</legend>									
+	<select id="select-month" class="select-inline-element month" name="startMonth">
+	{% for key,val in months %}
+		<option{% if selected_month is not empty %}{% if selected_month == key %} selected{% endif %}{% endif %} value="{{ key }}">{{ val }}</option>
+	{% endfor %}																			
+	</select>
+	<select id="select-year" class="select-inline-element year" name="startYear">
+	{% for y in min_year..max_year %}
+		<option{% if selected_year is not empty %}{% if selected_year == y %} selected{% endif %}{% endif %} value="{{ y }}">{{ y }}</option>
+	{% endfor %}
+	</select>
+	</fieldset>
+	<button{% if button_id %} id="{{ button_id }}"{% endif %} class="btn btn-default mdl-inform-ok">OK</button>
+	</form>
+</div>

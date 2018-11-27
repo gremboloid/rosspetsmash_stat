@@ -1,0 +1,68 @@
+﻿<div class="module">
+	<div class="content_subblock">
+		<div class="content_subheader">
+			{{ test|raw }}
+		</div>
+		<form action="" method="POST" id="filterFormControl">
+		<div class="top_block clearfix">
+			<div class="cl form-control-block">
+
+					<span>{{ report_period }}:
+						<select id="select-month" class="select-inline-element" name="month">	
+						{% for key,val in month %}
+							<option{% if filters_array is not empty %}{% if filters_array.dateFilter.month == key %} selected{% endif %}{% endif %} value="{{ key }}">{{ val }}</option>
+						{% endfor %}
+						</select>
+						<select id="select-year" class="select-inline-element" name="year">	
+						{% for y in years.start..years.end %}
+							<option{% if filters_array is not empty %}{% if filters_array.dateFilter.year == y %} selected{% endif %}{% endif %} value="{{ y }}">{{ y }}</option>
+						{% endfor %}
+						</select>
+					</span>
+					<span><label>Прeдприятия, имеющие доступ: <input id="inPortal" class="checkbox" name="inPortal" value="on" type="checkbox"{% if in_portal == true %} checked{% endif %}></label></span>
+					<span><label>Показать E-mail: <input id="showEmail" class="checkbox" name="showEmail" value="on" type="checkbox"{% if show_email == true %} checked{% endif %}></label></span>
+					<input type="submit" id="fc-submit" class="hide">
+			</div>
+				<div class="fl">
+				<label>Выгрузить производителей:
+				<select id="contractor-types" name="contractor-types" class="select-inline-element">
+				{% for type in contractor_types %}
+				<option value="{{ type.value }}"{% if contractors_category == type.value %} selected{% endif %}>{{ type.text }}</option>
+				{% endfor %}
+				</select></label>
+				<span id="getcontractors" title="Выгрузить производителей в файл"><img id="excel-contractor" src="/img/excel-icon64.png" alt="" width="24" height="24" border="0"></span>
+			<!--<input id="directory-search" class="input-width-image search-input fl" tabindex="1" title="Поиск" placeholder="" name="search" value="" type="text">
+			<button id="directory_search_btn" type="button" class="fl btn btn-default small">Поиск</button>	-->
+								</div>
+		</div>
+		</form>
+		<div class="table_content">
+			<table class="directory_tbl">
+				<thead>
+					<tr class="tbl-head"><th colspan="{{ colspan }}" class="head"><a class="head" href="">{{ period }}</th></tr>
+					<tr class="tbl-head">
+					{% for val in columns_head %}
+					<th>{{ val }}</th>
+					{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+				{% for cnt in content %}
+				<tr>
+					<td data-contractor="{{ cnt.contractorId }}">{{ cnt.contractorName }}</td>
+					<td{% if cnt[1].color %} style="color:{{ cnt[1].color}}"{% endif %}>{{ cnt[1].text }}</td>
+					<td{% if cnt[2].color %} style="color:{{ cnt[2].color}}"{% endif %}>{{ cnt[2].text }}</td>
+					<td{% if cnt[4].color %} style="color:{{ cnt[4].color}}"{% endif %}>{{ cnt[4].text }}</td>
+					<td{% if cnt[5].color %} style="color:{{ cnt[5].color}}"{% endif %}>{{ cnt[5].text }}</td>
+					<td{% if cnt[12].color %} style="color:{{ cnt[12].color}}"{% endif %}>{{ cnt[12].text }}</td>
+					<td>{{ cnt.contractorPhone }}</td>
+					{% if show_email == true %}
+					<td>{{ cnt.contractorEmail }}</td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

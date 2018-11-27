@@ -1,0 +1,276 @@
+{% block construct %}
+<div class="main-block">
+	<div class="content-wrapper">
+		<div class="content-header"><h2>{{ content_header }}</h2>
+		</div>
+		<div class="content columns">
+			<div class="left-sidebar reports">
+				<div class="left-block">
+					<div class="content-header">
+						<p>{{ report_params_header }}</p>
+					</div>
+					<div id="block-classifier" class="left_sub_block">
+						<div class="sub_block_header">
+							<p>{{ classifier_header }}</p>
+							
+						</div>
+						<i id="get_classifier" class="fa fa-pencil-alt constructor_action" aria-hidden="true" title="{{ button_change }}"></i>
+						<!-- <div id="get_classifier" class="constructor_action">{{ button_change }}</div> -->
+						<div id="current-classifier" class="sub_block_body{% if selected_report == 'full'%} hide{% endif %}">{{ clasifier_default }}</div>
+						<div id="current-classifier-full" class="sub_block_body{% if selected_report != 'full'%} hide{% endif %}">{{ clasifier_full_default }}</div>
+						
+					</div>
+					<div class="left_sub_block">
+						<div class="sub_block_header">
+							<p>{{ report_type }}</p>
+						</div>	
+						<i id="get_selected_reports" class="fa fa-pencil-alt constructor_action" aria-hidden="true" title="{{ button_change }}"></i>						
+						<!-- <div id="get_selected_reports" class="constructor_action">{{ button_change }}</div> -->
+						<div class="sub_block_body">				
+							<div id="selected-reports" class="sub_block_list_wrapper">
+								{% for rep in type_reports_list %}
+									{% if rep.selected %}
+									<div class="sub_block_list_element">{{ rep.name }}</div>
+									{% endif %}						
+								{% endfor %}
+							</div>
+						</div>											
+					</div>
+					<div class="not_economic_report special_data_source left_sub_block{% if selected_report == 'economic' or selected_report == 'full' or selected_report == 'modelsContractor' %} disabled{% endif %}">
+						<div class="sub_block_header">
+							<p>{{ data_source_header }}</p>
+						</div>
+						<i id="get_datasource" class="fa fa-pencil-alt constructor_action" aria-hidden="true" title="{{ button_change }}"></i>
+						<!-- <div id="get_datasource" class="constructor_action">{{ button_change }}</div> -->
+						<div id="current-datasource" class="sub_block_body">{{ data_source_default }}</div>
+					</div>
+					<div class="left_sub_block">
+						<div class="sub_block_header">
+							<p>{{ time_periods }}</p>
+						</div>
+						<i id="get_periods" class="fa fa-pencil-alt constructor_action" aria-hidden="true" title="{{ button_change }}"></i>
+						<!-- <div id="get_periods" class="constructor_action">{{ button_change }}</div> -->
+						<div class="sub_block_body">
+							<div class="sub_block_list_wrapper periods-list">
+							{% for period in periods_array.periods_list %}
+								<div class="sub_block_list_element period">
+									<div class="date"><span>{{ period.start_period.month }}</span>.<span>{{ period.start_period.year }}</span> - <span>{{ period.end_period.month }}</span>.<span>{{ period.end_period.year }}</span></div>
+								</div>							
+							{% endfor %}
+							</div>
+							<div class="step_periods hide"><span>{{ period_step }}:</span><span id="period-step"></span></div>
+							<div id="new-period-element" class="sub_block_list_element period hide">
+									<div class="date"><span></span>.<span></span> - <span></span>.<span></span></div>
+								</div>	
+						</div>
+					</div>
+				</div>
+				
+				<div class="left-block last-block">
+					<div class="content-header">
+						<p>{{ report_creation }}</p>
+					</div>
+					<div class="icons_buttons_h32 clearfix">
+						<div id="create-report" title="{{ create_report }}"></div>
+						<div id="get-excel-report" {% if selected_report is empty %} class="hide" {% endif %} title="{{ save_to_excel }}"></div>
+						<div id="load-indicators" {% if selected_report != 'full' %} class="hide" {% endif %} title="{{ load_indicators }}"></div>
+					</div>
+				</div>
+							
+			</div>
+			
+			<div class="main-content">			
+                            <div id="change_classifier" class="content-block hide">
+                                    <div class="content-header"><p>{{ classifier_header }}</p></div>
+                                    <div class="content-sub-block">
+                                            <div id="block-tree" class="change-classifier-block{% if selected_report == "full" %} hide{% endif %}">
+                                                    <input id="classifier-search" class="input-width-image search-input" tabindex="1" title="{{ words.search }}" placeholder="{{ words.search }}" name="search" type="text">
+                                                    <div id="classifier_tree" class="dynamic-load">									
+                                                    </div>
+                                            </div>
+                                            <div id="full-report-classifier-select" class="change-classifier-block{% if selected_report != "full" %} hide{% endif %}">
+                                                    <select id="rstat-select-classifier" class="rs-form-control bordered">
+                                                            {% for element in full_report_classifier %}	
+                                                            <option value="{{ element.Id }}">{{ element.Name }}</option>
+                                                            {% endfor %}											
+                                                    </select>											
+                                            </div>
+                                    </div>
+                            </div>
+                            <div id="change_datasource" class="content-block hide">
+                                    <div class="content-header"><p>{{ data_source_header }}</p></div>
+                                    <div class="content-sub-block">
+                                            <div class="datasource-select">
+                                                    <select id="rstat-select-datasource" class="rs-form-control bordered">
+                                                            {% for data_source in data_source_list %}	
+                                                                            {% if data_source.Id != "13" and data_source.Id != "14" %}
+                                                                                    {% set dis = '' %}
+                                                                            {% else %}
+                                                                                    {% set dis = ' class=hide' %}
+                                                                            {% endif %}
+                                                            <option value="{{ data_source.Id }}"{{ dis }}>{{ data_source.Name }}</option>
+                                                            {% endfor %}											
+                                                    </select>											
+                                            </div>
+                                    </div>
+                                    <div id="select_region" class="content-block{% if show_regions ==false %} hide{% endif %}">
+                                    <div class="content-header">{{ select_region }}</div>
+                                            <div id="add-region" class="btn btn-default add-modal">Добавить регион</div>
+                                            <fieldset>
+                                                    <legend><img src="img/worldwide16.png" alt="">Выбранные регионы</legend>
+                                                    <div class="list-items-block">
+                                                    {% for region in regions %}{{ region.Name }}{% if not(loop.last) %},{% endif %}{% endfor %}
+                                                    </div>
+                                            </fieldset>
+                                    </div>
+                            </div>
+                            <div id="select_country" class="content-block{% if show_countries == false %} hide{% endif %}">
+                                    <div class="content-header"><p>{{ select_countries }}</p></div>
+                                    <div class="clearfix">
+
+
+                                    </div>
+                                    <fieldset>
+                                            <!--<legend><img src="img/worldwide16.png" alt=""></legend> -->
+                                            <div class="select-region-block clearfix">	
+                                                    <div class="sel-container">
+                                                            <div id="add-country" class="btn btn-default add-modal fl">Выбрать страну</div>
+                                                    </div>
+                                                    <div class="fs-container">
+                                                            <fieldset>
+                                                                    <legend><img src="img/worldwide16.png" alt="">Выбранные страны</legend>
+                                                            <div class="list-items-block">
+                                                            {% if (countries is iterable and countries is not empty )  %}
+                                                                    {% for country in countries %}{{ country.Name }}{% if not(loop.last) %}, {% endif %}{% endfor %}
+                                                            {% endif %}
+                                                            </div>
+                                                            <div class="all_selected{% if countries is not empty %} hide{% endif %}">
+                                                            Все страны
+                                                            </div>
+                                                            </fieldset>
+                                                    </div>
+
+                                            </div>
+                                            <div class="all_regions_block cl">
+                                                    <input id="all_regions" name="all_regions" type="checkbox"{% if all_regions_together_val == 'on' %} checked="checked"{% endif %}>
+                                                    <label for="all_regions">{{ all_regions_together }}</label>
+                                            </div>
+                                    </fieldset>
+                            </div>								
+                            <div id="change_periods" class="content-block hide">
+                                    <div class="content-header"><p>{{ time_periods }}</p></div>
+                                    <div class="content-sub-block">
+                                            <div class="list-periods">
+                                            {% for period in periods_array.periods_list %}
+                                                    <div id="period{{ loop.index }}" class="date-period list-element"><p>
+                                                            <span class="select-period-block start-period">
+                                                                    <span class="select-period-label">С: </span>
+                                                                    <select class="select-inline-element month" name="start_month">
+                                                                    {% for key,val in words.months %}
+                                                                            <option value="{{ key }}"> {{ val }}</option>
+                                                                    {% endfor %}				
+                                                                    </select>
+                                                                    <select class="select-inline-element year" name="start_year">
+                                                                    {% for val in years_list %}
+                                                                            <option value="{{ val }}">{{ val }}</option>
+                                                                            {% endfor %}
+                                                                    </select>
+                                                            </span>
+                                                            <span class="select-period-block end_period">
+                                                                    <span class="select-period-label">по:</span>								
+                                                                    <select class="select-inline-element month" name="end_month">
+                                                                    {% for key,val in words.months %}
+                                                                            <option value="{{ key }}"> {{ val }}</option>
+                                                                    {% endfor %}
+                                                                    </select>
+                                                                    <select class="select-inline-element year" name="end_year">
+                                                                    {% for val in years_list %}
+                                                                            <option value="{{ val }}">{{ val }}</option>
+                                                                    {% endfor %}
+                                                                    </select>
+                                                                    </span></p>
+                                                                    <span class="change_period"><span>Удалить</span></span>
+                                                    </div>						
+                                            {% endfor %}
+                                            </div>
+                                            <div id="step"{% if periods_count != 1 %} class="hide"{% endif %}><p>{{ period_step }}:</p>
+                                                    <select id="step_select" class="form-control">
+                                                            {{ period_step_content|raw }}
+                                                    </select>
+                                            </div>
+                                            <div class="content-block-buttons clearfix">
+                                                    <button id="new-period-button" class="btn btn-default">{{ add_time_period }}</button>										
+                                            </div>
+                                            <div id="new_period" class="date-period list-element hide"><p>
+                                                            <span class="select-period-block start-period">
+                                                                    <span class="select-period-label">С: </span>
+                                                                    <select class="select-inline-element month" name="start_month">
+                                                                    {% for key,val in words.months %}
+                                                                            <option value="{{ key }}"> {{ val }}</option>
+                                                                    {% endfor %}				
+                                                                    </select>
+                                                                    <select class="select-inline-element year" name="start_year">
+                                                                    {% for val in years_list %}
+                                                                            <option value="{{ val }}">{{ val }}</option>
+                                                                            {% endfor %}
+                                                                    </select>
+                                                            </span>
+                                                            <span class="select-period-block end_period">
+                                                                    <span class="select-period-label">По:</span>								
+                                                                    <select class="select-inline-element month" name="end_month">
+                                                                    {% for key,val in words.months %}
+                                                                            <option value="{{ key }}"> {{ val }}</option>
+                                                                    {% endfor %}
+                                                                    </select>
+                                                                    <select class="select-inline-element year" name="end_year">
+                                                                    {% for val in years_list %}
+                                                                            <option value="{{ val }}">{{ val }}</option>
+                                                                    {% endfor %}
+                                                                    </select>
+                                                                    </span></p>
+                                                                    <span class="change_period"><span>Удалить</span></span>
+                                                    </div>
+
+
+                                    </div>
+                            </div>
+
+
+                            <div id="reports_available" class="content-block">				
+                                    <div class="content-header">
+                                            <p>{{ report_type }}</p>
+                                    </div>
+                                    <div class="content-sub-block">
+                                            <div class="list-reports">
+                                            {% for rep_type in type_reports_list %}
+                                                    {% if rep_type.admin == false or user_role == 1 or user_role == 3 %}
+                                                            {% if rep_type.selected %}
+                                                            <div id="{{ rep_type.alias }}" class="list-element active"><input id="report-{{ rep_type.alias }}" class="select-report" type="radio" name="report-select" value="{{ rep_type.alias }}" checked="checked"><label for="report-{{ rep_type.alias }}">{{ rep_type.name }}</label><span class="report_params hide">Параметры</span></div>
+                                                            {% else %}
+                                                            <div id="{{ rep_type.alias }}" class="list-element"><input id="report-{{ rep_type.alias }}" class="select-report" type="radio" name="report-select" value="{{ rep_type.alias }}"><label for="report-{{ rep_type.alias }}">{{ rep_type.name }}</label><span class="report_params hide">Параметры</span></div>
+                                                            {% endif %}
+                                                    {% endif %}
+                                                    {% endfor %}
+                                            </div>		
+                                    </div>
+                            </div>
+                            <div  id="reports_out" class="content-block hide">
+                                <i id="report_list_button" class="fa fa-list-ul" aria-hidden="true" title="{{ to_report_list  }}"></i>
+                                <div class="content-header">
+                                    <p>{{ reports_out }}</p>
+                                </div>
+                                <div class="report-out-heaser">
+                                        <div class="select_report_wrapper hide">
+                                                <a id="leftArrow" href="#"></a>
+                                                <span id="repNum"></span> / <span id="repCount"></span>
+                                                <a id="rightArrow" href="#"></a></div>
+                                </div>
+                                <div id="report-container">
+                                </div>	
+                            </div>
+			</div>
+                        <div id="report-settings-hash" class="hide"></div>
+		</div>	
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+ <div class="input_form" id="id{{ form_type }}">
+	<input id="if-month" class="if_date" type="hidden" name="month" value="{{ month }}"/>
+	<input id="if-year" class="if_date" type="hidden" name="year" value="{{ year }}"/>
+                                    <input class="if_contractor" type="hidden" name="contractor" value="{{ contractor_id }}"/>
+									<input class="if_editor" type="hidden" name="editor" value="{{ editor_id }}"/> 
+									<input class="if_type" type="hidden" name="editor" value="{{ form_type }}"/> 
+                                  <table class="table_form" id="{{ table_id }}">
+									<span class="winclose"><svg width="2em" height="1.2em"><use xlink:href="#x" /><text id="x" y="1em">X</text></svg></span>
+									{% if form_type != 'opened_form' %}
+									<span class="period-block">{{ form_period|raw }}<i id="get_period" class="fa fa-calendar-alt" aria-hidden="true" title="Изменить"></i></span>
+									{% else %}
+									{% endif %}
+		{% block content %} Основное содержимое 
+		{% endblock %}								  
+<tfoot>
+	<tr>
+		<td>{{ comment }}</td>
+		<td colspan="2"><textarea {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}id="comment" name="comment" cols="25" rows="5">{{ comment_text }}</textarea></td>
+	</tr>
+	{% if user_role == 1 %}
+	<tr>
+		<td><label for="actuality">{{ check_admin }}</label></td>
+		<td colspan="2" class="tal"><input id="actuality" type="checkbox" name="actuality" value="1"{% if actuality == 1 %} checked{% endif %}></td></tr>
+	{% endif %}
+	<tr id="confirm-data-row" class="hide">
+		<td><label for="form-confirm-data">Я подтверждаю корректность введенных данных</label></td>
+		<td class="tal" colspan="2"><input type="checkbox" name="confirm-data" value="1" id="form-confirm-data"></td>
+	</tr>
+	{% if table_id == 'new_form' or user_role == 1 %}
+	<tr>
+		<td colspan ="2" class="tal"><div class="additional_block_btn btn btn-selector" id="input_form_save">{{ btn_send }}</div></td>
+		<td class="tar"><div class="additional_block_btn btn btn-cancel" id="input_form_cancel">{{ btn_cancel }}</div></td>
+	</tr>
+	{% else %}
+		<tr>
+			<td class="center" colspan="3"><div class="additional_block_btn btn btn-cancel" id="input_form_cancel">{{ btn_close }}</div></td>
+		</tr>
+	{% endif %}
+</tfoot>
+</table>
+</div>
+<div id="rstat-cropbox-mask" class="rstat-mask"></div>
+            
+
+	

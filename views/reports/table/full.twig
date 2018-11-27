@@ -1,0 +1,10 @@
+<div class="full_report_table_content">
+	<h2>{{ data_source }}: {{ data_source_val }}</h2>
+	<h3>{{ report_type }}: {{ report_type_name }}</h3>
+	<h3>Раздел классификатора: {{ classifier }}</h3>
+	{% for val in result %}	
+	<h4>{{ units }}: {{ val.data_units }} {{ val.additional_data }}</h4>
+	{{ val.table_data|raw }}
+	{% endfor %}
+
+</div>

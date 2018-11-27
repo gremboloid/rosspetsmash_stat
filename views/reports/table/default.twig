@@ -1,0 +1,36 @@
+<div class="report_table_content">
+	{% if user_filter_enable %}
+	<div class="blockwarn">
+            <p><span style="color:red;font-weight: bold">ВНИМАНИЕ!</span> В отчете не отражены данные за следующие периоды: <br>
+                <span style="color:green;font-weight: bold;margin-left:5px">{{ user_filter_month }}</span></p>
+            <p>Для отображения недостающих данных Вам необходимо заполнить отчетные формы за указанные периоды.</p></div>
+	{% endif %}
+	<h2>{{ data_source }}: {{ data_source_val }}</h2>
+	<h3>{{ report_type }}: {{ report_type_name }}</h3>
+	<h3>{{ classifier_section }}: {{ classifier }}</h3>
+	{% if data_count == 1 %}	
+	<h4>{{ units }}: {{ data_units[0] }}{{ additional_data }}</h4>
+	{% endif %}	
+	<table class="outreport">
+		<tbody>
+			<tr class="head{% if subheader %} subhead-present{% endif %}">
+			{% for col in other_columns %}
+				<td{% if subheader %} rowspan="2"{% endif %}>{{ col }}</td>
+			{% endfor %}
+			{% for col in head_columns %}				
+				<td{{ colspan }}>{{ col }}</td>				
+			{% endfor %}				
+			</tr>
+			{% if subheader %}
+			<tr class="subhead">
+			{% for col in header2_columns %}
+				{% if (loop.index != 1) %}
+				<td>{{ col|raw }}</td>
+				{% endif %}
+			{% endfor %}
+			</tr>
+			{% endif %}
+			{{ table_data|raw }}
+			</tbody>
+	</table>
+</div>

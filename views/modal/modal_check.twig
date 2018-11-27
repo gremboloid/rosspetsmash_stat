@@ -1,0 +1,46 @@
+﻿<div class="check modal">
+	<div class="selector-header">
+		<div class="selector-upper-panel">{{ head }}</div>
+	</div>
+	<div class="check-content-block">
+		<div class="check-window">
+			<div class="check-header">{{ check_head }}</div>
+				{% if tree_elements_list|length > 0 %}
+					<div class="check-list-items">
+						<ul>
+					{% for elems in tree_elements_list %}											
+							<li>{{ elems[0].ClassifierName }}
+								<ul>
+									{% for item in elems %}	
+									<li id="modelid{{ item.Id }}" data-jstree='{"icon":"false"}' data-classifiername="{{ elems[0].ClassifierName }}" data-classifier="{{ elems[0].ClassifierId }}" data-model="{{ item.Id }}">{{ item.Name }}</li>
+									{% endfor %}
+								</ul>
+							</li>
+					{% endfor %}								
+						</ul>
+					</div>
+				{% elseif elements_list|length > 0 %}
+					<div class="check-list-items">
+					{% for elems in elements_list %}
+						<label id="element{{ elems.Id }}" class="checkable"><input type="checkbox" name="element{{ elems.Id }}" value="{{ elems.Id }}">{{ elems.Name }}</label>
+					{% endfor %}
+					</div>
+				{% else %}
+					Нет доступных элементов для выбора
+				{% endif %}
+			<div class="selector-btns clearfix">
+			<!--	<div id="select-all" class="modal-btn btn">Выбрать все</div>
+				<div id="clear-all" class="modal-btn btn">Отменить выбор</div> -->
+			</div>
+		</div>
+	</div>
+	<div class="modal-buttons-block report-modal">		
+		{%if tree_elements_list|length > 0 or elements_list|length > 0 %}
+		<div id="{{ submit_id }}" class="btn btn-default">{{ btns.add }}</div>
+		{% else %}
+                <a id="btnclose" href="#" rel="modal:close" class="btn btn-default close-button">{{ btns.close }}</a>
+		{% endif %}
+	</div>
+	
+
+</div>

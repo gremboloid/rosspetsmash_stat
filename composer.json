@@ -1,0 +1,20 @@
+{
+    "name":"syrilsnir/rosspetsmashstat",
+    "version":"1.0.0",
+    "require": {
+        "yiisoft/yii2": "2.0.15.1",
+        "codeception/codeception": "^2.4",
+	"yiisoft/yii2-bootstrap": "*",
+        "yiisoft/yii2-debug": "^2.0",
+        "yiisoft/yii2-twig": "^2.2",
+        "phpoffice/phpspreadsheet": "^1.5",
+        "swiftmailer/swiftmailer": "^6.1"
+    },
+	"config": {
+        "fxp-asset": {
+            "installer-paths": {
+                "bower-asset-library": "vendor/bower"
+            }
+        }
+    }
+}

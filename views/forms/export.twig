@@ -1,0 +1,82 @@
+{% extends "template.twig" %}
+{% use "country_block.twig" %}
+{% block content %}
+<thead>
+	<tr class="form-head1">
+		<th id="of_head" colspan="3">{{ form_name }}</th>
+	</tr>
+{% if user_role == 1 %}	
+	<tr class="form-head3">
+		<th colspan="3">
+			<div class="row">
+				<span>{{ company }}: </span><div class="inform-block"><span class="ib-clickable"  data-model="Contractor" data-id="{{ contractor_id }}">{{ company_name }}</span><div class="informer hide"></div></div>
+				<span>{{ editor }}: </span><div class="inform-block"><span class="ib-clickable"  data-model="User" data-id="{{ editor_id }}">{{ editor_name }}</span><div class="informer hide"></div></div>
+			</div>
+		</th>
+	</tr>
+{% endif %}
+    <tr class="country-select form-head4">
+		<th id="row-models" colspan="3">
+			<div class="clearfix">
+			<div id="add-model-wrapper" class="fl">
+		{% if (table_id == 'new_form' or user_role == 1) %}
+			<a id="all-models" class="btn btn-selector add-model" data-classifier="41">{{ add_model }}</a>
+		{% endif %}
+		</div>
+		<div id="country-wrapper" class="fl">
+			<div class="cb1">
+				<span>{{ export_country }}: </span>
+				<select name="" id="form_select_country" class="select-inline-element">
+				{% if list_of_countries is iterable %}
+				{% for cid,el in list_of_countries %}
+				<option value="{{ cid }}">{{ el.Name }}</option>
+				{% endfor %}
+				{% endif %}
+				</select>				
+			</div>
+				<div id="country-buttons-wrapper" class="cb2">
+			{% if (table_id == 'new_form' or user_role == 1) %}
+			<span>{{ add_remove_country }}: </span>
+				<span id="add_country" class="glyphicon glyphicon-plus-sign icon-green icon-touch" title="{{ add_country }}"></span>
+				<span id="remove_country" class="glyphicon glyphicon-remove-sign icon-error icon-touch" title="{{ remove_country }}"></span>
+			</div>
+			{% endif %}
+			</div>
+			</div>
+		</th>
+	</tr>
+	<tr class="form-head4">
+            <th id="ModelName">{{ if_model }}</th>
+            <th id="ModelsCount">{{ if_count }},{{ amount }}</th>
+            <th id="ModelsPrice">{{ if_price }},{{ currency }}</th>
+	</tr>
+</thead>
+{% block countries %}
+{{ parent() }}
+{% endblock %}
+<tbody>
+	<tr id="new-summary-element" class="summary hide">
+		<td class="model_summary">
+			<div class="inform-block model-inform-container">
+				<span class="model_name ib-clickable" data-model="Models"></span>
+				<span title="{{ DELETE_MODEL_FROM_FORM }}" class="glyphicon glyphicon-remove-sign if-model-remove"></span>
+				<div class="informer hide"></div>
+			</div>
+		</td>
+		<td class="count_model">0</td>
+		<td class="count_model">0</td>
+	</tr>
+	<tr class="el_of_form hide" id="new-element-row">
+		<td class="frm_model">
+			<div class="inform-block model-inform-container">
+				<span class="model_name ib-clickable" data-model="Models"></span>
+				<span title="{{ DELETE_MODEL_FROM_FORM }}" class="glyphicon glyphicon-remove-sign if-model-remove"></span>
+				<div class="informer hide"></div>
+			</div>
+		</td>
+		<td class="center count"><input name="count" value="0" type="text"></td>
+		<td class="center"><input name="price" value="0" type="text"></td>
+	</tr>
+	<tr id="new-classifier-row" class="classifier narrow hide"><td colspan="3"></td></tr>
+</tbody>
+{% endblock %}

@@ -1,0 +1,135 @@
+<div class="content_subblock">
+	{% if element_link == 'models' or element_link == 'classifier' %}
+	<div class="classifier-breadcrumbs">
+		<div class="bc_container">
+		{% if classifier_breadcrumbs is iterable %}
+		{% for el in classifier_breadcrumbs %}
+			{% if not loop.last %}
+			<a class="classifier-navigation" href="#" data-classifier="{{ el.id }}">{{ el.name }}</a>
+			<img src="/img/separator_breadcrum.png" style="margin-right:2px" alt=">">						
+			{% else %} 
+				{% if el.leaf == false %}
+				<div id="last-classifier">{{ el.name }}
+					<ul class="child-elements hide">
+					{% for child in classifier_childs %}
+						<li class="classifier-element"><a href="#" data-classifier="{{ child.Id }}">{{ child.Name }}</a></li>
+					{% endfor %}
+					</ul></div>	
+				{% else %}
+				<div id="leaf-classifier">{{ el.name }}</div>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+		{% endif %}
+		</div>
+		{% if element_link == 'models' %}
+		<p class="addition">Добавление новой модели доступно при выборе раздела классификатора, не содержащего подразделов</p>
+		{% endif %}
+	</div>
+	<script>
+	var global_classifier_tree = {{ classifier_json|raw }};
+	var global_link = "{{ element_link }}";
+	</script>
+	{% endif %}
+	<div class="top_block clearfix">
+		{% if rows_count_options is iterable %}
+		<div class="fl">
+			<label>Строк на странице:
+				<select id="select-rows-count" class="select-inline-element">	
+				{% for opt in rows_count_options %}
+					<option value="{{ opt }}"{% if opt == rows_count %} selected{% endif %}>{{ opt }}</option>
+				{% endfor %}
+				</select>
+			</label>
+		</div>
+		{% endif %}
+		<div class="fl">
+			<input id="directory-search" class="input-width-image search-input fl" tabindex="1" title="Поиск" placeholder="" name="search" type="text" value="{{ search }}">
+			<button id="directory_search_btn" type="button" class="fl btn btn-default small">Поиск</button>	
+			{% if button_add_active %}
+			<button id="directory_add_btn" type="button" class="fl btn btn-default small">Добавить</button>			
+			{% endif %}
+			{% if element_link == 'classifier' %}
+			<span id="getclassifier" title="Выгрузить классификатор"><img src="/img/excel-icon64.png" alt="" width="24" height="24" border="0"></span>
+			{% endif %}
+		</div>
+	</div>
+{% if pagination is iterable %}
+	<div class="pagination">
+		<ul>
+		{% for val in pagination %}							
+			<li {% if val.active %}id="active"{% endif %}><a class="pagination-click" data-page="{{ val.page }}" href="#">{{ val.val }}</a></li>
+		{% endfor %}							
+		</ul>
+	</div>
+{% endif %}
+<div class="admin_directory">
+	<div class="table_wrapper">
+		<table {% if model_name != '' %}id="{{ model_name }}" {% endif %}class="directory_tbl">
+			<thead>
+				<tr class="tbl-head">{% if group_operations %}
+					<th class="СheckColumn">
+						<input id="check_all" name="checkme" type="checkbox">
+					</th>{% endif %}
+			{% if table_cols_headers is iterable %}
+				{% for key, val1 in table_cols_headers %}
+					<th class="{{ key }}{% if key == order_params.name %} order_{{ order_params.sort }}{% endif %}"{% if key in cols_to_sort %} data-sort="{{ key }}"{% endif %}>{{ val1 }}</th>
+				{% endfor %}
+			{% endif %}					
+				</tr>		
+			</thead>
+			<tbody>
+	{% for val in table_data %}	
+		{% if val is iterable %}				
+				<tr id="element{{ val.Id }}" class="directory-elements">
+				{% if group_operations %}
+					<td class="center">
+						<input class="check-directory-element" name="orderBox[]" value="{{ val.Id }}" type="checkbox">
+					</td>				
+					{% endif %}
+		{% for key,val2 in table_cols_headers %}
+			{% if key in table_filter %}
+				{% if key == 'Actions' %}
+					<td class="actions_list">
+					{% if action_list is iterable %}											
+						{% for val3 in action_list %}
+							<a class="{{val3.action}}" href="#"><img width="16" height="16" title="{{val3.name}}" src="/img/{{val3.image}}"></a>
+						{% endfor %}											
+					{% endif %}
+					</td>											
+				{% else %}
+					<td class="{{ key }}{% if loop.index == 1 %} first-column{% endif %}">{{ val[key]|raw }}</td>				
+				{% endif %}
+			{% endif %}					
+			{% endfor %}
+				</tr>						
+		{% endif %}
+	{% endfor %}
+			</tbody>
+		</table>
+		{% if group_operations %}
+		<div class="group_operations_bar clearfix">		
+			<div class="fl">
+				<label>Групповые операции:
+					<select id="select_group_operations" class="select-inline-element">	
+						<option value="none"></option>
+						{% for el in group_operations_list %}
+						<option value="{{ el.value }}">{{ el.text }}</option>
+						{% endfor %}
+					</select>
+				</label>				
+			</div>
+			<div class="fl">
+				<button id="group_operation_btn" type="button" class="fl btn btn-default small">Выполнить</button>			
+			</div>
+			{% if group_operations_conf.change_classifier %}
+			<div class="subscription-for-group cl">
+				<div id="{% if group_operations_conf.change_classifier_conf.block_id %}{{ group_operations_conf.change_classifier_conf.block_id }}{% endif %}" class="hide">Выбранный раздел: <p id="classifier_section"></p>
+				<a id="change-classifier" href="#">Изменить</a><a id="goto-classifier" class="hide" href="#">Переход в выбранный раздел</a></div>				
+			</div>
+			{% endif %}			
+		</div>
+		{% endif %}
+	</div>
+	</div>
+</div>

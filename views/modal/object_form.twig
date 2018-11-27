@@ -1,0 +1,208 @@
+<div class="modal-form">
+	{% if form_type == 'modal' %}
+	<div><h2>{{ head_text }}</h2></div>
+	{% endif %}
+	{% if main_form and main_form.elements_list is iterable %}
+	<form id="{{ main_form.form_id}}" class="{{ form_class }}" name="{{ model_name }}"{% if main_form.element_id %} data-element="{{ main_form.element_id }}"{% endif %} action="">
+		<fieldset>
+			<legend>{{ main_form.block_head_text }}</legend>						
+			{% for key,val in main_form.elements_list %}
+				{% if not hide %}
+					{% if val.type != 'hidden' and val.type != 'options_group' and val.type != 'script' %}					
+					<div id="block_{{ key }}" class="elements-block{% if val.hide %} hide{% endif %}">
+						<label>{{ val.label }}</label>
+						<div class="margin-form{% if val.css_wrapper %} {{ val.css_wrapper }}{% endif %}">
+							{% if val.type == 'text' %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value|raw }}" type="text"{% if val.required %} class="req"{% endif %}>{% if val.required %}<sup>*</sup>{% endif %}
+							{% elseif val.type == 'password' %}
+							<input id="{{ key }}"{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value|raw }}" type="password"{% if val.required %} class="req"{% endif %}>{% if val.required %}<sup>*</sup>{% endif %}
+							{% elseif val.type == 'mail' %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value|raw }}" type="text" class="mail{% if val.required %} req{% endif %}">{% if val.required %}<sup>*</sup>{% endif %}
+							{% elseif val.type == 'date' %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value|raw }}" type="text" class="format-date{% if val.required %} req{% endif %}">{% if val.required %}<sup>*</sup>{% endif %}
+							{% elseif val.type == 'number' %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} maxlength="5" name="{{ key }}" value="{{ val.value }}" type="number">							
+							{% elseif val.type == 'simple' %}
+							<p{% if val.class%} class="{{ val.class }}"{% endif %}>{{ val.text }}</p>							
+							{% elseif val.type == 'radio' %}
+								<label class="t" for="{{ key }}_on"><img src="{{ site_url }}img/enabled.gif" alt="Да" title="Да"></label>
+								<input name="{{ key }}" id="{{ key }}_on" value="1"{% if val.value == 1 %} checked="checked"{% endif %} type="radio"{% if val.onchange %} onchange="{{ val.onchange }}(this);"{% endif %}>
+								<label class="t" for="{{ key }}_on"> Да</label>
+								<label class="t" for="{{ key }}_off"><img src="{{ site_url }}img/disabled.gif" alt="Нет" title="Нет" style="margin-left: 10px;"></label>
+								<input name="{{ key }}" id="{{ key }}_off" value="0"{% if val.value == 0 %} checked="checked"{% endif %} type="radio"{% if val.onchange %} onchange="{{ val.onchange }}(this);"{% endif %}>
+								<label class="t" for="{{ key }}_off"> Нет</label>
+							{% elseif val.type == 'textarea' %}
+							<textarea{% if val.size %} style="width:{{ val.size }}px;"{% endif %} {% if val.class %}class="{{ val.class }}" {% endif %}name="{{ key }}" cols="30" rows="5">{{ val.value }}</textarea>														
+							{% elseif val.type == 'select' %}
+								<select{% if val.size %} style="width:{{ val.size }}px;"{% endif %} id="{{ key }}"{% if val.class %} class="{{ val.class }}" {% endif %}name="{{ key }}">
+								{% for opt_element in val.elements %}
+									{% if not val.selected %}
+									<option value="{{ opt_element.value }}">{{ opt_element.text|raw }}</option>
+									{% else %}
+									<option value="{{ opt_element.value }}"{% if val.selected == opt_element.value %} selected{% endif %}>{{ opt_element.text|raw }}</option>
+									{% endif %}								
+								{% endfor %}
+								</select>	
+							{% elseif val.type == 'edit_list' %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" id="{{ key }}" class="form_edit_list_added" value="" type="text">
+							<div id="action_buttons">
+								<button id="{{ val.js_add_id }}">Добавить</button>
+							</div>
+							<div{% if val.size %} style="width:{{ val.size }}px;"{% endif %} id="{{ val.id }}" class="form_edit_list_block" data-block="{{ val.id}}_block">
+								{% if val.elements is iterable %}
+								{% for val1 in val.elements %}
+								<div class="{{ val.id }}_block">
+									<input id="{{ val.id }}{{ loop.index0 }}" class="{{ val.id}}_element" name="{{ val.id}}[{{ loop.index0 }}]" readonly="" value="{{ val1.text }}">
+									<div title="Удалить" class="icon_remove"></div>
+								</div>
+								{% endfor %}
+								{% endif %}
+							</div>							
+							{% elseif val.type == 'multi_check' %}
+								{% if val.elements is iterable %}
+								{% for el in val.elements %}
+							<input name="{{ val.name }}[]" value="{{ el.value }}"{% if el.checked %} checked="checked"{% endif %} type="checkbox"> {{ el.text }}<br>
+								{% endfor %}
+								{% endif %}
+							{% endif %}
+							{% if val.description %}
+							<p class="dop-text" style="clear:both">{{ val.description }}</p>
+							{% endif %}
+						</div>
+					</div>
+					{% elseif val.type == 'hidden' %}
+						<input name="{{ key }}" value="{{ val.value }}" type="hidden">
+					{% elseif val.type == 'options_group' %}
+						<label>{{ val.label }}</label>
+							<div{% if not val.show_additional_text %} style="visibility:hidden;"{% endif %} class="margin-form sm"><p>{{ val.additional_text }}</p></div>
+							{% if val.elements is iterable %}
+								{% for key,el in val.elements %}								
+								<label class="small">{{ el.label }}</label>
+								<div class="margin-form sm"{% if loop.last %} style="padding-bottom:20px;"{% endif %}>
+									{% if el.type == 'select' %}
+								<select{% if el.size %} style="width:{{ el.size }}px;"{% endif %} id="{{ key }}"{% if el.class %} class="{{ el.class }}" {% endif %} name="{{ key }}"{% if el.change %} onchange="{{ el.change }}(this);"{% endif %}>
+								{% if el.elements is iterable %}
+								{% for opt_element in el.elements %}
+									{% if not el.selected %}
+										<option value="{{ opt_element.value }}">{{ opt_element.text }}</option>
+									{% else %}
+										<option value="{{ opt_element.value }}"{% if el.selected == opt_element.value %} selected{% endif %}>{{ opt_element.text }}</option>
+									{% endif %}								
+								{% endfor %}
+								
+								{% endif %}
+								</select>
+									{% endif %}
+								</div>
+									
+								{% endfor %}
+							{% endif %}
+					{% elseif val.type == 'script' %}
+					{% endif %}
+				{% endif %}				
+			{% endfor%}
+			</fieldset>
+	</form>
+	{% endif %}
+	{% if sub_block is iterable %}
+		{% for block in sub_block %}
+			{% if block.elements_list is iterable %}
+				{% for key,val in block.elements_list %}
+					{% if val.type == 'table-form' %}
+					<form id="{{ key}}" name="{{ key }}" action="">
+					<fieldset>
+						<legend>{{ block.block_head_text }}</legend>
+										<table style="width:100%" cellspacing="0" cellpadding="0" border="0">
+					<tbody>
+						<tr>
+						{% for h_name in val.table_headers %}
+							<td>{{ h_name }}</td>
+						{% endfor %}
+						</tr>						
+						{% for str in val.table_vals %}
+						<tr>
+							{% for cell in str %}
+								{% if cell.type == 'text' %}
+									<td><input name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px" type="text" value={{ cell.value }}></td>
+								{% elseif cell.type == 'string' %}
+								<td><p style="width:{{ cell.size }}px">{{ cell.text}}</p></td>
+								{% elseif cell.type == 'checkbox' %}
+									<td><input name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px" value="{{ cell.value }}" type="checkbox"></td>					
+								{% elseif cell.type == 'select' %}
+								<td>
+									<select name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px">
+									{% for c_el in cell.elements %}
+										<option value="{{ c_el.value }}">{{ c_el.text|raw }}</option>
+									{% endfor %}
+									</select>
+								</td>
+								{% endif %}
+							{% endfor%}	
+							</tr>							
+						{% endfor%}						
+						
+						{% if val.action_buttons %}
+						<tr>
+						<td colspan="{{ val.table_headers|length }}"><button id="add-attribite" type="button" class="btn btn-default small"><i class="glyphicon glyphicon-asterisk"></i>Добавить</button></td>
+							<td colspan="5"><img src="image/add.gif" alt="" onclick="GetUpdateBehaviors();" width="107" height="21" border="0"></td>
+						</tr>
+						{% endif %}
+					</tbody>
+				</table>
+					</fieldset>
+					</form>
+					{% elseif val.type == 'table' %}
+					<div class="modal-block-container">
+					<div class="modal-block-header">{{ block.block_head_text }}</div>
+						<div class="modal-block-body">
+							<table id="{{ key }}" style="width:100%" cellspacing="0" cellpadding="0" border="0">
+							{% if val.table_headers is not empty %}
+								<thead>
+									<tr>
+										{% for h_name in val.table_headers %}
+										<th>{{ h_name }}</th>
+										{% endfor %}
+									</tr>
+								</thead>
+							{% endif %}
+							{% if val.table_vals is empty %}
+								{% if block.message %}
+								<tbody><tr id="table-message"><td colspan="{{ val.table_headers|length }}"><p>{{ block.message }}</p></td></tr></tbody>
+								</table>
+								{% endif %}
+							{% else %}
+							<tbody>
+							{% for el in val.table_vals %}
+								<tr{% if val.rows_class %} class="{{ val.rows_class }}"{% if el.id %} data-{{ val.rows_class }}="{{ el.id }}"{% endif %}{% endif %} data-index="{{ loop.index0 }}">
+								{% for text in el.elements %}
+								<td>{{ text }}</td>
+								{% endfor %}
+								{% if el.actions is not null %}
+								<td>
+								{% if el.actions_list is iterable %}
+									{% for act in el.actions_list %}
+									{% if act.type == 'glyth' %}
+									<span class="glyphicon glyphicon-{{ act.icon }}{% if act.css_class%} {{ act.css_class }}{% endif %}"{% if act.title %} title="{{ act.title }}"{% endif %}></span>
+									{% endif %}
+									{% endfor %}
+								{% endif %}
+								</td>
+								{% endif %}
+								</tr>
+							{% endfor %}
+							</tbody>
+							</table>
+							{% endif %}
+							
+						</div>
+					</div>
+					{% endif %}					
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+	{% if submit_button %}
+	<div class="additional_block_btn btn btn-selector" id="directory_save" onclick="{{ submit_button_method }}();">{{ submit_button_text }}</div>
+	{% endif %}
+	
+</div>

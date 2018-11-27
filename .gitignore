@@ -1,0 +1,7 @@
+/nbproject/private/
+/index.php
+/config/db.php
+/config/web.php
+/vendor/
+/runtime/*
+/cache/*

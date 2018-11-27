@@ -1,0 +1,35 @@
+<div class="report_table_content">
+	<h2>{{ data_source }}: {{ data_source_val }}</h2>
+	<h3>{{ report_type }}: {{ report_type_name }}</h3>
+	<h3>Раздел классификатора: {{ classifier }}</h3>
+	{% if data_count == 1 %}	
+	<h4>{{ units }}: {{ data_units[0] }} {{ additional_data }}</h4>
+	{% endif %}	
+	
+	{% for ctr_data in table_data %}
+	<h3>{{ ctr_data.contractor_name }}</h3>
+	<table class="outreport">
+		<tbody>
+			<tr class="head">
+			{% for col in other_columns %}
+				<td>{{ col }}</td>
+			{% endfor %}
+			{% for col in head_columns %}	
+				<td{{ colspan }}>{{ col }}</td>
+			{% endfor %}				
+			</tr>
+			{% if subheader %}
+			<tr class="subhead">
+			{% for col in header2_columns %}	
+				<td>{{ col }}</td>
+			{% endfor %}
+			</tr>
+			{% endif %}
+			{{ ctr_data.table_data|raw }}
+			</tbody>
+	</table>
+	{% endfor %}
+	{% if test %}
+	Тест
+	{% endif %}
+</div>

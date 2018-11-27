@@ -1,0 +1,23 @@
+{% block menu %}
+{% if main_menu is iterable %}
+{% set size_class="menu-elements4" %}
+{% if user_role == 4 %}
+	{% set size_class="menu-elements3" %}
+	{% elseif  user_role == 3 %}
+	{% set size_class="menu-elements3" %}
+{% endif %}
+	<div class="menu-container">
+		<ul id="menu-tabs" class="{{ size_class }}">
+		{% for val1 in main_menu %}
+			{% set current = '' %}
+			{% if val1.link %}	
+				{% if val1.current %}
+					{% set current = 'id=current' %}
+				{% endif %}	
+					<li {{ current }}><a class="menu-element" href='/{{ val1.link }}'>{% if val1.glyphicon %}<span class ="glyphicon glyphicon-{{ val1.glyphicon.icon }}"></span>{% endif %}{{ val1.name|upper }}</a></li>
+			{% endif %}
+		{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+{% endblock %}	

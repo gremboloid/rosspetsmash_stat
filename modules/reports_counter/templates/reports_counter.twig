@@ -1,0 +1,17 @@
+<form id="reportslog" method="POST" action="{% if chpu %}/information/stat{% else %}/?controller=information&element=stat{% endif %}">
+                    <input name="date1" value="{{ date1 }}" type="HIDDEN">
+                    <input name="date2" value="{{ date2 }}" type="HIDDEN">
+					</form>
+<div class="block-inform">
+	<div class="inform" onclick="document.forms['reportslog'].submit();">
+		<div class="inf_lbl"><h3>Сформировано отчетов <br>пользователями портала в <br><span>{{ month }} {{ year }} года</span></h3>
+			<div class="inf_num">{{ last_month_count }}</div>
+			<div class="show_graf">
+				{% for val in heigth %}
+				<div class="tb" style="height: {{ val }}%;"></div>
+				{% endfor %}
+			</div>
+		</div>                                                       
+	</div>
+</div>
+

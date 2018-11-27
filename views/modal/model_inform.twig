@@ -1,0 +1,13 @@
+<div class="inform-block-content">
+<span class="inf-close">x</span>
+{% if elements_list is iterable %}
+{% for k,el in elements_list %}
+	<div class="inf-element-name">
+	{{ el.name }}
+	</div>
+	<div class="inf-element-val">
+	{{ el.value }}
+	</div>
+{% endfor %}
+	{% endif %}
+</div>

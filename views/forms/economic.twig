@@ -1,0 +1,39 @@
+{% extends "template.twig" %}
+{% block content %}
+<thead>
+	<tr class="form-head1">
+		<th id="of_head" colspan="3">{{ form_name }}</th>
+	</tr>
+	{% if user_role == 1%}
+	<tr class="form-head3">
+		<th colspan="3">
+			<div class="row">
+				<span>{{ company }}: </span><div class="inform-block"><span class="ib-clickable"  data-model="Contractor" data-id="{{ contractor_id }}">{{ company_name }}</span><div class="informer hide"></div></div>
+				<span>{{ editor }}: </span><div class="inform-block"><span class="ib-clickable"  data-model="User" data-id="{{ editor_id }}">{{ editor_name }}</span><div class="informer hide"></div></div>
+			</div>
+		</th>
+	</tr>
+	{% endif %}
+	<tr class="form-head4">
+		<th colspan="2">{{ if_index }}</th>
+		<th>{{ if_value }}</th>
+	</tr>
+</thead>
+{% if economic_list is iterable %}
+<tbody class="economic_form_body" id="id{{ id_economic }}">
+	<tr id="count" class="el_of_form">
+		<td class="elconomic-element" colspan="2">{{ if_economic_count }}</td>
+		<td><input {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}name="count" type="text" value="{{ economic_list.EmployeesAll }}"></td>
+	</tr>
+	<tr id="countConstructors" class="el_of_form">
+		<td class="elconomic-element" colspan="2">{{ if_economic_constructors }}</td>
+		<td><input {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}name="constructors" type="text" value="{{ economic_list.EmployeesConstructor }}"></td>
+	</tr>
+   <tr id="salary" class="el_of_form">
+		<td class="elconomic-element" colspan="2">{{ if_economic_salary }}</td>
+		<td><input {% if not (table_id == 'new_form' or user_role == 1) %}class="disabled-form-element" disabled="disabled" {% endif %}name="salary" type="text" value="{{ economic_list.AverageSalaryAll }}"></tr></tbody>
+{% endif %}
+						
+							
+				
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "@layouts/main.twig" %}
+{% use "@layouts/content.twig" %}
+	{% use "@layouts/_constructor.twig" %}
+	{% block html_title %}
+		{{ title }}
+	{% endblock %}
+		{% block content_container %}
+	 {{ parent() }}
+	 {% endblock %}
+	{% block content %}
+	{% block construct %}
+	{{ parent() }}
+	{% endblock %}
+		{% endblock %}
+		{% block scripts %}	
+			<script type="text/javascript">
+		// <![CDATA[
+		global_data.reports={};
+		global_data.reports.params={};
+		global_data.reports.params.selected_report="{{ selected_report }}"
+		global_data.reports.params.report_list={{ report_list|raw }};
+		global_data.reports.params.classifier_id={{ classifier_id }};
+		global_data.reports.params.full_classifier_id={{ full_classifier_id }};
+		global_data.reports.params.datasource_id={{ datasource_id }};
+		global_data.reports.params.periods={{ periods|raw }};
+		global_data.reports.params.periods.period_step={{ step_select }}
+		global_data.reports.params.regions="{{ obj_regions }}";
+		global_data.reports.params.countries="{{ obj_countries }}";
+		global_data.reports.params.all_countries_flag="{{ all_countries_flag }}";
+		// ]]>
+			</script>
+		{% endblock %}
