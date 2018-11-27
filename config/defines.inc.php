@@ -3,6 +3,7 @@
 $currentDir = dirname(__FILE__);
 define('__BASE_URI__','' );
 define('_SITE_ROOT_URL_','/');
+define('_FILES_URL_',_SITE_ROOT_URL_ . 'files/');
 define('_IMG_DIR_','/img/');
 define('_ROOT_DIR_',realpath($currentDir.'/..').'/');
 define('_MODULES_DIR_',realpath($currentDir.'/..').'/modules/');

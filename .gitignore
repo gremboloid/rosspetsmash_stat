@@ -5,3 +5,4 @@
 /vendor/
 /runtime/*
 /cache/*
+/web/files/

@@ -65,7 +65,9 @@ class InformationController extends FrontController
 
     protected function getIndexParams() 
     {
-        $this->tpl_vars['content'] = $this->render('blocks/information_index.twig');
+        $tplVars = [];
+        $tplVars['files_uri'] = _FILES_URL_;              
+        $this->tpl_vars['content'] = $this->render('blocks/information_index.twig',$tplVars);
     }
     protected function getClassifierParams() 
     {
