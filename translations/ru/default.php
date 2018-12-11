@@ -22,7 +22,8 @@ $_DEFAULT['ADMINISTRATION'] = 'Администрирование';
 $_DEFAULT['TITLE_AUTH_PAGE'] = 'Страница авторизации';
 $_DEFAULT['AUTH_PAGE_HEAD'] = 'Страница авторизации';
 $_DEFAULT['AUTH_PAGE_SUBHEAD'] = 'Войти на сайт';
-$_DEFAULT['AUTH_PAGE_EMAIL'] = 'Логин';
+$_DEFAULT['AUTH_PAGE_LOGIN'] = 'Логин';
+$_DEFAULT['AUTH_PAGE_EMAIL'] = 'E-mail';
 $_DEFAULT['AUTH_EMAIL_CAPTION'] = 'Введите ваш адрес электронной почты';
 $_DEFAULT['PASSWORD'] = 'Пароль';
 $_DEFAULT['ENTER'] = 'Войти';
@@ -30,7 +31,8 @@ $_DEFAULT['FORGOT_PASSWORD'] = 'Забыли пароль';
 $_DEFAULT['CONTACT_INFORMATION'] = 'Контактная информация';
 
 $_DEFAULT['SEND_EMAIL'] = 'Отправить';
-$_DEFAULT['RESTORE_PASSWORD_MESSAGE'] = 'Новый пароль будет выслан на указанный адрес электронной почты';
+$_DEFAULT['RESTORE_PASSWORD_MESSAGE'] = 'Новый пароль будет направлен на e-mail: ';
+$_DEFAULT['RESTORE_PASSWORD_SUBMESSAGE'] = 'указанный в Настройках пользователя';
 // Главная страница
 $_DEFAULT['NEWS_SECTION'] = 'Новости / Объявления';
 $_DEFAULT['INDICATORS_SECTION'] = 'Индикаторы';

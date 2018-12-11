@@ -29,7 +29,7 @@ var saveReportParams = function(func) {
 
 var clearReportSettings = function (reportList) {
     if (typeof reportList === 'object') {
-        
+        /*
         for (var prop in reportList) {
             if (reportList[prop].hasOwnProperty('manufacturers_list') ) {
                 reportList[prop].manufacturers_list = null;
@@ -40,8 +40,8 @@ var clearReportSettings = function (reportList) {
             if (reportList[prop].hasOwnProperty('sub_classifier') ) {
                 reportList[prop].sub_classifier = null;
             }
-        } 
-        //params.report_list = {};
+        } */
+        params.report_list = {};
     }
     
 }
@@ -288,7 +288,7 @@ var addParams = function () {
             $reportSelected.html(reportSelectedText); 
             $('input',$currentBlock).trigger('change').prop("checked","checked");
         }
-        reportSettings = params.report_list;
+        reportSettings = reportsList;
         if (!reportSettings) {
            reportSettings = {};
         }
@@ -651,11 +651,9 @@ var addParams = function () {
     // обработчик выбора источника данных
     $('#rstat-select-datasource').on('change',function() {        
         var val = $(this).val(),text = $('option:selected',this).text();  
-        var report_list = params.report_list;
         params.datasource_id = val;
         $('#current-datasource').text(text) ;
-       // params.report_list = {};
-        clearReportSettings(report_list);
+        params.report_list = {};
         $('.settings').remove();
         ajax.write_session_value('report_params',params,addParams);
         

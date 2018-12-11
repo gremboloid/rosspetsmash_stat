@@ -1,10 +1,7 @@
-console.log('загружен файл main.js');
-//    ======================================
 // начальная загрузка
 $(function(){
     var tableView = { },
         utils = global_data.utils;
-    console.log('запуск приложения Росспецмаш-стат');
     columnsAlignment();
     utils.addDatePicker();
     utils.sendForm();
@@ -12,7 +9,6 @@ $(function(){
     var $repLog = $('.replog');
     if ($repLog.length > 0) {
         $repLog.on('click',function() {
-            console.log('вывод детальной статистики');
             var idContractor = global_data.utils.getNumbers($(this).parent('tr').attr('id')),
                 $currentSubElement = $('#tr' + idContractor);
             if ($currentSubElement.hasClass('loaded')) {
@@ -20,7 +16,6 @@ $(function(){
             } else {
                 $('#current-contractor').val(idContractor);
                 var frmData = $('#frmcontrol').serialize();
-                console.log(frmData);
                 $.ajax({
                      url: global_data.baseURI + '/model/detail-log-info',
                      type: 'POST',
@@ -66,7 +61,6 @@ $('#SendEmail').click(function(e) {
     $frm.validate();
     addFormValidationRules();
     if ($frm.valid()) {
-        console.log('valid');
         $.ajax({
             url: global_data.baseURI + '/custom/is-email-exist',
             type: 'POST',
@@ -83,14 +77,13 @@ $('#SendEmail').click(function(e) {
                     dataType: 'json',
                     data: { email : $('#user_email').val() },
                     success: function(response) {
-                        console.log(response);
+                        showMessage(response.MESSAGE);
                     }
                 });
             }
         });
         
     } else {
-        console.log('not valid');
     }
 });
     
@@ -136,7 +129,6 @@ $('#SendEmail').click(function(e) {
             ajaxMethod,
             ajaxParams = [];
         if ($(this).hasClass('new-form')) {
-            console.log('Новая форма');
             var $ctor = $('#new-form-ctr'),                
                 $smonth = $('#nf_period_block .month'),
                 $syear = $('#nf_period_block .year'),
@@ -154,7 +146,6 @@ $('#SendEmail').click(function(e) {
             ajaxMethod = 'get-new-form';
             
         } else {
-            console.log('Редактирование формы');
             ifId = global_data.utils.getNumbers($(this).parents('tr').attr('class'));
             ajaxMethod = 'get-exist-form';
             ajaxParams.push(ifId);
@@ -228,7 +219,6 @@ $('#SendEmail').click(function(e) {
                         val = selectOption.val();
                     if (val == 0) {
                         calculateFormSummary();
-                        console.log('all_selected');
                     }
                     var $block = $('tbody.country_block');
                     $block.addClass('hide');
@@ -273,7 +263,7 @@ $('#SendEmail').click(function(e) {
                                         frm_data : formData                                                
                                     } ,
                                     success: function(response) {
-                                        console.log(response);
+                                      //  console.log(response);
                                         if (response.hasOwnProperty('errorCode')) {
                                             $('#change-period-form fieldset').after('<p class="error">'+ response.message +'</p>');
                                         } else {
@@ -416,7 +406,7 @@ $('#SendEmail').click(function(e) {
                                      object : params
                                 } ,
                             success: function(result) {
-                                console.log(result);
+                             //   console.log(result);
                                 $('td[data-model='+modelId+']').parent().remove();
                                 $close.trigger('click');                                 
                             }
@@ -492,7 +482,6 @@ $('#SendEmail').click(function(e) {
                                                     }                                               
                                                 } ,
                                                 success: function(models) {
-                                                    console.log(models);
                                                     var model,
                                                         $newRow,
                                                         $frmModel,
@@ -637,7 +626,7 @@ $('#SendEmail').click(function(e) {
                                         params : params                                            
                                     } ,
                                     success: function(result) {
-                                        console.log(result);
+                                      //  console.log(result);
                                         var text,
                                             mes = $.parseJSON(global_data.messages),
                                             $formSelect = $('#form_select_country'); 
@@ -692,7 +681,6 @@ $('#SendEmail').click(function(e) {
                             params : params                                            
                         } ,
                         success: function(result) {
-                            console.log(result);
                             if (result.hasOwnProperty('errorCode')) {
                                 $('<div class="center"><p>' + result.message +'</p>'+ global_data.close_button+'</div>').modal();
                                 return;
@@ -731,7 +719,6 @@ $('#SendEmail').click(function(e) {
                             id : $(this).data('id')
                         },
                         success: function(res) { 
-                            console.log(res);
                             if (res.hasOwnProperty('STATUS')) {
                                 if (res.STATUS == 1) {
                                     $iBlock.children('.informer').removeClass('hide').html(res.HTML_DATA);

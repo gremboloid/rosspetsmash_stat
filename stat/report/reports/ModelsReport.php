@@ -7,6 +7,7 @@ use app\stat\model\Models;
 use app\stat\services\ModelService;
 use app\stat\Tools;
 use app\stat\db\SimpleSQLConstructor;
+use app\stat\exceptions\ReportException;
 /**
  * Класс отчета "Модели"
  *
@@ -113,6 +114,9 @@ class ModelsReport extends ProductionRoot
                 return $arr['Id'];
             }, $elems);
             
+        }
+        if (empty($list)) {
+           throw new ReportException('Для данного отчета не найдено ни одной модели');
         }
         
         $this->dimensions['select'][] = array('textValue' => '"model"."Id"','name' => "ModelId");

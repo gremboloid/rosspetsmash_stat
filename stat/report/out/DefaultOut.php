@@ -296,7 +296,7 @@ class DefaultOut extends ReportCreator
             }                        
             if ($otherColumnsCount > 0) {
                 foreach ($this->othercolumns as $cName) {
-                    $row_text = $this->data[0][$outerIdx][$cName];
+                    $row_text = $cName != 'Virtual' ? $this->data[0][$outerIdx][$cName] : null;
                    // $nullFlag = false; 
                     if ($row_text == 'InAverage') {
                         $row2 = array();
@@ -409,7 +409,7 @@ class DefaultOut extends ReportCreator
                 $first_index = false;
             }
             if ($this->nonulls && !$total && !($outerIdx == 0))  {
-                if (!$nullFlag) {
+                if (empty($nullFlag)) {
                     $rows[$row_index++] = $row;
                 }
             } else {
@@ -599,15 +599,15 @@ class DefaultOut extends ReportCreator
         }
         $sResult = '';
         $first_index = false;
-                // Вывод содержимого таблицы
-        
+                // Вывод содержимого таблицы        
         for ($outerIdx = 0;$outerIdx < $this->rowscount;$outerIdx++ )
         {            
+            $all = false;
             $nullFlag = true;
             $row = '';
             $total = $outerIdx == 0 ? ' class="total"' : ' class="data"';
             if (count ($this->othercolumns) == 1 && key_exists('Region', $this->data[0][$outerIdx])) {
-                $all = false;
+                
                 if (!$this->data[0][$outerIdx]['Region']) {
                     $total = ' class="total"';
                     $all = true;
@@ -623,7 +623,7 @@ class DefaultOut extends ReportCreator
             if ($otherColumnsCount > 0) {
                 foreach ($this->othercolumns as $cName)
                 {   
-                    $row_text = $this->data[0][$outerIdx][$cName];
+                    $row_text = $cName != 'Virtual' ? $this->data[0][$outerIdx][$cName] : null;
                     if ($row_text == 'InAverage') {
                         //continue;
                         $row2 = '<tr'.$total.'>';
@@ -702,8 +702,8 @@ class DefaultOut extends ReportCreator
         else {
             $first_index = false;
         }
-            if ($this->nonulls && !$all && !($outerIdx == 0)) {
-                if (!$nullFlag) {
+            if ($this->nonulls && empty($all) && !($outerIdx == 0)) {
+                if (empty($nullFlag)) {
                     $sResult.=$row;
                 }
             } else {
@@ -724,7 +724,7 @@ class DefaultOut extends ReportCreator
       $this->tpl_vars['data_units'][] = l($unit,'words');
       $this->tpl_vars['colspan'] = $this->tpl_vars['subheader'] ? ' colspan='.$dataCount : '';
       $this->tpl_vars['table_data'] = $sResult;
-      if ($filter_months_str != '') {
+      if (!empty($filter_months_str)) {
         $this->tpl_vars['user_filter_enable'] = $this->userfilterenable;
         $this->tpl_vars['user_filter_month'] = $filter_months_str;
       }

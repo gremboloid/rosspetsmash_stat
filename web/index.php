@@ -1,10 +1,11 @@
 <?php
 	
+    error_reporting();
     use yii\web\Application;
     
     define('START_FLAG',true );
     
-    define('YII_DEBUG',false );
+    define('YII_DEBUG',true );
     require __DIR__ . '/../vendor/autoload.php';
     require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
     

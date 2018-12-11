@@ -34,7 +34,7 @@ class ModelsContractorOut extends ReportCreator
             return ;
         }
         $activeSheet = $xls->getActiveSheet();
-        $nds = ( $this->source_id == 4 ) ? 'NO_NDS' : 'NDS';
+        $nds = ( $this->sourceid == 4 ) ? 'NO_NDS' : 'NDS';
         $default_row_type = 'number';
         $proportions = l('PROPORTIONS','report');
         $colsCount = count($this->data);
@@ -582,6 +582,7 @@ class ModelsContractorOut extends ReportCreator
         $models_list = '';
         for ($ctr_idx;$ctr_idx<$ctr_count;$ctr_idx++)
         {
+            $sResult[$ctr_idx]['table_data'] = '';
             if ($models_list) {
                 $sResult[$ctr_idx-1]['table_data'].=$models_list;
                 $models_list = '';

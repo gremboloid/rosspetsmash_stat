@@ -34,7 +34,7 @@ class DatasourceService {
         if (!(is_admin() || is_analytic())) {
             if (is_russian()) {
                 $defaultDatasource = [1,2,4,14];
-                if ($this->contractor->$isImporter) {
+                if ($this->contractor->isImporter) {
                     $defaultDatasource[] = 5;
                 }                
             } else {

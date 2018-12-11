@@ -72,13 +72,14 @@ class ModalViewer
         $present = $this->params->defaultValues['present'];
         $typeProduction = array();
         $limit = '';
+        $models_list = [];
         $params = json_decode(Sessions::getReportParams(),true);
-        if (!empty($params)) {
+        if (!empty($params['report_list'])) {
             if (key_exists($reportType, $params['report_list']))
             {
                 $currentReportParams = $params['report_list'][$reportType];                  
                 if (isset($currentReportParams['models_list'])) {               
-                    $models_list =  explode (',',$params['report_list'][$current_report]['models_list']);                
+                    $models_list =  explode (',',$currentReportParams['models_list']);                
                 } else {
                     $models_list = [];
                 }
@@ -108,13 +109,13 @@ class ModalViewer
             $assembly = $this->currentReport->individualSettings['assembly'];
             $foreign = $this->currentReport->individualSettings['foreign'];             
         }
-        if ($russian) {
+        if (!empty($russian)) {
             array_push($typeProduction,1);
         }
-        if ($assembly) {
+        if (!empty($assembly)) {
             array_push($typeProduction,2);
         }
-        if ($foreign) {
+        if (!empty($foreign)) {
             array_push($typeProduction, 3);
         }
         if (!empty($typeProduction) && count($typeProduction) < 3) {
@@ -165,7 +166,7 @@ class ModalViewer
         $tpl_vars['contractors'] = Contractor::getRowsArray([
             ['TBLCONTRACTOR','Id','value'],
             ['TBLCONTRACTOR','Name','text']
-        ],null,null,array(['param' =>'Id','operation' => 'IN','staticNumber' => '('. implode(',', $contractors_list).')' ]),[['name' => 'Name']]);
+        ],array(['param' =>'Id','operation' => 'IN','staticNumber' => '('. implode(',', $contractors_list).')' ]),[['name' => 'Name']]);
         array_unshift($tpl_vars['contractors'],['value' => 0,'text' => 'Все производители']);
         
             
@@ -186,7 +187,7 @@ class ModalViewer
     public function getManufacturers(string $reportType,bool $present = false)
     {
         //return Tools::getMessage('ок');
-       // $manuf_list = '';
+        $manuf_list = [];
         $classifierId = $this->params->classifier->getId();
         $params = json_decode(Sessions::getReportParams(),true);
         $typeProduction = array();
@@ -217,8 +218,6 @@ class ModalViewer
                 if (key_exists('manufacturers_list',$currentReportParams )) {
                    // $manuf_list = explode(',',$params['report_list'][$reportType]['manufacturers_list']);
                     $manuf_list =  explode(',',$currentReportParams['manufacturers_list']);
-                } else {
-                    $manuf_list = [];
                 }
             }
         } else {
@@ -226,13 +225,13 @@ class ModalViewer
             $assembly = $this->currentReport->individualSettings['assembly'];
             $foreign = $this->currentReport->individualSettings['foreign'];
         }
-        if ($russian) {
+        if (!empty($russian)) {
             array_push($typeProduction,1 );
         }
-        if ($foreign) {
+        if (!empty($foreign)) {
             array_push($typeProduction, 3);
         }
-        if ($assembly) {
+        if (!empty($assembly)) {
             array_push($typeProduction,2);
         }               
         $limit = '';

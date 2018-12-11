@@ -246,6 +246,24 @@ input#btn-ok {
   left: 10px; }
 
 /* ----------------------- */
+.subscribe {
+  text-align: right;
+  font-weight: lighten;
+  font-size: 10px; }
+
+input#user_email {
+  width: 80%;
+  margin-left: 10%; }
+
+#MailSenderForm h3 {
+  text-align: center;
+  margin-bottom: 0; }
+
+#MailSenderForm p {
+  text-align: center;
+  margin-top: 2px;
+  font-size: 10px; }
+
 /* Header */
 .header {
   background-color: #c9d5e3;
@@ -1509,13 +1527,21 @@ form sup {
   font-size: .9em;
   padding: 5px; }
 
-.models_list #j-selector-filter {
-  width: 40%; }
-
+.models_list #j-selector-filter,
 #j-selector-contractor {
-  float: left;
-  width: 50%;
+  width: 100%;
+  box-sizing: border-box;
   height: 34px; }
+
+.first-filters-block {
+  padding-left: 4px;
+  padding-right: 2px;
+  box-sizing: border-box; }
+
+.second-filters-block {
+  padding-left: 2px;
+  padding-right: 4px;
+  box-sizing: border-box; }
 
 label.error {
   position: absolute;
@@ -2272,7 +2298,7 @@ fieldset > fieldset > legend {
   box-sizing: border-box;
   width: 48%;
   float: left;
-  border: 1px inset black;
+  border: 1px solid black;
   margin: 1%;
   min-height: 100%; }
 
@@ -2320,11 +2346,9 @@ fieldset > fieldset > legend {
   background-repeat: no-repeat;
   background-attachment: local, scroll, local, scroll; }
 
-.selector-list-items.right-column {
-  height: 342px; }
-
 #j-selector-filter {
-  margin: 4px auto; }
+  margin: 0 auto;
+  border: 1px solid silver; }
 
 .all-select-row {
   font-weight: bold;
@@ -2345,6 +2369,10 @@ fieldset > fieldset > legend {
   font-size: 1.3em;
   text-align: center;
   padding: 5px 0; }
+
+.filter-container {
+  padding-top: 4px;
+  height: 40px; }
 
 .selectable, .all-select-row {
   margin: 2px;
@@ -2668,7 +2696,7 @@ p.addition {
   font-size: 12px; }
 
 .indicator-value {
-  padding-top: 2px; }
+  padding-top: 8px; }
 
 .indicator-value span {
   text-align: center;

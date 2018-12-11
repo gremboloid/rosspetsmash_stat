@@ -56,6 +56,7 @@ class MachinesReport extends ProductionRoot
     protected function calculateDimensions() {
         parent::calculateDimensions();
          $all_subs = false;
+         $list = '';
         if ($this->reportSettings['sub_classifier']) { 
             if ( is_array($this->reportSettings['sub_classifier']) && 
                 !empty($this->reportSettings['sub_classifier'][0])) {

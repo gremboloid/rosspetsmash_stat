@@ -150,18 +150,20 @@ class Params
             $this->countriesStr = $countries ? $countries : '';
             $this->regions = $regions ? Region::getFilteredRows($regions,array(['Id'],['Name']),'Id') : array();
             $this->regionsStr = $regions ? $regions : '';
-            $classifierId = $classifier_id ? $classifier_id : $this->defaultValues['classifier_id'] ;
-            $fullReportClassifierId = $full_classifier_id ? $full_classifier_id : $this->defaultValues['full_classifier_id'] ;
+            $classifierId = !empty($classifier_id) ? $classifier_id : $this->defaultValues['classifier_id'] ;
+            $fullReportClassifierId = !empty($full_classifier_id) ? $full_classifier_id : $this->defaultValues['full_classifier_id'] ;
             $this->classifier = new Classifier($classifierId);
             $this->fullReportClassifier = new Classifier($fullReportClassifierId);
-            $datasourceId = $datasource_id ? $datasource_id : $this->defaultValues['datasource_id'] ;
+            $datasourceId = !empty($datasource_id) ? $datasource_id : (
+                    (is_russian() || is_admin() || is_analytic()) ?
+                        $this->defaultValues['datasource_id'] : 5 );
             $this->datasource = new Datasource($datasourceId);
-            $periods = $periods ? $periods : $this->defaultValues['periods'] ;
+            $periods = !empty($periods) ? $periods : $this->defaultValues['periods'] ;
             $this->periods = new DatePeriod($periods);
-            $this->multiplier = $multiplier ? $multiplier : $this->defaultValues['multiplier'];
-            $this->reportList = $report_list ? $report_list : null;
+            $this->multiplier = !empty($multiplier) ? $multiplier : $this->defaultValues['multiplier'];
+            $this->reportList = !empty($report_list) ? $report_list : null;
             $this->allRegionsTogether = isset($all_regions_together) ? $all_regions_together : $this->defaultValues['all_regions_together'];
-            $this->selectedReport = $selected_report ? $selected_report : $this->defaultValues['selected_report'];                                    
+            $this->selectedReport = !empty($selected_report) ? $selected_report : $this->defaultValues['selected_report'];                                    
             foreach ($this->typeReportList as $key => $value) {
                 if ($this->typeReportList[$key]['alias'] == $this->selectedReport) {
                     $this->typeReportList[$key]['selected'] = true;

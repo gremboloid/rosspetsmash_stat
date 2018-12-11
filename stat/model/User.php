@@ -28,6 +28,7 @@ class User extends ObjectModel
     protected $contactPerson;
     protected $contactPersonPhone;
     protected $contactPersonEmail;
+    protected $oldPassword;
     protected $form_exist = true;
     protected $form_template_head = 'USER';
     protected $model_name = 'User';
@@ -89,7 +90,7 @@ class User extends ObjectModel
         $contractors = Contractor::getRowsArray([
             ['TBLCONTRACTOR','Id','value'],
             ['TBLCONTRACTOR','Name','text']
-        ],null,null,null,[['name' => 'Name','sort' => 'ASC']]);
+        ],null,[['name' => 'Name','sort' => 'ASC']]);
         $roles = Role::getRowsArray([
             ['TBLROLE','Id','value'],
             ['TBLROLE','Name','text']

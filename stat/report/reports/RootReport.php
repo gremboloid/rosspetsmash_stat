@@ -12,6 +12,7 @@ use app\stat\model\Classifier;
 use app\stat\Tools;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use app\stat\exceptions\ReportException;
 /**
  * Общий класс для всех типов отчета
  *
@@ -272,8 +273,22 @@ abstract class RootReport {
        // $CustomDebug = true;
 
         $this->type = $type;
-        $currency = new Currency($this->reportSettings['currency']);          
-        $this->prepareSQL();
+        $currency = new Currency($this->reportSettings['currency']);  
+        try {
+            $this->prepareSQL();
+        } catch ( ReportException $e ) {
+            $this->tpl_vars = [   
+                    'head' => l('ERROR','messages'),                
+                    'body' => $e->getMessage(),
+                    'close' => false
+                ];
+                $viewHelper = new ViewHelper(_INFORM_TEMPLATES_DIR_, 'message_inform',$this->tpl_vars);
+                $resultHtml = $viewHelper->getRenderedTemplate();
+            return [
+                'errorCode' => 1,
+                'message' => $resultHtml                
+            ];
+        }
         if (isset($CustomDebug)) {
             return [
                  'errorCode' => 0,
@@ -313,7 +328,22 @@ abstract class RootReport {
         if (!$this->status['ERROR']) {
         //    $paramsArray['Data'] = array();
            $report_data = $this->constructReport();
-           $paramsArray['Data'] = $this->arraySync($report_data);  
+           try {
+                $paramsArray['Data'] = $this->arraySync($report_data); 
+           }
+           catch ( ReportException $e ) {
+                $this->tpl_vars = [   
+                    'head' => l('ERROR','messages'),                
+                    'body' => $e->getMessage(),
+                    'close' => false
+                ];
+                $viewHelper = new ViewHelper(_INFORM_TEMPLATES_DIR_, 'message_inform',$this->tpl_vars);
+                $resultHtml = $viewHelper->getRenderedTemplate();
+            return [
+                'errorCode' => 1,
+                'message' => $resultHtml                
+            ];        
+           } 
           //  return $this->sql;
          if (isset($Debug)) {
             return [

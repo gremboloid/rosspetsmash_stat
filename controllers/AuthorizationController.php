@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\models\forms\UserLoginForm;
 use \app\models\user\LoginUser;
+use app\stat\model\User;
+use app\stat\Sessions;
 use \Yii;
 
 /**
@@ -17,6 +19,7 @@ class AuthorizationController extends FrontController
         if (Yii::$app->request->isPost) {
             return $this->actionLoginPost();
         }
+        
         return $this->render('authorization.twig', $this->tpl_vars);
     }
     
@@ -39,11 +42,13 @@ class AuthorizationController extends FrontController
             'auth_page_head',
             'auth_page_subhead',
             'auth_page_email',
+            'auth_page_login',
             'password',
             'forgot_password',
             'enter',
             'contact_information',
             'restore_password_message',
+            'restore_password_submessage',
             'auth_page_email',
             'send_email',
         ];
@@ -52,5 +57,13 @@ class AuthorizationController extends FrontController
         }
         $loginForm = new UserLoginForm();
         $this->tpl_vars['userLoginForm'] = $loginForm;
+        if ($userId = Sessions::getVarSession('OLD_PASSWORD_LOGIN')) {
+            $user = new User($userId);
+            if (!empty($user->get('email'))) {
+                $this->tpl_vars['old_password_login'] = true;
+                $this->tpl_vars['login_user_email'] = $user->get('email');
+                Sessions::destroySession();
+            }
+        }
     }
 }

@@ -344,7 +344,32 @@ $(function() {
                 });
         }
      });
-    
+         // переход к разделу классификатора 
+     $('.gotoClassifier').click(function() {
+         var modelId = global_data.utils.getNumbers($(this).parents('tr').attr('id'));
+        $.ajax({
+             url: global_data.baseURI + '/model/get-classifier-id',
+             type: 'POST',
+             dataType: 'json',
+             data: {
+                 model_id : modelId
+             },
+            success: function(response) {
+                if (response.hasOwnProperty('errorCode')) {
+                    showMessage('Ошибка запроса');
+                    return;
+                }
+                var classifier_id = global_data.utils.getNumbers(response.message);
+                    $('#classifier').val(classifier_id);
+                    var select_option = $('#select-rows-count').children('option:selected'); 
+                    $('#rows_count').val(select_option.val()); 
+                    $('#dyr-filter-submit').trigger('click');
+                
+                        //location.reload();
+                }
+            });
+            
+     });
     
 });
 

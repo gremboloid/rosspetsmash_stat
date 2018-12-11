@@ -32,15 +32,19 @@ class ExcelHelper
             foreach ($rowsList[$row] as $idx => $cell) {
                 $colC = 0;
                 $rowC = 0; 
-                $val = $cell['value'];
-                if ($cell['wrap']) {
+                if (isset ($cell['value'])) {
+                    $val = $cell['value'];
+                } else {
+                    $val = '';
+                }
+                if (isset($cell['wrap'])) {
                     $this->activeSheet->getStyleByColumnAndRow($idx + 1, $row)
                             ->getAlignment()
                             ->setWrapText(true);                    
                 }
-                if ($cell['cols'] || $cell['rows']) {
-                    $colC = $cell['cols'] ? $cell['cols'] : 0;
-                    $rowC = $cell['rows'] ? $cell['rows'] : 0;
+                if (isset ($cell['cols']) || isset ($cell['rows'])) {
+                    $colC = isset($cell['cols']) ? $cell['cols'] : 0;
+                    $rowC = isset($cell['rows']) ? $cell['rows'] : 0;
                     $this->activeSheet->mergeCellsByColumnAndRow($idx + 1,$row,$idx + 1 + $colC,$row + $rowC);
                 }
                 if (key_exists('style', $cell)) {

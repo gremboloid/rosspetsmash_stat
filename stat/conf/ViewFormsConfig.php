@@ -2,6 +2,10 @@
 
 namespace app\stat\conf;
 
+
+use DateTime;
+use DateInterval;
+
 /**
  * Description of ViewFormsConfig
  *
@@ -42,8 +46,12 @@ class ViewFormsConfig {
      * @param int $contractorId 
      */
     public function __construct($isAdmin = true,$contractorId = 0) {
-        $this->endYear = date('Y');
-        $this->endMonth = date('n');  
+        $dt = new DateTime();
+        
+      //  if (date('d') < 31) {
+        $dt->sub(new DateInterval('P1M'));
+        $this->endYear = $dt->format('Y');  
+        $this->endMonth = $dt->format('n');
         $this->configurateFilter($isAdmin,$contractorId);
         $this->configurateNewFormParams();
     }
@@ -63,7 +71,7 @@ class ViewFormsConfig {
             $this->filterArray['formType'] = $params['formType'];
         }
         if (isset($params['startMonth']) && isset($params['startYear'])) {
-            $this->filterArray['dateFilter']['start'] = array('month' => $params['startMonth'],$params['startYear']);
+            $this->filterArray['dateFilter']['start'] = array('month' => $params['startMonth'],'year' => $params['startYear']);
         }
         if (isset($params['endMonth']) && isset($params['endYear'])) {
             $this->filterArray['dateFilter']['end'] = array('month' => $params['endMonth'],'year' => $params['endYear']);

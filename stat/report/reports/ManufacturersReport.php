@@ -7,6 +7,7 @@ use app\stat\model\Contractor;
 use app\stat\services\ContractorService;
 use app\stat\Tools;
 use app\stat\db\SimpleSQLConstructor;
+use app\stat\exceptions\ReportException;
 
 class ManufacturersReport extends ProductionRoot  
 {
@@ -82,6 +83,9 @@ class ManufacturersReport extends ProductionRoot
                 return $arr['Id'];
             }, $elems);
             
+        }
+        if (empty($list)) {
+           throw new ReportException('Для данного отчета не найдено ни одного производителя');
         }
         
         $this->dimensions['select'][] = array('textValue' => '"contr"."Id"','name' => "ContractorId");

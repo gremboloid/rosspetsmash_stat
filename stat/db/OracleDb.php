@@ -111,7 +111,7 @@ class OracleDb implements DataBindable
                 return $id;
 
             } catch (Exception $ex) {
-                $this->_link->rollBack();
+             //   $this->_link->rollBack();
                 return false;
             }            
         } else {

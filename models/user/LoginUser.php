@@ -6,6 +6,7 @@ use \yii\db\ActiveRecord;
 use app\stat\model\Contractor;
 use \app\models\forms\UserLoginForm;
 use app\stat\model\ContractorGeografy;
+use app\stat\Sessions;
 use \Yii;
 
 /**
@@ -15,6 +16,7 @@ use \Yii;
 * @property string $surName
 * @property string $login
 * @property string $password
+* @property string $oldPassword
 * @property int $roleId
 * @property int $contractorId
 * @property int $Deleted
@@ -50,6 +52,9 @@ class LoginUser extends ActiveRecord
     public function getPassword() {
         return $this->Pasword;
     }
+    public function getOldPassword() {
+        return $this->OldPassword;
+    }
     public function getRole() {
         return $this->roleId;
     }
@@ -59,7 +64,17 @@ class LoginUser extends ActiveRecord
     public function validatePassword($password) {
         if ($this->Deleted == 1) 
             return false;
-        return Yii::$app->security->validatePassword($password, $this->password);
+        $passwordValidate =  Yii::$app->security->validatePassword($password, $this->password);
+        if ($passwordValidate) {
+            return true;
+        }
+        if (!empty($this->oldPassword)) {
+            if (Yii::$app->security->validatePassword($password, $this->oldPassword)) { 
+                Sessions::setValueToVar('OLD_PASSWORD_LOGIN', $this->getId());
+                Yii::$app->response->redirect('/authorization');
+            }
+        }
+        return false;        
     }
     public function getFIO() {
         return $this->surName. ' ' . $this->name . ' ' . $this->patronymicName;

@@ -24,7 +24,7 @@
                                                         'id' : 'user-name'
                                                     } }).label(false)
                             .textInput({
-                                    'placeholder' : auth_page_email,
+                                    'placeholder' : auth_page_login,
                                     'class' : 'input-width-image'}) | raw }}                        
                     {{ form.field(userLoginForm, 'password',{ 'inputOptions' : {
                                                         'id' : 'user-password'
@@ -52,7 +52,8 @@
 <div id="ex1" class="modal" style="">
     <form id="MailSenderForm" name="MailSenderForm" action="">
         <h3>{{ restore_password_message }}</h3>
-        <p class="forgot-password-block"><label class="frm-label">{{ auth_page_email }}:</label><input id="user_email" class="mail req" type="text"></p>
+        <p>({{ restore_password_submessage }})</h3>
+        <p class="forgot-password-block"><input id="user_email" class="mail req" type="text"></p>
         <p><button class="btn btn-selector" id="SendEmail">{{ send_email }}</button></p>
     </form>
 </div>
@@ -61,4 +62,18 @@
     <p>Тел./факс: (495)781-37-56</p>
     <p>E-mail: <a href="mailto:admin@rosagromash.ru">admin@rosagromash.ru</a>
 </div>
+{% if old_password_login %}
+    <div class="modal" id="ex3">
+    <h1>Пароль был изменен</h1>
+    <p>Новый пароль выслан на электронную почту <a href="mailto:{{ login_user_email }}">{{ login_user_email }}</a></p>
+    <br>
+    <p class="subscribe">С уважением, администрация портала РОССПЕЦМАШ-СТАТ</p>
+    </div>
+    <a id="old-user-login-activate" class="hide" data-modal href="#ex3"></a>
+    <script>
+    $(function(){       
+        $('#old-user-login-activate').trigger('click');
+    });
+    </script>
+{% endif %}
 {% endblock %}

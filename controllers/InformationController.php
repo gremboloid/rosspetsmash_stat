@@ -55,7 +55,7 @@ class InformationController extends FrontController
             'block_name' => l('INFORMATION_SUBSECTION'),
             'type' => 'ref_list',
             'refs' => [
-                ['name' => 'Информационные материалы', 'link' => ''],
+                ['name' => 'Информационные материалы', 'link' => 'index'],
                 ['name' => 'Классификатор', 'link' => 'classifier'],
                 ['name' => 'Статистика использования конструктора отчетов', 'link' => 'stat'],
             ]

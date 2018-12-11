@@ -185,8 +185,11 @@ class ExportFormHelper
     }
     public function removeCountry($assortArray) {
         extract($assortArray);
+        if (empty($input_form_id)) { 
+            $input_form_id = null;
+        }
         $input_form = new InputForm($input_form_id);
-        $form_type = $form_type ? (int) $form_type : $input_form->dataBaseTypeId ;       
+        $form_type = !empty($form_type) ? (int) $form_type : $input_form->dataBaseTypeId ;       
         $contractor_id = (int) $contractor_id;
         $country_id = (int) $country_id;
         $input_form_id = (int) $input_form_id;

@@ -39,9 +39,9 @@ class ReportsCounter extends Module {
             $pYear--;
         }*/
         $pYear = date('Y');
-        $prevMonth = (int) date('m');
+        $prevMonth = (int) date('m') - 1;
         $firstday = mktime(0, 0, 0, $prevMonth,1,$pYear );
-        $lastday = mktime(23, 59, 59, date('m'),date('t'),date('Y') );
+        $lastday = mktime(23, 59, 59, date('m')-1,date('t'),date('Y') );
         $step = ($lastday - $firstday) / 10;
         $curday = $firstday;
         $colInLastMonth = getDb()->getRow( new QuerySelectBuilder([
@@ -53,7 +53,6 @@ class ReportsCounter extends Module {
         
         static::$template_vars['month'] = mb_strtolower($months[$prevMonth]);
         static::$template_vars['year'] = mb_strtolower($pYear);
-        static::$template_vars['chpu'] = _USE_CHPU_;
         static::$template_vars['date1'] = '01.'.date('m').'.'.$pYear;
         static::$template_vars['date2'] = date('d').'.'.date('m').'.'.$pYear;
         

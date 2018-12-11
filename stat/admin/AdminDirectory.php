@@ -188,8 +188,8 @@ abstract class AdminDirectory extends AdminRoot
         else {
             if ($this->page_num > 5) {
                 $startPage = $this->page_num - 4;
-                $aResult[0] = array ('page' => '1'.$getParams, 'val' => '«');
-                $aResult[1] = array ('page' => ($this->page_num-1).$getParams, 'val' => '<');
+                $aResult[0] = array ('page' => '1', 'val' => '«');
+                $aResult[1] = array ('page' => ($this->page_num-1), 'val' => '<');
                 $startIdx = 2;
                 $endPage = $this->page_num + 4;
                 if ($this->page_num > ($this->pages_count - 4)) {
@@ -212,15 +212,15 @@ abstract class AdminDirectory extends AdminRoot
         }
         for ($i=$startPage;$i <=$endPage; $i++)
         {
-            $aResult[$startIdx]= array ( 'page' => $i.$getParams , 'val' => $i);
+            $aResult[$startIdx]= array ( 'page' => $i , 'val' => $i);
             if ($this->page_num == $i) {
                 $aResult[$startIdx]['active'] = 1;
             }
             $startIdx++;
         }
         if ($rightFlag) {
-            $aResult[$startIdx++] = array ('page' => ($this->page_num+1).$getParams, 'val' => '>');
-            $aResult[$startIdx++] = array ('page' => ($this->pages_count).$getParams, 'val' => '»');
+            $aResult[$startIdx++] = array ('page' => ($this->page_num+1), 'val' => '>');
+            $aResult[$startIdx++] = array ('page' => ($this->pages_count), 'val' => '»');
         }   
         return $aResult;
     }

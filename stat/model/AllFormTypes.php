@@ -200,17 +200,15 @@ class AllFormTypes extends ObjectModel
      * @return int Флаг выполнения операции (0-ок,1-без изменения,2 ошибка записи)
      */
     public function updateInputForm($form,$params) {
-        $this->inputForm = $form; 
+        $this->inputForm = $form;
         if ($this->inputForm->comment != $params['comment']) {
           //  array_push($this->inputForm->update_fields,'Comment');
-            $this->inputForm->comment = $params['comment'];
-          //  $this->inputForm->setWritable();
+            $this->inputForm->set('comment',$params['comment']);
         }
         if (key_exists('actuality', $params)) {
              if ($this->inputForm->actuality != $params['actuality']) {
                //  array_push($this->inputForm->update_fields,'Comment');
-                 $this->inputForm->actuality = $params['actuality'];
-               //  $this->inputForm->setWritable();
+                 $this->inputForm->set('actuality', $params['actuality']);
              }                   
         }
         foreach ($params['date'] as $p_date) {
@@ -218,12 +216,13 @@ class AllFormTypes extends ObjectModel
             switch ($p_date['type']) {
                 case 'month':
                     if ($this->inputForm->month != $p_date['value']) {
-                        $this->inputForm->month = $p_date['value'];
+                        $this->inputForm->set('month', $p_date['value']);                        
                     }
                     break;
                 case 'year':
                     if ($this->inputForm->year != $p_date['value']) {
-                        $this->inputForm->year = $p_date['value'];
+                        $this->inputForm->set('year', $p_date['value']);
+                        $writable = true;
                     }
                     break;
             }

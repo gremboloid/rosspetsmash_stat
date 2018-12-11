@@ -5,6 +5,7 @@ namespace app\stat\report\reports;
 use app\models\user\LoginUser;
 use app\stat\report\Params;
 use app\stat\db\SimpleSQLConstructor;
+use app\stat\exceptions\ReportException;
 /**
  * Description of DefaultReport
  *
@@ -33,22 +34,11 @@ class FullReport extends ProductionRoot
     {
         $this->reportParams = new Params($this->currentUser); 
         if (!$this->reportParams->periods->pairPeriodEqual()) {
-            $this->status['ERROR'] = true;
-            $this->status['ERROR_MESSAGE'] = [
-                'head' => l('ERROR','messages'),
-                'body' => l('ERROR_PERIODS_NOT_EQUAL','messages')
-                ];
-            return;
+            throw new ReportException(l('ERROR_PERIODS_NOT_EQUAL','messages'));
         }
         if ($this->type == 2) {
             if ($this->reportParams->periods->getRealPeriodsCount() != 2) {
-                $this->status['ERROR'] = true;
-                $this->status['ERROR_MESSAGE'] = [
-                    'head' => l('ERROR','messages'),
-                    'body' => l('ERROR_TWO_PERIODS_NEED','messages')
-                ];
-                return;
-                
+                throw new ReportException(l('ERROR_TWO_PERIODS_NEED','messages'));                
             }
         }
         parent::prepareSQL();      
@@ -128,7 +118,7 @@ class FullReport extends ProductionRoot
             $this->tmp_values['order'][] = ['textValue' => 'CASE WHEN "final_data"."PeriodHash">=0 THEN \'A\' WHEN "final_data"."PeriodHash"=-1 THEN \'B\' WHEN "final_data"."PeriodHash"=-2 THEN \'C\' END ASC NULLS LAST'];
             foreach ($this->reportSettings['units'] as $val) {
                 $this->tmp_values['select'][] = ['name' => 'Data'.$val, 'textValue' => '"final_data"."Data'.$val.'"'];
-                $this->tmp_values['order'][] = ['textValue' => 'TO_NUMBER(FIRST_VALUE("final_data"."Data'.$val.'") OVER (' . (count($this->dimensions_without_periods) ? ('PARTITION BY "final_data"."' . implode('", "final_data"."', $this->dimensions_without_periods) . '"') : '') . ' ORDER BY "final_data"."PeriodOrder" ASC), \'999G999G999G999' . (($unit == 'Amount') ? '' : 'D99') . '\') DESC'];
+                $this->tmp_values['order'][] = ['textValue' => 'TO_NUMBER(FIRST_VALUE("final_data"."Data'.$val.'") OVER (' . (count($this->dimensions_without_periods) ? ('PARTITION BY "final_data"."' . implode('", "final_data"."', $this->dimensions_without_periods) . '"') : '') . ' ORDER BY "final_data"."PeriodOrder" ASC), \'999G999G999G999' . (($val == 'Amount') ? '' : 'D99') . '\') DESC'];
                 $this->data_units[] = 'Data'.$val;
             }
             
@@ -212,7 +202,7 @@ class FullReport extends ProductionRoot
         $this->dimensions['from'][] = ['name'=> 'class','textValue' => ' ( SELECT DISTINCT
             NVL("GROUPS"."SubClassId", 0) AS "SubClassId",NVL("GROUPS"."GroupId", 0) AS "GroupId",
             NVL("GROUPS"."SubGroupId", 0) AS "SubGroupId",NVL("GROUPS"."SubSubGroupId", 0) AS "SubSubGroupId",
-            "CLS"."Id","VW_CONTRACTORCLASSIFIER"."ContractorId" FROM ( 
+            "CLS"."Id","CACHECONTRACTORCLASSIFIER"."ContractorId" FROM ( 
                 SELECT "SubClassId","GroupId","SubGroupId","SubSubGroupId" FROM (
                     SELECT "C0"."Id" AS "SubClassId","C1"."Id" AS "GroupId","C2"."Id" AS "SubGroupId",
                             "C3"."Id" AS "SubSubGroupId" 
@@ -225,10 +215,10 @@ class FullReport extends ProductionRoot
                             ROLLUP("C0"."Id", "C1"."Id", "C2"."Id", "C3"."Id")
                     HAVING GROUPING_ID("C0"."Id") = 0 )
                 GROUP BY "SubClassId","GroupId","SubGroupId","SubSubGroupId" ) "GROUPS",
-                "CLS","VW_CONTRACTORCLASSIFIER"
+                "CLS","CACHECONTRACTORCLASSIFIER"
             WHERE "CLS"."ClassifierGroupIdFull" = COALESCE("GROUPS"."SubSubGroupId", "GROUPS"."SubGroupId" , "GROUPS"."GroupId", "GROUPS"."SubClassId")
-            AND "VW_CONTRACTORCLASSIFIER"."ClassifierId" (+) = "CLS"."Id"
-            AND "VW_CONTRACTORCLASSIFIER"."ContractorId" NOT IN (SELECT "Id" FROM "TBLCONTRACTOR" WHERE "Name" = \'Загрузка из Excel\'))'];
+            AND "CACHECONTRACTORCLASSIFIER"."ClassifierId" (+) = "CLS"."Id"
+            AND "CACHECONTRACTORCLASSIFIER"."ContractorId" NOT IN (SELECT "Id" FROM "TBLCONTRACTOR" WHERE "Name" = \'Загрузка из Excel\'))'];
         
         
         
@@ -255,21 +245,23 @@ class FullReport extends ProductionRoot
     
     protected function percentCalc() 
     {    
-            $hashes = $this->reportParams->periods->getPeriodsHashes();
-            foreach ($this->reportSettings['units'] as $value)
-            {
-                $s_data .= ' CASE
-                     WHEN "Data'.$value.'" = 0 THEN \'0' . ((($value == 'Amount') || ($value == 'Price')) ? '' : ',00') . '\'
-                     WHEN "Data'.$value.'" < 1 THEN TO_CHAR("Data'.$value.'", \'0' . ((($value == 'Amount') || ($value == 'Price')) ? '' : 'D99') . '\')
-                     ELSE TO_CHAR("Data'.$value.'", \'999G999G999G999' . ((($value == 'Amount') || ($value == 'Price')) ? '' : 'D99') . '\')
-                      END AS "Data'.$value.'" ,';
-                
-            }
-            $s_data=trim($s_data,',');         
-            $this->sql = 'WITH "data1" AS (' . $this->sql . ')
-            SELECT "PeriodHash", "PeriodOrder",'.$this->dimensions_without_periods_string.','.$s_data.
-              'FROM "data1" WHERE "PeriodHash" IS NOT NULL AND "PeriodOrder" IS NOT NULL';                    
         $s_data = '';
+        $hashes = $this->reportParams->periods->getPeriodsHashes();
+        foreach ($this->reportSettings['units'] as $value)
+        {
+            $s_data .= ' CASE
+                 WHEN "Data'.$value.'" = 0 THEN \'0' . ((($value == 'Amount') || ($value == 'Price')) ? '' : ',00') . '\'
+                 WHEN "Data'.$value.'" < 1 THEN TO_CHAR("Data'.$value.'", \'0' . ((($value == 'Amount') || ($value == 'Price')) ? '' : 'D99') . '\')
+                 ELSE TO_CHAR("Data'.$value.'", \'999G999G999G999' . ((($value == 'Amount') || ($value == 'Price')) ? '' : 'D99') . '\')
+                  END AS "Data'.$value.'" ,';
+
+        }
+        $s_data=trim($s_data,',');         
+        $this->sql = 'WITH "data1" AS (' . $this->sql . ')
+        SELECT "PeriodHash", "PeriodOrder",'.$this->dimensions_without_periods_string.','.$s_data.
+          'FROM "data1" WHERE "PeriodHash" IS NOT NULL AND "PeriodOrder" IS NOT NULL';
+        $s_data = '';
+        $f_data = '';
         for ($i = 0; $i < count($hashes); $i+=2) {
             foreach ($this->reportSettings['units'] as $value) {
                 $s_data .= ' CASE WHEN "Data'.$value.'" = 0 THEN \'–\'

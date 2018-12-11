@@ -79,5 +79,23 @@ class Mailer
         }
         
     }
+    public function sendMessage($email,$head,$msg) 
+    {
+        if (!Validate::isEmail($email)) {
+            return false;
+        }
+        $msg_text = $msg;
+        $message = (new \Swift_Message($head))
+                ->setFrom([$this->senderEmail => $this->senderName])
+                ->setTo([$email])
+                ->setContentType('text/html')
+                ->setBody($msg_text);
+        if ( count($this->swmailer->send($message)) == 0) {
+            return false;
+        }
+        return true;
+        
+        
+    }
     
 }

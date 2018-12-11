@@ -3,6 +3,7 @@
 namespace app\stat\report\reports;
 
 use app\models\user\LoginUser;
+use app\stat\exceptions\ReportException;
 /**
  * Класс отчета "Модели"
  *
@@ -128,6 +129,7 @@ class ModelsClassifierReport extends ProductionRoot
        array_push($this->dimensions_without_periods,'Order');
        array_push($this->dimensions_without_periods,'Level');
        $this->dimensions_without_periods_string =  '"' . implode('", "', $this->dimensions_without_periods) . '"';
+       $dataVal = '';
        foreach ($this->reportSettings['units'] as $value)
         {
             $dataVal.= '"Data'.$value.'",';
@@ -244,20 +246,21 @@ RIGHT OUTER JOIN (  SELECT
                 $this->head_array[] = $oldVal = $newVal;
             }  
         } 
-        unset($data);
-        
-        
+        unset($data);                
         $diff_cols = array('Classifier','Contractor','Model');
         $a_length = count($aResult);
+        if ($a_length == 0) {
+            throw new ReportException('Для данного отчета не найдено ни одной модели');
+        }
         $newArray[] = $aResult[0];
         unset ($aResult[0]);
-            for ($i =1;$i<$a_length;$i++)
-            {
-                foreach ($newArray[0] as $j => $elem) 
-                {   
-                    $brk_flag = false;
-                    foreach ($aResult[$i] as $key => $elem1) {
-                        if ($brk_flag) break;
+        for ($i =1;$i<$a_length;$i++)
+        {
+            foreach ($newArray[0] as $j => $elem) 
+            {   
+                $brk_flag = false;
+                foreach ($aResult[$i] as $key => $elem1) {
+                    if ($brk_flag) break;
                         $compare = true;                        
                         $idx=0;
                         foreach ($diff_cols as $column) {
@@ -270,8 +273,7 @@ RIGHT OUTER JOIN (  SELECT
                                         unset ($aResult[$i][$key]);
                                         $brk_flag =true;
                                         continue;
-                                    }
-                                    
+                                    }                                    
                                 }
                                 continue;                               
                             }
@@ -282,12 +284,7 @@ RIGHT OUTER JOIN (  SELECT
                         }
                     }
                 }
-            }
-        
-        
-        
-        //unset
-        
+            }                                      
         return $newArray;
             /*
          // $aResult = $data;

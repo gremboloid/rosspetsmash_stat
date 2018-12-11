@@ -13,7 +13,6 @@ define('_REPORTS_TEMPLATES_DIR_', _ROOT_DIR_.'views/reports/');
 define('_FORMS_TEMPLATES_DIR_', _ROOT_DIR_.'views/forms/');
 define('_MODAL_TEMPLATES_DIR_', _ROOT_DIR_.'views/modal/');
 define('_REPORTS_OUT_TEMPLATES_DIR_', _ROOT_DIR_.'views/reports/table/');
-define('_MODAL_TEMPLATES_DIR_', _ROOT_DIR_.'views/modal/');
 define('_ADMIN_TEMPLATES_DIR_', _ROOT_DIR_.'views/admin/');
 define('_INFORM_TEMPLATES_DIR_', _ROOT_DIR_.'views/inform/');
 define('_DEFAULT_LANG_' , 'ru');

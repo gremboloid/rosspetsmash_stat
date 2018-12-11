@@ -49,12 +49,13 @@ class InputFormService
     public static function getFormTypes(Contractor $contractor) {
         if (!is_admin()) {
             $arr = &DatabaseType::$availableTypes;
-            if (!$contractor->isImporter) {                
+            if (!$contractor->isImporter && is_russian())  {                
                 array_splice($arr, array_search(5, $arr), 1);
             }
             if (!is_russian()) {
                 array_splice($arr, array_search(1, $arr), 1);
                 array_splice($arr, array_search(2, $arr), 1);
+                array_splice($arr, array_search(4, $arr), 1);
             }
         }
         $ids = '('. implode(',', DatabaseType::$availableTypes).')';

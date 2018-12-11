@@ -105,11 +105,10 @@ class Container
     public function createReportsExcel() {
         if  (count($this->selectedReports) != 1 ) {
             return;
-        }  
-        ob_end_clean();
+        }
         $result = $this->selectedReports[0]->createReport( 1 );
-        if ($result['error_code'] == 1) {
-            echo ('<h1>'.$result['html_data'].'</h1><a href="/">Вернуться на сайт</a>');
+        if ($result['errorCode'] == 1) {
+            echo ('<h1>'.$result['message'].'</h1><a href="/reports">Вернуться на сайт</a>');
             die();
         }        
     }

@@ -6,6 +6,7 @@ use app\stat\Tools;
 use Yii;
 use app\stat\helpers\ModelsHelper;
 use app\stat\services\ReportsLogService;
+use app\stat\model\Models;
 /**
  * Description of ModelController
  *
@@ -58,10 +59,10 @@ class ModelController extends FrontController
         return $model->displayForm();
     }
     public function actionSaveModel() {
-        if (!Yii::$app->request->isAjax || 
+        /*if (!Yii::$app->request->isAjax || 
             !is_admin()) {
             return Tools::getErrorMessage('request error',1,false);
-        }
+        }*/
         if (!Yii::$app->request->isPost) {
             return  Tools::getErrorMessage('request error',1);          
         }
@@ -149,6 +150,21 @@ class ModelController extends FrontController
         $res = $model->getRegionsList();
         return $res;  
         
+    }
+    public function actionGetClassifierId() {
+        if (!Yii::$app->request->isAjax || 
+            !is_admin()) {
+            return Tools::getErrorMessage('request error',1,false);
+        }
+        if (!Yii::$app->request->isPost) {
+            return  Tools::getErrorMessage('request error',1);          
+        }
+        $postData = Yii::$app->request->post();
+        if (empty($postData['model_id'])) {
+            return Tools::getErrorMessage('request error',1); 
+        }
+        $model = new Models($postData['model_id']);
+        return Tools::getMessage($model->classifierId);
     }
     public function actionDetailLogInfo() {
         if (!Yii::$app->request->isAjax || 

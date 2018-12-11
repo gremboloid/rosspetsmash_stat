@@ -32,7 +32,7 @@ class ModelsClassifierOut extends ReportCreator
         $default_row_type = 'number';
         $this->othercolumns = array('Denomination');
         $activeSheet = $xls->getActiveSheet();
-        $nds = ( $this->source_id == 4 ) ? 'NO_NDS' : 'NDS';
+        $nds = ( $this->sourceid == 4 ) ? 'NO_NDS' : 'NDS';
         $proportions = l('PROPORTIONS','report');
         $colsCount = count($this->data);
         $duCount = count ($this->dataunits);

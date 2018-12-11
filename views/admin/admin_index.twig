@@ -5,7 +5,7 @@
 <thead><tr class="tbl-head">
 <th{% if not val.headlink %} colspan="2"{% endif %}>{{ val.head }}</th>{% if val.headlink %}<th class="SummaryInformation"> <a href="{{ val.headlink.href }}">{{ val.headlink.text }}</a></th>{% endif %}</tr>
 </thead>
-<tr><td class="column-summary" colspan="2">{{ val.subhead }}:</td></tr>
+<tr><td class="column-summary">{{ val.subhead }}:</td><td></td></tr>
 {% if val.elements_list is iterable %}
 {% for key2,val2 in val.elements_list  %}
 <tr><td class="column-names">{{ val2.text|lower }}</td><td class="column-elements center"><a href="{{ val2.link.href }}">{{ val2.link.text}}</a></td></tr>

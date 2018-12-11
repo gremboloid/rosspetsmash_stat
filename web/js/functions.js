@@ -1,4 +1,3 @@
-console.log('загружен файл functions.js');
  // вспомогательные функции
 
  
@@ -38,7 +37,6 @@ var saveModel = function() {
             data: frmParams,
             success: function(res) {
                 var msg = $.parseJSON(global_data.messages); 
-                console.log(res);
                // return;
                 if (res.hasOwnProperty('STATUS')) {
                     var flash_msg;
@@ -142,7 +140,6 @@ var reload = function() {
  * @returns {undefuned}
  */
 var columnsAlignment = function() {
-    console.log('запуск функции выравниявания колонок');
     var $columns = $('#main-page .content-wrapper');
         if ($columns.length > 0 ) {
             var maxHeight = 0;
@@ -489,10 +486,6 @@ $(function() {
                     var elements = $frm.serialize();
                     $frm.submit();
                 }
-
-                console.log(frmId);
-
-
             });
         }
     }

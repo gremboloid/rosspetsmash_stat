@@ -59,8 +59,7 @@ class Models extends ObjectModel implements IChangeClassifier
         $brands = Brand::getRowsArray([
             ['TBLBRAND','Id','value'],
             ['TBLBRAND','Name','text']
-        ],null,null,null,
-                [['name' => 'Name','sort' => 'ASC']]);
+        ],null,[['name' => 'Name','sort' => 'ASC']]);
         $model_types = ModelType::getRowsArray([
             ['TBLMODELTYPE','Id','value'],
             ['TBLMODELTYPE','Name','text']

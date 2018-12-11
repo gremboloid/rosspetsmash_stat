@@ -150,7 +150,6 @@ class ClassifierService {
         return $aResult;
     }
         public function getClassifierCsv() {
-        ob_end_clean();
         $max_par = 0; // максимальная глубина вложенности
        
          // Вспомогательная функция возвращающая массив элементов заданной глубины вложенности
@@ -193,6 +192,8 @@ class ClassifierService {
                 // $deep=0; 
 
          $rows_count = count($classifier);
+        $str_out = '';
+        $content = '';
          for ($i=0;$i<$rows_count;$i++)
          {
           $parId = $classifier[$i]["ClassifierId"];
@@ -284,16 +285,19 @@ class ClassifierService {
                  }
 
             $Name = iconv("UTF-8","windows-1251", $resArray[$i][0]);
-
             for ($n1=0;$n1<=$deep;$n1++)
             {
                 if ($n1 == $deep) 
                 {
-                    $indexer[$deep]++;
+                    if (isset($indexer[$deep])) {
+                        $indexer[$deep]++;
+                    }
                 }
                 if ($n1!=0)
                 {
-                     $str_out .= $indexer[$n1] . '.';
+                    if (isset($indexer[$n1])) {
+                        $str_out .= $indexer[$n1] . '.';
+                    }
                 }
             }
 

@@ -150,7 +150,7 @@ class Contractor extends ObjectModel
         if ($id) {
             $categories_contractor = Tools::getValuesFromArray(ContractorCategory::getRowsArray([
                 ['TBLCONTRACTORCATEGORY','CategoryId'],
-                ],null,null,[['param' => 'ContractorId', 'staticNumber' => $id]]), "CategoryId");
+                ],[['param' => 'ContractorId', 'staticNumber' => $id]]), "CategoryId");
         } else {
             $categories_contractor = array();
         }
@@ -300,5 +300,54 @@ class Contractor extends ObjectModel
             'type' => 'hidden',            
             'value' => 0     
         ];
+    }
+    public function saveModelObject($data,$form_elements=null,$return_json=true) {
+        $id = $this->getId();
+        parse_str($data['frm_data'],$form_elements);       
+        //if ($this->getId())
+        $res = parent::saveModelObject($data,$form_elements,false);
+        if ($res['STATUS'] !== OBJECT_MODEL_SAVED) {
+            if ($return_json) {
+                return json_encode($res);
+            } else {
+            return $res;
+            }
+        }
+         if ($id) {
+            ContractorCategory::deleteByProps(['contractorId' => $id]); 
+            ContractorEmail::deleteByProps(['contractorId' => $id]);
+             
+         } else {
+             $id = (int) $res['NEW_ID'];
+         }
+         if (isset($form_elements['category'])) {
+            foreach ($form_elements['category'] as $cat_id) {
+                $cat = ContractorCategory::getInstance([
+                    'contractorId' => $id,
+                    'categoryId' => $cat_id
+                ]);
+                $cat->addToDb();
+            }
+         }
+        if (isset($form_elements['email_list'])) {
+            foreach ($form_elements['email_list'] as $email) {
+                $c_email = ContractorEmail::getInstance([
+                   'contractorId' => $id,
+                    'email' => $email
+                ]);
+                $c_email->addToDb();
+            }
+         }
+         if ($return_json) {
+            return json_encode($res);
+         } else {
+             return $res;
+         }
+         
+        //if (key_exists('NEW_ID',$res) && !empty($res['NEW_ID'])) {
+            
+     //   } else {
+            
+     //   }
     }
 }

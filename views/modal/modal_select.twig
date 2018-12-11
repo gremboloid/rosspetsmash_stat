@@ -5,15 +5,19 @@
 	<div class="selector-content-block">
 		<div class="selector-left">
 			<div class="selector-left-header">{{ left_column_head }}</div>
-				<div id="selector-filter-container">
+				<div id="selector-filter-container" class="filter-container">
 				{% if contractors %}
+				<div class="cl6 fl first-filters-block">
 				<select name="contractor" id="j-selector-contractor" class="select-inline-element">
 				{% for el in contractors %}
 				<option value="{{ el.value }}">{{ el.text }}</option>
 				{% endfor %}
 				</select>
+				</div>
 				{% endif %}
-				<input id="j-selector-filter" class="input-width-image search-input" tabindex="1" title="Поиск" placeholder="" name="search" value="" type="text">
+				<div class="cl6 fl second-filters-block">
+					<input id="j-selector-filter" class="input-width-image search-input" tabindex="1" title="Поиск" placeholder="" name="search" value="" type="text">
+				</div>
 				</div>
 				<div class="selector-list-items left-column">
 					{% for elem in left_list %}
@@ -22,8 +26,9 @@
 				</div>
 			<div id="select-all" class="modal-btn btn-default btn">Выделить все</div>							
 		</div>
-		<div class="selector-right">
+		<div class="selector-right">			
 			<div id="{{ alias }}" class="selector-right-header">{{ right_column_head }}</div>			
+			<div class="filter-container"></div>
 			<div class="selector-list-items right-column">
 			{% if (right_list is iterable and right_list is not empty) %}
 				{% for elem in right_list %}

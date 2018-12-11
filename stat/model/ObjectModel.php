@@ -135,9 +135,11 @@ abstract class ObjectModel {
     public function __get($name) {
         if (property_exists ( $this , $name )) {
             return $this->{$name};
-        }
-        
+        }        
     } 
+    public function get($name) {
+        return $this->__get($name);
+    }
     /**
      * Принудительная функция сеттер
      * @param type $name
@@ -338,7 +340,7 @@ abstract class ObjectModel {
     /**
     * 
     * @param type $assoc_array
-    * @return \Model\ObjectModel
+    * @return ObjectModel
     */
    public static function getInstance($assoc_array) 
    {
@@ -348,7 +350,7 @@ abstract class ObjectModel {
        {
            $prop = lcfirst($key);
            $result->$prop = $value;
-           //array_push($result->update_fields, ucfirst($key));
+           array_push($result->update_fields, ucfirst($key));
        }
        return $result;       
    }

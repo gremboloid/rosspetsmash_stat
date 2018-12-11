@@ -44,11 +44,11 @@ class ContractorService {
         
         $sql = 'SELECT DISTINCT "TBLCONTRACTOR"."Id" AS "Id", "TBLCONTRACTOR"."Name" AS "Name" 
                 FROM ( SELECT "ContractorId" FROM "TBLPRODUCTION" WHERE "TypeData" 
-                IN '.$datasources.') "contr_prod", "TBLCONTRACTOR", "VW_CONTRACTORCLASSIFIER"                     
+                IN '.$datasources.') "contr_prod", "TBLCONTRACTOR", "CACHECONTRACTORCLASSIFIER"                     
                 WHERE "contr_prod"."ContractorId" = "TBLCONTRACTOR"."Id" AND
                 "TBLCONTRACTOR"."TypeId" = '.$typeData.' AND 
-                "VW_CONTRACTORCLASSIFIER"."ContractorId" = "contr_prod"."ContractorId" AND
-                "VW_CONTRACTORCLASSIFIER"."ClassifierId" IN ( 
+                "CACHECONTRACTORCLASSIFIER"."ContractorId" = "contr_prod"."ContractorId" AND
+                "CACHECONTRACTORCLASSIFIER"."ClassifierId" IN ( 
                 SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" 
                 START WITH "Id"='.$classifierid.')'.$pFilter.' ORDER BY "TBLCONTRACTOR"."Name" ASC';
         if ($filter) {
@@ -71,11 +71,11 @@ class ContractorService {
             $pFilter = ' AND "TBLCONTRACTOR"."Present" = 1 ';
         }
         $sql = 'SELECT DISTINCT "TBLCONTRACTOR"."Id" AS "Id", "TBLCONTRACTOR"."Name" AS "Name" FROM 
-                (SELECT "ContractorId" FROM "TBLECONOMIC" WHERE "TypeData" IN (12)) "contr_prod", "TBLCONTRACTOR", "VW_CONTRACTORCLASSIFIER" 
+                (SELECT "ContractorId" FROM "TBLECONOMIC" WHERE "TypeData" IN (12)) "contr_prod", "TBLCONTRACTOR", "CACHECONTRACTORCLASSIFIER" 
                 WHERE "contr_prod"."ContractorId" = "TBLCONTRACTOR"."Id" AND 
                 "TBLCONTRACTOR"."TypeId" = 2 AND
-                "VW_CONTRACTORCLASSIFIER"."ContractorId" = "contr_prod"."ContractorId" AND
-                "VW_CONTRACTORCLASSIFIER"."ClassifierId" IN ( 
+                "CACHECONTRACTORCLASSIFIER"."ContractorId" = "contr_prod"."ContractorId" AND
+                "CACHECONTRACTORCLASSIFIER"."ClassifierId" IN ( 
                 SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" 
                 START WITH "Id"='.$classifierid.')'.$pFilter.' ORDER BY "TBLCONTRACTOR"."Name" ASC';
         if ($filter) {
@@ -122,16 +122,41 @@ class ContractorService {
         }
         unset ($email_list); 
         $defMonth = date('m') != 1 ? date('m') - 1 : 12;
-        $defYear = $def_month != 12 ? date("Y") : date("Y") - 1;
+        $defYear = $defMonth != 12 ? date("Y") : date("Y") - 1;
         $month = isset($params['month']) ? $params['month'] :  $defMonth;
         $year = isset($params['year']) ? $params['year'] :  $defYear;
         $filter = isset($params['filter']) ? $params['filter'] : 0;        
         $cat = isset($params['category']) ? (int) $params['category'] : 0;
+        
+        switch ($cat) {            
+            case 1:
+                $fileName = 'Производители_СХТ';
+                break;
+            case 2:
+                $fileName = 'Производители_строительно_дорожной_техники';
+                break;
+            case 3:
+                $fileName = 'Производители_прицепов_и_полуприцепов';
+                break;                
+            case 4:
+                $fileName = 'Производители_техники_для_пищевой_промышленности';
+                break;        
+            case 5:
+                $fileName = 'Производители_оборудования_и_компонентов';
+                break;
+             case 8:
+                $fileName = 'Производители_прочей_техники';
+                break;
+            default:
+                $fileName = 'Все_производители';
+                break;                      
+        }
         $thisYear = intval(date('Y'));
-     $aYears = array($thisYear-1,$thisYear);
-     if ($month > 12 or !in_array($year ,$aYears )) {
-         die('Неверные параметры запроса');
-     }
+        
+         $aYears = array($thisYear-1,$thisYear);
+         if ($month > 12 or !in_array($year ,$aYears )) {
+             die('Неверные параметры запроса');
+        }
     
     $querySelect = 'SELECT ctr.*,tu."Email" AS "userEmail",tu."Login",
   (tu."SurName" || \' \' || tu."Name" || \' \' || tu."PatronymicName") AS "fio",
@@ -170,8 +195,8 @@ class ContractorService {
  header ( "Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT" );
  header ( "Cache-Control: no-cache, must-revalidate" );
  header ( "Pragma: no-cache" );
- header ( "Content-type: application/vnd.ms-excel" );
- header ( "Content-Disposition: attachment; filename=contractors(".date("d-m-Y").").xlsx" );
+ header ( "Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=ANSI" );
+ header ( "Content-Disposition: attachment; filename=".$fileName."(".date("d-m-Y").").xlsx" );
  
  //   require_once (ROOT_DIR.'/plugins/PHPExcel.php');
 //    require_once (ROOT_DIR.'/plugins/PHPExcel/Writer/Excel5.php');

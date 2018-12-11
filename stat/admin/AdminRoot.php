@@ -76,7 +76,7 @@ abstract class  AdminRoot {
         $this->tpl_vars['modals_list'] = $this->modals_list;
     }
     protected function setLeftBlockVars() {
-        $this->left_block_vars['chpu'] = _USE_CHPU_;
+        $this->left_block_vars['chpu'] = true;
         // Инициализация меню быстрого перехода        
         $this->left_block_vars['blocks_list'][0] = [
             'block_alias' => 'fast_link',

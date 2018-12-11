@@ -351,7 +351,7 @@ public static function getOldDate($inpDate, $n)
     }
     public static function generatePassword(
             $length=8,
-            $chars = '023456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            $chars = '023456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ',
             $first_digit = false
             ) {
         if (!is_int($length) || $length < 0) {
@@ -360,7 +360,7 @@ public static function getOldDate($inpDate, $n)
         $characters_length = strlen($chars) - 1;
         $string = '';
         for ($i = $length; $i > 0;$i--) {
-            if ($first_digit || $i != ($length - 1 )) {
+            if ($first_digit || $i != $length ) {
                 $string.= $chars[mt_rand(0,$characters_length)];
             } else {
                 $no_digit_str = preg_replace('/[\d]/', '', $chars);

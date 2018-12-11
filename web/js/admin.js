@@ -31,7 +31,6 @@ var getGeographyElements = (function() {
 	return {
 		getCities : function(regionId,$city_select){
                     $city_select.empty();
-			console.log ('Город');
                         $.ajax({
                             url: global_data.baseURI + '/model/get-cities',
                             type: 'POST',
@@ -55,7 +54,6 @@ var getGeographyElements = (function() {
                     var that = this;
                     $region_select.empty();
                     $city_select.empty();
-			console.log ('Регион');
                     $.ajax({
                         url: global_data.baseURI + '/model/get-regions',
                         type: 'POST',
@@ -84,7 +82,6 @@ var changeGeographyElement = function(e) {
     var country_id,region_id;
     var $region_select = $('#regionId');
     var $city_select = $('#cityId');
-    console.log($(e).val());
     switch (e.id) {
         case 'countryId':
             country_id = $(e).val();                        

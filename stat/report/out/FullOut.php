@@ -126,6 +126,7 @@ class FullOut extends ReportCreator
             // Первый этап (разбивка по типу производство/отгрузка)
             $type_index = 1;
              // индекс таблицы разбиение по видам техкики
+            $type_text = '';
             foreach ($this->data[0] as $type => $list_of_type) {
                 $ft_idx = 0;
                 $st_idx = 0;                
@@ -134,7 +135,7 @@ class FullOut extends ReportCreator
                 switch ($type) {
                     case 'Производство':
                       //  switch ($this->)
-                        switch ($this->classifierid) {
+                        switch ($this->classifierfullid) {
                             case 42:
                                 $type_text = 'Производство предприятий сельскохозяйственного машиностроения';
                                 break;
@@ -144,7 +145,7 @@ class FullOut extends ReportCreator
                         }
                         break;
                     case 'Отгрузка':
-                        switch ($this->classifierid) {
+                        switch ($this->classifierfullid) {
                             case 42:
                             $type_text = 'Отгрузка на внутренний рынок предприятиями сельскохозяйственного машиностроения';
                                 break;
@@ -271,7 +272,7 @@ class FullOut extends ReportCreator
                   }
                 $second_table[] = [[]];
                 if (count ($sub_class) != 1) {
-                $second_table[] = 
+                    $second_table[] = 
                     [
                         [
                             'type' => 'text',
@@ -282,13 +283,9 @@ class FullOut extends ReportCreator
 
                         ]
                     ];
-                $second_table[] = [[]];
-                 $second_table = array_merge($second_table,$header_array);                 
-                }
-                 
-                
-                 
-                 
+                    $second_table[] = [[]];
+                    $second_table = array_merge($second_table,$header_array);                 
+                }                                                                   
                   // Разбивка на подуровни
                 foreach ($sub_class as $sub_head => $sub_elem) {
                    // $ft_idx = count($first_table);
@@ -296,13 +293,12 @@ class FullOut extends ReportCreator
                     $st_idx = count ($second_table);
                     $firstTableExept = false;
                     if (in_array($sub_head,$first_table_exept_elements )) {
-                      $firstTableExept = true;
-                    }
-                    
+                        $firstTableExept = true;
+                    }                    
                     $c_idx = count ($contractor);
                     if ($sub_head != 'Root') {
                         $ft_head = ( $sub_head != $foot_note_element ) ? $sub_head : $sub_head.$foot_note;
-                          $contractor[$c_idx] = [[
+                        $contractor[$c_idx] = [[
                             'type' => 'text',
                             'size' => 12,
                             'value' => $sub_head,
@@ -310,23 +306,23 @@ class FullOut extends ReportCreator
                             'style' => [                             
                             'font' => ['italic'] ]
                           ] ];
-                          $second_table[$st_idx] = [[
-                                'type' => 'text',
-                                'value' => $sub_head,
-                                'style' => [ 
-                                    'border' => ['solid'],
-                                    'font' => ['bold']
-                                    ] 
-                              ] ];
-                          if (!$firstTableRoot) {
+                        $second_table[$st_idx] = [[
+                            'type' => 'text',
+                            'value' => $sub_head,
+                            'style' => [ 
+                                'border' => ['solid'],
+                                'font' => ['bold']
+                                ] 
+                            ] ];
+                        if (!$firstTableRoot) {
                             if (!$firstTableExept) {
                                 $first_table[$ft_idx] = [[
-                                  'type' => 'text',
-                                  'value' => $sub_head,
-                                  'style' => [ 
-                                      'border' => ['solid'],
-                                      'font' => ['bold']
-                                      ] 
+                                    'type' => 'text',
+                                    'value' => $sub_head,
+                                    'style' => [ 
+                                        'border' => ['solid'],
+                                        'font' => ['bold']
+                                      ]
                                 ] ];
                               }
                           }
@@ -877,7 +873,7 @@ class FullOut extends ReportCreator
 
           // Первый этап (разбивка по типу производство/отгрузка)
             $type_index = 1;
-
+            $finalRes = '';
             foreach ($this->data[0] as $type => $list_of_type) {
                 switch ($type) {
                   case 'Производство':
@@ -1157,7 +1153,7 @@ class FullOut extends ReportCreator
         $this->tpl_vars['classifier'] = $this->classifierfull;
         $this->tpl_vars['data_count'] = count($this->dataunits);
         $this->tpl_vars['units'] = l('UNIT','report');
-        $this->tpl_vars['colspan'] = $this->tpl_vars['subheader'] ? ' colspan='.$dataCount : '';
+        $this->tpl_vars['colspan'] = isset($this->tpl_vars['subheader']) ? ' colspan='.$dataCount : '';
       
       
       

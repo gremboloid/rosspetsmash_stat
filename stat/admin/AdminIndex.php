@@ -27,11 +27,7 @@ class AdminIndex extends AdminRoot {
         $this->summary_information['contractors_summary'] = array();
         $this->summary_information['contractors_summary']['head'] = l('CONTRACTOR_SUMMARY_HEAD','admin');
         $this->summary_information['contractors_summary']['subhead'] = l('CONTRACTOR_SUMMARY_SUBHEAD','admin');
-        if (_USE_CHPU_) {
-            $def_link_contractors = '/admin/contractors';
-        } else {
-            $def_link_contractors = '?controller=admin&element=contractors';
-        }
+        $def_link_contractors = '/admin/contractors';
         
         $contractors_count = Contractor::getRowsCount([
            ['param' => 'Present','staticNumber' => 1]
@@ -59,12 +55,10 @@ class AdminIndex extends AdminRoot {
         $this->summary_information['models_summary'] = array();
         $this->summary_information['models_summary']['head'] = l('MODELS_SUMMARY_HEAD','admin');
         $this->summary_information['models_summary']['subhead'] = l('MODELS_SUMMARY_SUBHEAD','admin');
-        if (_USE_CHPU_) {
-            $def_link_models = '/admin/models';
-        } else {
-            $def_link_models = '?controller=admin&element=models';
-        }
-        $models_count = Models::getRowsCount();
+        $sql = 'SELECT Count(*) AS "Count" FROM TBLMODEL "m", TBLCONTRACTOR "c","TBLBRAND" "b" WHERE
+            "c"."Id" = "b"."ContractorId" AND "c"."Present" = 1 AND "m"."BrandId" = "b"."Id"';
+        $def_link_models = '/admin/models';
+        $models_count = getDb()->querySelect($sql)[0]['Count'];
         $this->summary_information['models_summary']['headlink'] = [
             'text' => $models_count,
             'href' => $def_link_models
@@ -74,7 +68,8 @@ class AdminIndex extends AdminRoot {
         foreach ($classifierList as $classifier) {
             $cl_list_sql = ' SELECT c."Id" FROM BIX.TBLCLASSIFIER c
                 START WITH c."Id" = '.$classifier['Id'].' CONNECT BY PRIOR c."Id" = c."ClassifierId"';
-            $sql =  'SELECT Count(*) AS "Count" FROM TBLMODEL WHERE "ClassifierId" IN ('.$cl_list_sql.')';
+            $sql =  'SELECT Count(*) AS "Count" FROM TBLMODEL "m", TBLCONTRACTOR "c","TBLBRAND" "b" WHERE "ClassifierId" IN ('.$cl_list_sql.')'
+                    . 'AND "c"."Id" = "b"."ContractorId" AND "c"."Present" = 1 AND "m"."BrandId" = "b"."Id"';
             $cl_count = getDb()->querySelect($sql);            
             $this->summary_information['models_summary']['elements_list'][$classifier['Id']] = [
                 'text' => $classifier['Name'],
