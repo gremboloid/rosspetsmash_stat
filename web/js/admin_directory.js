@@ -84,21 +84,16 @@ $(function() {
             if (!leaf && modelName != 'Classifier') {
                 showMessage('Должен быть выбран раздел классификатор не имеющий подразделов');
                 return;
-            } 
-            var ajaxData = {           
-                    action : {
-                        namespace : 'Model',
-                        object : 'Classifier',
-                        method : 'getParentClassifierString',
-                        constructor_param : classifierId
-                        }
-                    };
+            }         
                     $.ajax({
-                        url: global_data.ajaxURI,
-                        type: 'GET',
-                        data: ajaxData,
+                        url: global_data.baseURI + '/custom/get-parent-classifier',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            id : classifierId
+                        },
                         success: function(response) {
-                                    $('#classifier_section').text(response);
+                                    $('#classifier_section').text(response.message);
                                     $('#replace_model').add('#replace_classifier').removeClass('hide');
                                 }                           
                         });            

@@ -71,6 +71,21 @@ class CustomController extends FrontController
         $message = $modalHelper->showDateChangeModal($postData['params']);
         return Tools::getMessage($message);
     }
+    public function actionGetParentClassifier() 
+    {
+        if (!Yii::$app->request->isAjax) {
+            return Tools::getErrorMessage('request error',1,false);
+        }
+        if (!Yii::$app->request->isPost) {
+            return  Tools::getErrorMessage('request error',1);          
+        }
+        $postData = Yii::$app->request->post();
+        if (empty($postData['id'])) {
+            return  Tools::getErrorMessage('request error',1);
+        }
+        return Tools::getMessage(ClassifierService::getParentClassifierString($postData['id']));
+        
+    }
     public function actionSaveConfiguration() {
         if (!is_admin() ||
             !Yii::$app->request->isAjax ||

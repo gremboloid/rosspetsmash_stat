@@ -127,6 +127,25 @@ class ClassifierService {
         }
     }
     /**
+     * Возвращает цепочку уровней классификатора до указанного элемента
+     * @param int $elementId элемент, до которого будет выстроена цепочка разделов классификатора
+     * @param string $delimiter разделитель элементов
+     * @return string
+     */
+    public static function getParentClassifierString(int $elementId,string $delimiter = '->')
+    {
+        $current_id = $elementId;
+        $sResult = '';
+        $parents_list = array_reverse(self::getClassifierParents($current_id));
+        foreach ($parents_list as $element) {
+            $sResult.= $element['Name'];
+            if ($element['Id'] != $current_id) {
+                $sResult.= ' ' . $delimiter .' ';
+            }
+        }
+        return $sResult;
+    }
+    /**
      * Вернуть цепочку родительских уровней классификатора до указанного элемента
      * @param int $elementId 
      * @return array|null
@@ -317,8 +336,7 @@ class ClassifierService {
          header('Content-transfer-encoding: binary');
          header('Content-Disposition: attachment; filename=classifier.csv');
          header('Content-Type: application/x-unknown');
-         echo $content; 
-        
+         echo $content;          
     }
     
     
