@@ -660,9 +660,6 @@ td.column-elements {
 .report_table_content table tr.head td:first-child {
   width: 40%; }
 
-#report-container {
-  padding-left: 1em; }
-
 #report-loader {
   position: absolute;
   top: 80px;
@@ -832,7 +829,7 @@ td.digit-val {
 .message-window {
   position: relative;
   background-color: #e7f7f3;
-  padding: 10px 0 10px 20px;
+  padding: 10px 20px;
   border: 1px solid #0e5984;
   margin-bottom: 3em;
   text-align: center; }
