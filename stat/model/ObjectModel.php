@@ -736,4 +736,16 @@ abstract class ObjectModel {
         $sql = static::generateSelect(['"Id"'],$where,$orderBy);
         return getDb()->getNextAndPrevId($this->getId(), $sql);
     }
+    public function setElementsFromArray ($assoc_array) 
+    {
+       foreach ($assoc_array as $key=>$value) 
+       {    
+           if (property_exists ( $this , $key )) {
+               if ($this->$key != $value) {
+                    $this->$key = $value;
+                    array_push($this->update_fields, ucfirst($key));
+               }
+           }
+       }        
+    }
 }

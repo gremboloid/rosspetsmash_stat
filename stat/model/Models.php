@@ -6,6 +6,7 @@ use app\stat\Tools;
 use app\stat\Convert;
 use app\stat\Sessions;
 use app\stat\services\ClassifierService;
+use app\stat\model\ValuesPerfAttr;
 /**
  * Description of Models
  *
@@ -216,6 +217,7 @@ class Models extends ObjectModel implements IChangeClassifier
          ];                        
     }
     
+    
     protected function informBlockConfigure() {
         parent::informBlockConfigure();
         $id = $this->getId();
@@ -270,6 +272,42 @@ class Models extends ObjectModel implements IChangeClassifier
             return Tools::getMessage('Перенос моделей выполнен успешно');
         }
         
+    }
+    public function saveModelObject($data,$form_elements=null,$return_json=true) 
+    {
+        $id = $this->getId();
+        parse_str($data['frm_data'],$form_elements);  
+        $res = parent::saveModelObject($data,$form_elements,false);
+        if ($res['STATUS'] !== OBJECT_MODEL_SAVED) {
+            return $res;
+        }
+        if (key_exists('tech_data', $data)) {
+            if (!$id) {
+                $id = $res['NEW_ID'];
+            }
+            parse_str($data['tech_data'], $elements);
+            foreach ($elements as $key => $value) {
+                $perf_obj = [
+                'performanceAttrId' => Convert::getNumbers($key),
+                'value' => $value ? $value : ' ',
+                'modelId' => intval($id)
+                ];
+                $exist_field = ValuesPerfAttr::getRowsArray(['Id'],[
+                    ['param' => 'PerformanceAttrId','staticNumber' => $perf_obj['performanceAttrId']],
+                    ['param' => 'ModelId','staticNumber' => $perf_obj['modelId']]
+                ]);
+                if (count($exist_field) == 1) {
+                    $updated_obj = new ValuesPerfAttr($exist_field[0]['Id']);
+                    $updated_obj->setElementsFromArray($perf_obj);
+                    $updated_obj->setWritable();
+                    $updated_obj->updateDb();
+                } else {
+                    $new_obj = ValuesPerfAttr::getInstance($perf_obj);
+                    $new_obj->addToDb();
+                }
+            }
+        }
+        return json_encode($res);
     }
 
 }

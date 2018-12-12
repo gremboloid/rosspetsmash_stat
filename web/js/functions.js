@@ -29,7 +29,11 @@ var saveModel = function() {
                     };
         if ($frm.hasClass('edit_form')) {
             frmParams.id = $frm.data('element');
-        }                    
+        }
+        var $techChars = $('#techCharacteristic');
+        if ($techChars.length === 1) {
+            frmParams.form.tech_data = $techChars.serialize();
+        }
         $.ajax({
             url: global_data.baseURI + '/model/save-model',
             type: 'POST',
