@@ -88,6 +88,9 @@ class DefaultOut extends ReportCreator
         $all_excel_cols = $all_cols - 1;
         
         // заголовок
+        $classifierHeader = (is_array($this->classifierid) && count($this->classifierid) > 1) ?
+                l('CLASSIFIER_SECTIONS','report') :
+                l('CLASSIFIER_SECTION','report');
         $rows_list = [ [],
                 [
                     [
@@ -122,7 +125,7 @@ class DefaultOut extends ReportCreator
                             'horizontal_align' => 'center'
                         ],
                         'cols' => $all_cols - 1,
-                        'value' => l('CLASSIFIER_SECTION').': '. $this->classifier
+                        'value' => $classifierHeader.': '. $this->classifier
                     ]
                 ]
             
@@ -715,8 +718,10 @@ class DefaultOut extends ReportCreator
       $this->tpl_vars['data_source'] = l('DATA_SOURCE','report');
       $this->tpl_vars['data_source_val'] = $this->source;
       $this->tpl_vars['report_type'] = l('REPORT_TYPE','report');
-      $this->tpl_vars['report_type_name'] = $this->name;
-      $this->tpl_vars['classifier_section'] = l('CLASSIFIER_SECTION');
+      $this->tpl_vars['report_type_name'] = $this->name;                      
+      $this->tpl_vars['classifier_section'] = (is_array($this->classifierid) && count($this->classifierid) > 1) ? 
+              l('CLASSIFIER_SECTIONS','report') :
+              l('CLASSIFIER_SECTION','report');
       $this->tpl_vars['classifier'] = $this->classifier;
       $this->tpl_vars['data_count'] = count($this->dataunits);
       $this->tpl_vars['units'] = l('UNIT','report');

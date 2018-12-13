@@ -42,7 +42,14 @@ class ModalViewer
     */
     public function getSubClasiifier(string $reportType) 
     {
-        $sub_classifier_list = '';      
+        $sub_classifier_list = '';
+        if (!is_array($this->params->classifier)) {
+            $classifier = $this->params->classifier;
+        } elseif (count($this->params->classifier) === 1) {
+            $classifier = $this->params->classifier[0];
+        } else {
+            $classifier = $this->params->classifier;
+        }             
         $params = json_decode(Sessions::getReportParams(),true); 
         if (key_exists($reportType, $params['report_list']))
         {
@@ -56,8 +63,20 @@ class ModalViewer
         $tpl_vars['btns'] = l('BTN_ACTIONS');
         $tpl_vars['alias'] = 'sub_classifier';
         $tpl_vars['select_all'] = l('SELECT_ALL');
-        $tpl_vars['left_list'] = $this->params->classifier->getChildClassifierList(array(['Id'],['Name']),$sub_classifier_list);
-        $tpl_vars['right_list'] = $sub_classifier_list ? Classifier::getFilteredRows($sub_classifier_list,array(['Id'],['Name']),'Name') : array();                
+        if ( is_array($classifier)) {
+            $classifierList = array();
+            foreach ($classifier as $elem) {
+                $classifierList[] =
+                        [
+                            'Id' => $elem->getId(),
+                            'Name' => $elem->getClassifierName()
+                        ];
+            }
+            $tpl_vars['left_list'] = $classifierList;
+        } else {
+            $tpl_vars['left_list'] = $classifier->getChildClassifierList(array(['Id'],['Name']),$sub_classifier_list);           
+        }
+         $tpl_vars['right_list'] = $sub_classifier_list ? Classifier::getFilteredRows($sub_classifier_list,array(['Id'],['Name']),'Name') : array();
         $view_helper = new ViewHelper(_MODAL_TEMPLATES_DIR_,'modal_select',$tpl_vars);
         return $view_helper->getRenderedTemplate();       
     }        

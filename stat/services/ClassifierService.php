@@ -147,20 +147,25 @@ class ClassifierService {
     }
     /**
      * Вернуть цепочку родительских уровней классификатора до указанного элемента
-     * @param int $elementId 
+     * @param int $elementId заданный элемент
+     * @param boolean $rootElementPresent включать в массив исходный элемент 
      * @return array|null
      */
-    public static function getClassifierParents($elementId)
+    public static function getClassifierParents($elementId,$rootElementPresent = true)
     {
         if (!isset($elementId)) {
             return false;       
+        }
+        $rootElementFilter = '';
+        if (!$rootElementPresent) {
+            $rootElementFilter = 'WHERE LEVEL != 1';
         }        
         $filter = 'c."Id" = '.intval($elementId);
 
             $sql = 'SELECT LEVEL AS "Level",
-                       c."Id",c."ClassifierId" AS "PId", c."Name"
-                    FROM BIX.TBLCLASSIFIER c
-                    START WITH '.$filter.' CONNECT BY PRIOR c."ClassifierId" = c."Id"';
+                       c."Id",c."ClassifierId" AS "PId", c."Name"  
+                    FROM BIX.TBLCLASSIFIER c '.$rootElementFilter.
+                    'START WITH '.$filter.' CONNECT BY PRIOR c."ClassifierId" = c."Id"';
             $bindingParams = null;
         
         $aResult = getDb()->querySelect($sql,$bindingParams);
@@ -168,7 +173,26 @@ class ClassifierService {
      //   $aResult[key($aResult)]['PId'] = null;
         return $aResult;
     }
-        public function getClassifierCsv() {
+    /**
+     * Проверяет наличие вложенных разделов классификатора
+     * @param array $classifierArray массив идентификаторов раздела классификатора
+     * @return boolean
+     */
+    public static function isNestedClassifierPresents(array $classifierArray) 
+    {
+        foreach ($classifierArray as $id) {
+            $parentsList = Tools::getValuesFromArray(self::getClassifierParents($id,false),'Id');
+            foreach ($parentsList as $parentId) {
+                if (in_array($parentId, $classifierArray)) {                    
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public function getClassifierCsv() {
         $max_par = 0; // максимальная глубина вложенности
        
          // Вспомогательная функция возвращающая массив элементов заданной глубины вложенности
@@ -338,6 +362,7 @@ class ClassifierService {
          header('Content-Type: application/x-unknown');
          echo $content;          
     }
+    
     
     
     

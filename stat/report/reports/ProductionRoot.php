@@ -7,6 +7,7 @@ use app\models\user\LoginUser;
 use app\stat\db\SimpleSQLConstructor;
 use app\stat\Tools;
 use app\stat\Validate;
+use app\stat\exceptions\ReportException;
 use Yii;
 /**
  * Класс содержащий отчеты по производимой и отгружаемой продукции
@@ -234,14 +235,24 @@ abstract class ProductionRoot extends RootReport
                                     "cnt"."Id" = "tr"."CountryId" AND
                                     "tb"."ContractorId" = "tc"."Id"
                                   )';
-        }        
-        
-        $classifier = $this->reportParams->classifier->getId();
+        }  
+        $classifierStr = '';
+        if (is_array($this->reportParams->classifier)) {            
+            foreach ($this->reportParams->classifier as $classifierObject) {
+                $classifier = $classifierObject->getId();
+                $classifierStr .= 'SELECT "Id" FROM "TBLCLASSIFIER" START WITH "Id"=' . $classifier . ' CONNECT BY PRIOR "Id"="ClassifierId"';
+                $classifierStr .=' UNION ';
+            }
+            $classifierStr = trim($classifierStr,' UNION ');
+        } else {
+            $classifier = $this->reportParams->classifier->getId();
+            $classifierStr = 'SELECT "Id" FROM "TBLCLASSIFIER" START WITH "Id"=' . $classifier . ' CONNECT BY PRIOR "Id"="ClassifierId"';
+        }
         $this->sql = 'SELECT "base".*,
                              "classifier"."Id" AS "ClassifierId"
                                 FROM (' . $this->sql . ') "base",
                              TBLMODEL "mdl",
-                            (SELECT "Id" FROM "TBLCLASSIFIER" START WITH "Id"=' . $classifier . ' CONNECT BY PRIOR "Id"="ClassifierId") "classifier"
+                            ('.$classifierStr.') "classifier"
 					WHERE "base"."ModelId" = "mdl"."Id" AND
 						"mdl"."ClassifierId" = "classifier"."Id"'.
                             $presents_manuf_filter.
@@ -491,12 +502,7 @@ abstract class ProductionRoot extends RootReport
         parent::prepareSQL();
         if ($this->reportParams->datasource->id == 4 || $this->reportParams->datasource->id == 5) {
             if ($this->reportParams->periods->getRealPeriodsCount() > $max_periods_count) {
-                    $this->status['ERROR'] = true;
-                    $this->status['ERROR_MESSAGE'] = [
-                        'head' => l('ERROR','messages'),
-                        'body' => 'Для построения отчета по экспорту или импорту выберите не более '.$max_periods_count.' периодов.'
-                ];
-            return;
+                throw new ReportException('Для построения отчета по экспорту или импорту выберите не более '.$max_periods_count.' периодов.');
             }
         }
         

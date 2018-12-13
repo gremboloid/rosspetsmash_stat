@@ -1966,6 +1966,18 @@ ul.inline > li {
   margin-top: 1em;
   min-height: 2em; }
 
+#current-classifier {
+  overflow-y: auto;
+  min-height: 2.5em;
+  max-height: 3.5em; }
+
+#current-classifier > .sub_block_body:first-child {
+  margin-top: 1em; }
+
+#current-classifier > .sub_block_body {
+  margin-top: 5px;
+  min-height: auto; }
+
 .sub_block_body input.format-date {
   width: 100%; }
 

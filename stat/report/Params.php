@@ -24,7 +24,7 @@ class Params
 {
     /**
      * Объект классификатора
-     * @var Classifier
+     * @var Classifier|Classifier[]
      */
     public $classifier;
     /**
@@ -150,9 +150,15 @@ class Params
             $this->countriesStr = $countries ? $countries : '';
             $this->regions = $regions ? Region::getFilteredRows($regions,array(['Id'],['Name']),'Id') : array();
             $this->regionsStr = $regions ? $regions : '';
-            $classifierId = !empty($classifier_id) ? $classifier_id : $this->defaultValues['classifier_id'] ;
+            $classifier = !empty($classifier_id) ? $classifier_id : $this->defaultValues['classifier_id'] ;
             $fullReportClassifierId = !empty($full_classifier_id) ? $full_classifier_id : $this->defaultValues['full_classifier_id'] ;
-            $this->classifier = new Classifier($classifierId);
+            if (is_array($classifier)) {
+                foreach($classifier as $id) {
+                    $this->classifier[] = new Classifier($id);
+                }
+            } else {
+                $this->classifier = new Classifier($classifier);
+            }
             $this->fullReportClassifier = new Classifier($fullReportClassifierId);
             $datasourceId = !empty($datasource_id) ? $datasource_id : (
                     (is_russian() || is_admin() || is_analytic()) ?

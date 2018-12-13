@@ -29,28 +29,35 @@ class ContractorService {
      /**
      * Возвращает список производителей
      * @param type $datasources
-     * @param type $classifierid
+     * @param type $classifier
      * @param type $typedata
      * @param type $filter
      * @param type $presents
      * @return type
      */
-    public static function getContractorList($datasources,$classifierid,$typeData,$filter='',$present = true,$limit = '')
+    public static function getContractorList($datasources,$classifier,$typeData,$filter='',$present = true,$limit = '')
     {
         $pFilter = ''; // фильтр присутствующих на портале производителей
         if ($present) {
             $pFilter = ' AND "TBLCONTRACTOR"."Present" = 1 ';
         }
-        
+        $classifierFilter = '';
+        if (is_array($classifier)) {
+            foreach ($classifier as $id) {
+                $classifierFilter .= 'SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" START WITH "Id"='.$id;
+                $classifierFilter .= ' UNION ';
+            }
+            $classifierFilter = trim($classifierFilter,' UNION ');
+        } else {
+            $classifierFilter = 'SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" START WITH "Id"='.$classifierid;
+        }
         $sql = 'SELECT DISTINCT "TBLCONTRACTOR"."Id" AS "Id", "TBLCONTRACTOR"."Name" AS "Name" 
                 FROM ( SELECT "ContractorId" FROM "TBLPRODUCTION" WHERE "TypeData" 
                 IN '.$datasources.') "contr_prod", "TBLCONTRACTOR", "CACHECONTRACTORCLASSIFIER"                     
                 WHERE "contr_prod"."ContractorId" = "TBLCONTRACTOR"."Id" AND
                 "TBLCONTRACTOR"."TypeId" = '.$typeData.' AND 
                 "CACHECONTRACTORCLASSIFIER"."ContractorId" = "contr_prod"."ContractorId" AND
-                "CACHECONTRACTORCLASSIFIER"."ClassifierId" IN ( 
-                SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" 
-                START WITH "Id"='.$classifierid.')'.$pFilter.' ORDER BY "TBLCONTRACTOR"."Name" ASC';
+                "CACHECONTRACTORCLASSIFIER"."ClassifierId" IN ('.$classifierFilter.')'. $pFilter.' ORDER BY "TBLCONTRACTOR"."Name" ASC';
         if ($filter) {
             $sql = 'SELECT * FROM ('.$sql.') WHERE "Id" NOT IN ('.$filter.')';
         }

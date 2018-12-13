@@ -9,6 +9,7 @@ use app\models\user\LoginUser;
 use app\stat\Convert;
 use app\stat\db\SimpleSQLConstructor;
 use app\stat\model\Classifier;
+use app\stat\services\ClassifierService;
 use app\stat\Tools;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -271,11 +272,8 @@ abstract class RootReport {
      //$SQLDebug = true;
      //  $Debug = true;
        // $CustomDebug = true;
-
-        $this->type = $type;
-        $currency = new Currency($this->reportSettings['currency']);  
         try {
-            $this->prepareSQL();
+            $this->prepareReport($type);
         } catch ( ReportException $e ) {
             $this->tpl_vars = [   
                     'head' => l('ERROR','messages'),                
@@ -289,6 +287,8 @@ abstract class RootReport {
                 'message' => $resultHtml                
             ];
         }
+                
+        $currency = new Currency($this->reportSettings['currency']);   
         if (isset($CustomDebug)) {
             return [
                  'errorCode' => 0,
@@ -304,8 +304,18 @@ abstract class RootReport {
  //       return print_ar($this->arraySync($this->constructReport()));
         $paramsArray['Columns'] = $this->columns;
         $paramsArray['Name'] = $this->getReportName();
-        $paramsArray['Classifier'] = $this->reportParams->classifier->getClassifierName();
-        $paramsArray['ClassifierId'] = $this->reportParams->classifier->getId();
+        if (is_array($this->reportParams->classifier)) {
+            $paramsArray['Classifier'] = '';
+            $paramsArray['ClassifierId'] = [];
+            foreach ($this->reportParams->classifier as $obj) {
+                $paramsArray['ClassifierId'][] = $obj->getId();
+                $paramsArray['Classifier'].= $obj->getClassifierName() .', ';
+            }
+            $paramsArray['Classifier'] = trim ($paramsArray['Classifier'],', ');
+        } else {
+            $paramsArray['Classifier'] = $this->reportParams->classifier->getClassifierName();
+            $paramsArray['ClassifierId'] = $this->reportParams->classifier->getId();
+        }
         $paramsArray['ClassifierFull'] = $this->reportParams->fullReportClassifier->getClassifierName();
         $paramsArray['ClassifierFullId'] = $this->reportParams->fullReportClassifier->getId();
         $paramsArray['Source'] = $this->reportParams->datasource->getDatasourceName();
@@ -458,14 +468,31 @@ abstract class RootReport {
         
     }
     /**
+     * Предварительная настройка отчета
+     */
+    protected function prepareReport($type) {
+        $this->type = $type;
+        if (!is_a($this->reportParams,'app\stat\report\Params')) {
+            $this->reportParams = new Params($this->currentUser);        
+        }
+        if (is_array($this->reportParams->classifier)) {
+            $classifierList = array_map( function(Classifier $val) { return $val->getId(); },$this->reportParams->classifier);
+            if (ClassifierService::isNestedClassifierPresents($classifierList)) {
+                throw new ReportException('Выбранные разделы классифмкатора не могут содержать друг друга');  
+            }
+            //
+           // throw new ReportException(implode(',', $classifierList));
+        }
+        $this->prepareSQL();
+
+    }
+    
+    /**
      * Подготовить SQL запрос для формирования отчета
      */
     protected function prepareSQL() {
         $this->sql = ''; 
         $ctr = $this->currentUser->getContractorId();
-        if (!is_a($this->reportParams,'app\stat\report\Params')) {
-            $this->reportParams = new Params($this->currentUser);        
-        } 
         if (!$this->reportParams->periods->isPeriodsUnique()) {
             $this->status['ERROR'] = true;
             $this->status['ERROR_MESSAGE'] = [

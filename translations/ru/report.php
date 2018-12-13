@@ -94,6 +94,7 @@ $_REPORT['FULL_REPORT'] = 'Отчет с портала';
 
 // заголовки
 $_REPORT['CLASSIFIER_SECTION'] = 'Раздел классификатора';
+$_REPORT['CLASSIFIER_SECTIONS'] = 'Разделы классификатора';
 $_REPORT['MODEL_SECTION'] = 'Модели';
 $_REPORT['CONTRACTOR_SECTION'] = 'Производители';
 $_REPORT['COMPANY_SECTION'] = 'Компания';

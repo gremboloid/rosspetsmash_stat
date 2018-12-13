@@ -44,7 +44,17 @@ class ReportsController extends FrontController
         $this->tpl_vars['content_header'] = l('REPORT_CONSTRUCTOR','report');
         $this->tpl_vars['report_params_header'] = l('REPORT_PARAMS','report');
         $this->tpl_vars['classifier_header'] = l('CLASSIFIER_SECTION','report');
-        $this->tpl_vars['clasifier_default'] = $this->reportParams->classifier->getName();
+        if (is_array($this->reportParams->classifier)) {
+            $classifierId = [];
+            foreach ($this->reportParams->classifier as $classifier) {
+                $this->tpl_vars['clasifier_default'][] = $classifier->getName();
+                $classifierId[] = (int) $classifier->id;
+            }
+            $this->tpl_vars['classifier_id'] = json_encode($classifierId);
+        } else {
+            $this->tpl_vars['clasifier_default'] = $this->reportParams->classifier->getName();
+            $this->tpl_vars['classifier_id'] = $this->reportParams->classifier->id;
+        }
         $this->tpl_vars['clasifier_full_default'] = $this->reportParams->fullReportClassifier->getName();
         // Список для полного отчета
        $this->tpl_vars['full_report_classifier'] = ClassifierService::getFullReportClassifier();
@@ -75,7 +85,7 @@ class ReportsController extends FrontController
        $this->tpl_vars['save_to_excel'] = l('SAVE_TO_EXCEL', 'report');
        $this->tpl_vars['load_indicators'] = l('LOAD_FOR_INDICATORS', 'report');
     // параметры отчета
-       $this->tpl_vars['classifier_id'] = $this->reportParams->classifier->id;
+       
        $this->tpl_vars['full_classifier_id'] = $this->reportParams->fullReportClassifier->id;
        $this->tpl_vars['datasource_id'] = $this->reportParams->datasource->id;
        $this->tpl_vars['periods'] = $this->reportParams->periods->getJSONString();

@@ -4,6 +4,7 @@ namespace app\stat\report\reports;
 
 use app\models\user\LoginUser;
 use app\stat\model\Contractor;
+use app\stat\model\Classifier;
 use app\stat\services\ContractorService;
 use app\stat\Tools;
 use app\stat\db\SimpleSQLConstructor;
@@ -74,10 +75,15 @@ class ManufacturersReport extends ProductionRoot
                 if (count($lists) > 0) {
                     $limit = implode(',', Tools::getValuesFromArray($lists, 'Id'));
                 }
-            }                        
+            }
+            if (is_array($this->reportParams->classifier)) {
+                 $classifierElement = array_map( function(Classifier $val) { return $val->getId(); },$this->reportParams->classifier);
+            } else {
+                $classifierElement = $val->getId();
+            }
             $elems = ContractorService::getContractorList(
                     $this->reportParams->datasource->getId(), 
-                    $this->reportParams->classifier->getId(), 
+                    $classifierElement, 
                     2,'',$present,$limit);
             $list = array_map( function($arr) {
                 return $arr['Id'];

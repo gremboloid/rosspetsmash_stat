@@ -475,17 +475,24 @@ var addParams = function () {
                 $bcl.removeClass('hide');
                 if (isDynamic) {
                     $.getJSON(global_data.baseURI + '/custom/get-classifier-json', function (treeData){
-                        $('#classifier_tree').buildTree($.parseJSON(treeData),$('#classifier-search')).on('select_node.jstree',function(event,data){
-                            params.classifier_id=data.node.id;
+                        $('#classifier_tree').buildTree($.parseJSON(treeData),$('#classifier-search')).on('changed.jstree',function(event,data){
+                            params.classifier_id=data.selected;
+                            var $cc = $('#current-classifier'),i,j;
+                            console.log(data);
                             if (params.hasOwnProperty('report_list')) {
                                 var report_list = params.report_list;
                                 clearReportSettings(report_list);
                                 $('.settings').remove();
-
                             }
                             ajax.write_session_value('report_params',params,addParams);
-                            $('#current-classifier').text(data.node.text) ;
-                        });
+                            $cc.html('');
+                            for(i = 0, j = data.selected.length; i < j; i++) {
+                                $cc.append('<div class="sub_block_body">'+ data.instance.get_node(data.selected[i]).text +'</div>');
+                            }
+                            
+                            
+                           // $cc.
+                        });                        
                          $('#classifier_tree').removeClass('dynamic-load');
                     });
                 }

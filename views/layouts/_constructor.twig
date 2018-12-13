@@ -16,7 +16,15 @@
 						</div>
 						<i id="get_classifier" class="fa fa-pencil-alt constructor_action" aria-hidden="true" title="{{ button_change }}"></i>
 						<!-- <div id="get_classifier" class="constructor_action">{{ button_change }}</div> -->
-						<div id="current-classifier" class="sub_block_body{% if selected_report == 'full'%} hide{% endif %}">{{ clasifier_default }}</div>
+						<div id="current-classifier"{% if selected_report == 'full'%} class="hide"{% endif %}>
+							{% if clasifier_default is iterable %}
+							{% for name in clasifier_default %}
+							<div class="sub_block_body">{{ name }}</div>
+							{% endfor %}
+							{% else %}
+							<div class="sub_block_body">{{ clasifier_default }}</div>
+							{% endif %}
+						</div>
 						<div id="current-classifier-full" class="sub_block_body{% if selected_report != 'full'%} hide{% endif %}">{{ clasifier_full_default }}</div>
 						
 					</div>
