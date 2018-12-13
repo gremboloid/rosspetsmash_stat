@@ -49,7 +49,7 @@ class ContractorService {
             }
             $classifierFilter = trim($classifierFilter,' UNION ');
         } else {
-            $classifierFilter = 'SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" START WITH "Id"='.$classifierid;
+            $classifierFilter = 'SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" START WITH "Id"='.$classifier;
         }
         $sql = 'SELECT DISTINCT "TBLCONTRACTOR"."Id" AS "Id", "TBLCONTRACTOR"."Name" AS "Name" 
                 FROM ( SELECT "ContractorId" FROM "TBLPRODUCTION" WHERE "TypeData" 

@@ -4,6 +4,7 @@ namespace app\stat\report\reports;
 
 use app\models\user\LoginUser;
 use app\stat\model\Models;
+use app\stat\model\Classifier;
 use app\stat\services\ModelService;
 use app\stat\Tools;
 use app\stat\db\SimpleSQLConstructor;
@@ -103,9 +104,14 @@ class ModelsReport extends ProductionRoot
                     $limit = implode(',', Tools::getValuesFromArray($lists, 'Id'));
                 }                
             }
+            if (is_array($this->reportParams->classifier)) {
+                $classifierElement = array_map( function(Classifier $val) { return $val->getId(); },$this->reportParams->classifier);
+            } else {
+                $classifierElement = $this->reportParams->classifier->getId();
+            }
             $elems = ModelService::getModelsList(
                     $this->reportParams->datasource->getId(), 
-                    $this->reportParams->classifier->getId(),
+                    $classifierElement,
                     '',
                     $present,
                     $limit

@@ -153,8 +153,12 @@ class Params
             $classifier = !empty($classifier_id) ? $classifier_id : $this->defaultValues['classifier_id'] ;
             $fullReportClassifierId = !empty($full_classifier_id) ? $full_classifier_id : $this->defaultValues['full_classifier_id'] ;
             if (is_array($classifier)) {
-                foreach($classifier as $id) {
-                    $this->classifier[] = new Classifier($id);
+                if (count($classifier) > 1) {
+                    foreach($classifier as $id) {
+                        $this->classifier[] = new Classifier($id);
+                    }
+                } else {
+                    $this->classifier = new Classifier($classifier[0]);
                 }
             } else {
                 $this->classifier = new Classifier($classifier);

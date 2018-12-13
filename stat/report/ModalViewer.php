@@ -57,6 +57,11 @@ class ModalViewer
                 $sub_classifier_list =  $params['report_list'][$reportType]['sub_classifier'];
             }            
         }
+        if (is_string($sub_classifier_list)) {
+            $subClassifierArray = explode(',', $sub_classifier_list);
+        } else {
+            $subClassifierArray = $sub_classifier_list;
+        }
         $tpl_vars['head'] = l('SELECT_SUB_CLASSIFIER','report');
         $tpl_vars['left_column_head'] = l('ALL_ELEMENTS');
         $tpl_vars['right_column_head'] = l('ADDED_ELEMENTS');
@@ -66,11 +71,13 @@ class ModalViewer
         if ( is_array($classifier)) {
             $classifierList = array();
             foreach ($classifier as $elem) {
-                $classifierList[] =
-                        [
-                            'Id' => $elem->getId(),
-                            'Name' => $elem->getClassifierName()
-                        ];
+                if (!in_array($elem->getId(), $subClassifierArray)) {
+                    $classifierList[] =
+                            [
+                                'Id' => $elem->getId(),
+                                'Name' => $elem->getClassifierName()
+                            ];
+                }
             }
             $tpl_vars['left_list'] = $classifierList;
         } else {
@@ -87,7 +94,14 @@ class ModalViewer
     */
     public function getModels(string $reportType) {
         //$models_list = '';
-        $classifierId = $this->params->classifier->getId();
+        if (is_array($this->params->classifier)) {
+            $classifier = [];
+            foreach($this->params->classifier as $obj) {
+                $classifier[] = $obj->getId();
+            }
+        } else {
+            $classifier = $this->params->classifier->getId();
+        }
         $present = $this->params->defaultValues['present'];
         $typeProduction = array();
         $limit = '';
@@ -155,7 +169,7 @@ class ModalViewer
         $tpl_vars['alias'] = 'models_list';
         $tpl_vars['select_all'] = l('ALL_MODELS');     
         //$tpl_vars['left_list']
-        $models = ModelService::getModelsList($datasources, $classifierId,'',$present,$limit);
+        $models = ModelService::getModelsList($datasources, $classifier,'',$present,$limit);
         $contractors_list = [];
         $models_count = count($models_list);
        /* if (count($models_list) == 0) {

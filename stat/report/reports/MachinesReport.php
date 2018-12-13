@@ -2,6 +2,7 @@
 namespace app\stat\report\reports;
 
 use app\models\user\LoginUser;
+use app\stat\model\Classifier;
 /**
  * Класс отчета "Распределение по видам машин"
  *
@@ -31,7 +32,7 @@ class MachinesReport extends ProductionRoot
         parent::constructReportSettings();
         $sub_classifier_list = $this->reportSettings['sub_classifier'];
         if ($sub_classifier_list && is_array($sub_classifier_list)) {
-            $list = \Model\Classifier::getFilteredRows($sub_classifier_list, array(['Id'],['Name']),'Name');            
+            $list = Classifier::getFilteredRows($sub_classifier_list, array(['Id'],['Name']),'Name');            
         }
         else {
             $list = array();
@@ -65,7 +66,12 @@ class MachinesReport extends ProductionRoot
         }
         if ($all_subs) {
             $list = $this->settings['sub_classifier'];
-        } else {
+        } elseif (is_array($this->reportParams->classifier)) {
+            foreach($this->reportParams->classifier as $obj) {
+                $list.= $obj->getId().',';
+            }
+            $list = trim($list,',');
+        } else {            
             $elems = $this->reportParams->classifier->getChildClassifierList(array(['Id']));
             foreach ($elems as $elem) {
                 $list.= $elem['Id'].',';

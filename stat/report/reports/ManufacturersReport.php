@@ -79,7 +79,7 @@ class ManufacturersReport extends ProductionRoot
             if (is_array($this->reportParams->classifier)) {
                  $classifierElement = array_map( function(Classifier $val) { return $val->getId(); },$this->reportParams->classifier);
             } else {
-                $classifierElement = $val->getId();
+                $classifierElement = $this->reportParams->classifier->getId();
             }
             $elems = ContractorService::getContractorList(
                     $this->reportParams->datasource->getId(), 
