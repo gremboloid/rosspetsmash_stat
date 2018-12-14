@@ -18,8 +18,12 @@ class ModelService {
      * @param string $limit
      * @return array 
      */
-     public static function getModelsList(string $datasources,$classifier,$filter='',$presents=true,$limit='')
+     public static function getModelsList(string $datasources,$classifier,$filter='',$presents=true,$limit='',$modelType=array())
     {
+         $modelTypeFilter = '';
+         if (!empty($modelType) && count($modelType) < 3) {
+             $modelTypeFilter = ' AND "m"."ModelTypeId" IN ('. implode(',', $modelType).')';
+         }
         $classifierFilter = '';
         if (is_array($classifier)) {
             foreach ($classifier as $id) {
@@ -31,12 +35,12 @@ class ModelService {
             $classifierFilter = 'SELECT "Id" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" START WITH "Id"='.$classifier;
         }
         // if (is_array($c))
-        $sql = 'SELECT "TBLMODEL"."Id" AS "Id","TBLMODEL"."BrandId", "TBLMODEL"."Name" AS "Name" FROM (
+        $sql = 'SELECT "TBLMODEL"."Id" AS "Id","TBLMODEL"."BrandId","TBLMODEL"."ModelTypeId", "TBLMODEL"."Name" AS "Name" FROM (
             SELECT DISTINCT "ModelId" FROM "TBLPRODUCTION" WHERE "TypeData" IN ('.$datasources.')) "mdl_prod", 
             "TBLMODEL" WHERE "TBLMODEL"."Id" = "mdl_prod"."ModelId" AND "TBLMODEL"."ClassifierId" IN  
             ( '.$classifierFilter.') ORDER BY "TBLMODEL"."Name" ASC';
         $sql = 'SELECT "m".*,"c"."Id" AS "ContractorId","c"."Present" FROM ('.$sql.') "m","TBLCONTRACTOR" "c","TBLBRAND" "b"
-            WHERE "m"."BrandId" ="b"."Id" AND "b"."ContractorId" = "c"."Id"';        
+            WHERE "m"."BrandId" ="b"."Id" AND "b"."ContractorId" = "c"."Id"'.$modelTypeFilter;        
         if ($filter) {
             $sql = 'SELECT * FROM ('.$sql.') WHERE "Id" NOT IN ('.$filter.')';
         }

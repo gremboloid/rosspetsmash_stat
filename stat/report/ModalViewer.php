@@ -169,7 +169,7 @@ class ModalViewer
         $tpl_vars['alias'] = 'models_list';
         $tpl_vars['select_all'] = l('ALL_MODELS');     
         //$tpl_vars['left_list']
-        $models = ModelService::getModelsList($datasources, $classifier,'',$present,$limit);
+        $models = ModelService::getModelsList($datasources, $classifier,'',$present,$limit,$typeProduction);
         $contractors_list = [];
         $models_count = count($models_list);
        /* if (count($models_list) == 0) {
