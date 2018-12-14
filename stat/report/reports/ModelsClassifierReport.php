@@ -4,6 +4,7 @@ namespace app\stat\report\reports;
 
 use app\models\user\LoginUser;
 use app\stat\exceptions\ReportException;
+use app\stat\report\Params;
 /**
  * Класс отчета "Модели"
  *
@@ -35,9 +36,15 @@ class ModelsClassifierReport extends ProductionRoot
     //    $this->constructReportSettings();
         
     }
-    protected function prepareSQL() 
+    protected function prepareReport($type) 
     {
-        parent::prepareSQL();                               
+        if (!is_a($this->reportParams,'app\stat\report\Params')) {
+            $this->reportParams = new Params($this->currentUser);        
+        }
+        if (is_array($this->reportParams->classifier)) {
+            throw new ReportException('Для данного отчета необходимо выбрать один раздел классификатора');
+        }
+        parent::prepareReport($type);
     }
     protected function constructReportSettings() {
         parent::constructReportSettings();

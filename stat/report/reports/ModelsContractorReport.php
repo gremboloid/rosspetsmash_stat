@@ -6,6 +6,7 @@ use app\models\user\LoginUser;
 use app\stat\services\ContractorService;
 use app\stat\db\SimpleSQLConstructor;
 use app\stat\model\Contractor;
+use app\stat\model\Classifier;
 /**
  * Класс отчета "Модели по производителям"
  *
@@ -68,12 +69,17 @@ class ModelsContractorReport extends ProductionRoot {
                 $all_manufacturers = true;
             }
         }
+        if (is_array($this->reportParams->classifier)) {
+                $classifierElement = array_map( function(Classifier $val) { return $val->getId(); },$this->reportParams->classifier);
+            } else {
+                $classifierElement = $this->reportParams->classifier->getId();
+            }
         if ($all_manufacturers) {
             $list = $this->reportSettings['manufacturers_list'];
         } else {
             $elems = ContractorService::getContractorList(
                     1, 
-                    $this->reportParams->classifier->getId(), 
+                    $classifierElement, 
                     2);
             $list = array_map( function($arr) {
                 return $arr['Id'];
@@ -92,7 +98,25 @@ class ModelsContractorReport extends ProductionRoot {
         $this->tmp_values['where'][] = '"data"."Type"(+) = "var"."TypeId"';
         $this->tmp_values['group'][] ='var.TypeId';
         
-        $this->dimensions['from'][] = ['name'=> 'class','textValue' => '(SELECT "Id", "ClassifierGroupId" AS "RootId" FROM TBLCLASSIFIER START WITH "Id" = '.$this->reportParams->classifier->getId().'  CONNECT BY PRIOR "Id" = "ClassifierId")'];
+        if (is_array($this->reportParams->classifier)) {
+            $classifier = [];
+            foreach($this->reportParams->classifier as $obj) {
+                $classifier[] = $obj->getId();
+            }
+        } else {
+            $classifier = $this->reportParams->classifier->getId();
+        }
+        $classifierFilter = '';
+        if (is_array($classifier)) {
+            foreach ($classifier as $id) {
+                $classifierFilter .= 'SELECT "Id", "ClassifierGroupId" AS "RootId" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" START WITH "Id"='.$id;
+                $classifierFilter .= ' UNION ';
+            }
+            $classifierFilter = trim($classifierFilter,' UNION ');
+        } else {
+            $classifierFilter = 'SELECT "Id", "ClassifierGroupId" AS "RootId" FROM "TBLCLASSIFIER" CONNECT BY PRIOR "Id" = "ClassifierId" START WITH "Id"='.$classifier;
+        }
+        $this->dimensions['from'][] = ['name'=> 'class','textValue' => '('.$classifierFilter.')'];
         $this->dimensions['select'][] = array('textValue' => '"class"."Id"','name' => "ClassifierId");
         $this->dimensions['select'][] = array('textValue' => '"class"."RootId"','name' => "ClassifierRootId");
         $this->dimensions['where'][] = '"mdl"."ClassifierId" = "class"."Id"';

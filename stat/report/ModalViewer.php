@@ -221,7 +221,14 @@ class ModalViewer
     {
         //return Tools::getMessage('ок');
         $manuf_list = [];
-        $classifierId = $this->params->classifier->getId();
+        if (is_array($this->params->classifier)) {
+            $classifier = [];
+            foreach($this->params->classifier as $obj) {
+                $classifier[] = $obj->getId();
+            }
+        } else {
+            $classifier = $this->params->classifier->getId();
+        }
         $params = json_decode(Sessions::getReportParams(),true);
         $typeProduction = array();
         if (!empty($params['report_list'])) {
@@ -287,10 +294,10 @@ class ModalViewer
         $tpl_vars['alias'] = 'manufacturers_list';
         $tpl_vars['select_all'] = l('ALL_CONTRACTORS');
         if ($datasources != '(12)') {
-            $manufacturers = ContractorService::getContractorList($datasources, $classifierId, $typedata,'',$present,$limit);
+            $manufacturers = ContractorService::getContractorList($datasources, $classifier, $typedata,'',$present,$limit);
         }
         else {
-             $manufacturers = ContractorService::getContractorsListForEconomic($classifierId,'',$present,$limit);
+             $manufacturers = ContractorService::getContractorsListForEconomic($classifier,'',$present,$limit);
         }
         if (count($manuf_list) == 0) {
             $tpl_vars['right_list'] = [];

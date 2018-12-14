@@ -3,6 +3,7 @@ namespace app\stat\report\reports;
 
 use app\models\user\LoginUser;
 use app\stat\model\Currency;
+use app\stat\model\Classifier;
 use app\stat\services\ClassifierService;
 use app\stat\services\ContractorService;
 use app\stat\db\SimpleSQLConstructor;
@@ -203,7 +204,11 @@ abstract class EconomicRoot extends RootReport
      */
     protected function prepareSQL() {
         parent::prepareSQL();
-        $classifierId = $this->reportParams->classifier->getId();
+        if (is_array($this->reportParams->classifier)) {
+            $classifierId = $this->reportParams->classifier[0]->getId();
+        } else {
+            $classifierId = $this->reportParams->classifier->getId();
+        }
         $classifier_nfo = ClassifierService::getClassifierPath($classifierId);
         $classifier_path = explode('/', trim($classifier_nfo['root'],'/'));
         if ($classifier_nfo['Level'] > 2 && in_array(42,$classifier_path)) {
@@ -295,8 +300,14 @@ protected function calculateDimensions() {
                 $limit = implode(',', Tools::getValuesFromArray($lists, 'Id'));
             }
         }
+        
+        if (is_array($this->reportParams->classifier)) {
+                $classifierElement = array_map( function(Classifier $val) { return $val->getId(); },$this->reportParams->classifier);
+            } else {
+                $classifierElement = $this->reportParams->classifier->getId();
+            }
         $elems = ContractorService::getContractorsListForEconomic( 
-                $this->reportParams->classifier->getId(),'',$present,$limit );
+                $classifierElement,'',$present,$limit );
         $list = array_map( function($arr) {
                 return $arr['Id'];
             }, $elems);            
