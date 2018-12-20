@@ -11,6 +11,9 @@ use app\stat\db\QuerySelectBuilder;
  */
 class Contractor extends ObjectModel
 {
+    const ROSSPETSMASH = 467;
+    const FROM_EXCEL = 435;
+    
     protected $name;
     protected $fullName;
     protected $internationalName;

@@ -49,7 +49,8 @@ class User extends ObjectModel
                 ['name' => 'Fio','textValue' => '("tu"."SurName" || \' \' || "tu"."Name" || \' \' || "tu"."PatronymicName")'],
                 ['tu','ContractorId'],
                 ['tu','RoleId'],
-                ['tc','Name','ContractorName']
+                ['tc','Name','ContractorName'],
+                ['tc','Present'],
             ],
             'from' => [
                 [ self::$table , 'tu'],

@@ -19,12 +19,19 @@ class ContractorService {
      * Получить актуальный список производителей
      * @param array $fields список возвращаемых полей
      */
-    public static function getActualContractors($fields = array())
-    {        
-        $filterContractors = array(['param' =>'Id','operation' => 'NOT IN','staticNumber' => '(467,435)' ]);
+    public static function getActualContractors($fields = array(),$rosspetsmash = false,$present = false)
+    {   
+        $contractorsFilter = [Contractor::FROM_EXCEL];
+        if (!$rosspetsmash) {
+            $contractorsFilter[] = Contractor::ROSSPETSMASH;
+        }
+        $where = array(['param' =>'Id','operation' => 'NOT IN','staticNumber' => '('. implode(',', $contractorsFilter).')' ]);
+        if ($present) {
+            $where[] = ['param' => 'Present','staticNumber' => 1];
+        }
         $orderBy = array (['name' => 'Name']);
         //return self::getRowsArray($fields, null, null,$filterContractors, $orderBy);
-        return Contractor::getRowsArray($fields,$filterContractors,$orderBy);        
+        return Contractor::getRowsArray($fields,$where,$orderBy);        
     }
      /**
      * Возвращает список производителей
