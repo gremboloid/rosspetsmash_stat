@@ -40,7 +40,9 @@ class ClassifierService {
                 is_rosspetsmash() ||
                 $fullClassifier )) {
             $brand = Brand::getFieldByValue('ContractorId', $this->contractorId);
-            $sql = 'SELECT DISTINCT "m"."ClassifierId" FROM TBLMODEL "m" WHERE "m"."BrandId" = '. $brand;//.$brand;
+            $sql = 'SELECT "c"."Id" AS "ClassifierId" FROM
+                    (SELECT DISTINCT "m"."ClassifierId" FROM TBLMODEL "m" WHERE "m"."BrandId" = '. $brand.') "t1",TBLCLASSIFIER "c"'
+                    . 'WHERE "c"."Id" = "t1"."ClassifierId" ORDER BY "c"."OrderIndex"';//.$brand;
             $classifierList = Tools::getValuesFromArray(getDb()->querySelect($sql), 'ClassifierId');
             $sql = 'SELECT DISTINCT c."Id",Null AS "PId", c."Name"
                     FROM BIX.TBLCLASSIFIER c WHERE c."ClassifierId" = 41
