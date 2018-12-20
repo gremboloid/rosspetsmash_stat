@@ -478,7 +478,7 @@ abstract class RootReport {
         if (is_array($this->reportParams->classifier)) {
             $classifierList = array_map( function(Classifier $val) { return $val->getId(); },$this->reportParams->classifier);
             if (ClassifierService::isNestedClassifierPresents($classifierList)) {
-                throw new ReportException('Выбранные разделы классифмкатора не могут содержать друг друга');  
+                throw new ReportException(l('ERROR_INTERSECTING_CLASSIFIER','messages'));
             }
             //
            // throw new ReportException(implode(',', $classifierList));
