@@ -42,11 +42,12 @@ class ClassifierService {
             $brand = Brand::getFieldByValue('ContractorId', $this->contractorId);
             $sql = 'SELECT "c"."Id" AS "ClassifierId" FROM
                     (SELECT DISTINCT "m"."ClassifierId" FROM TBLMODEL "m" WHERE "m"."BrandId" = '. $brand.') "t1",TBLCLASSIFIER "c"'
-                    . 'WHERE "c"."Id" = "t1"."ClassifierId" ORDER BY "c"."OrderIndex"';//.$brand;
+                    . 'WHERE "c"."Id" = "t1"."ClassifierId"';//.$brand;
             $classifierList = Tools::getValuesFromArray(getDb()->querySelect($sql), 'ClassifierId');
-            $sql = 'SELECT DISTINCT c."Id",Null AS "PId", c."Name"
+            $sql = 'SELECT DISTINCT c."Id",Null AS "PId", c."Name",c."OrderIndex"
                     FROM BIX.TBLCLASSIFIER c WHERE c."ClassifierId" = 41
-                    START WITH c."Id" IN ('. implode(',', $classifierList).') CONNECT BY PRIOR c."ClassifierId" = c."Id"';
+                    START WITH c."Id" IN ('. implode(',', $classifierList).') CONNECT BY PRIOR c."ClassifierId" = c."Id"
+                    ORDER BY c."OrderIndex" DESC NULLS LAST';
             $classifierSections = getDb()->querySelect($sql,null,true);
             $res = [];
             foreach ($classifierSections as $section) {
