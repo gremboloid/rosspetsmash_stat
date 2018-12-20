@@ -1920,6 +1920,9 @@ ul.inline > li {
   margin-bottom: 20px;
   padding-right: 20px; }
 
+.left-sidebar.reports .left-block {
+  min-height: 4em; }
+
 .left-block.last-block {
   margin-bottom: 0; }
 
