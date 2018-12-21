@@ -1640,6 +1640,9 @@ input[type="radio"], input[type="checkbox"] {
 .nav i, .dropdown-menu i {
   padding-right: 5px; }
 
+.rs-form-control.pb5 {
+  padding-bottom: 5px; }
+
 .flx {
   display: -webkit-flex;
   display: flex; }

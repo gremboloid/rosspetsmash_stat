@@ -43,8 +43,8 @@ class ProfileController extends FormManagementController
     
     public function setParams() {
         parent::setParams();
-        $action = $this->action->id;
-         $this->tpl_vars['template'] = $action;
+        $action = $this->action->id;       
+        $this->tpl_vars['template'] = $action;
          if ($action == 'user') {
              $this->model = new User(Yii::$app->user->getIdentity()->getId());
          }

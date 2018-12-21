@@ -24,7 +24,11 @@ abstract class FormManagementController extends FrontController
     
     public function initVars() {
         parent::initVars();
-        $form = $this->model->displayForm(false);
-        $this->tpl_vars['template'] = $form['HTML_DATA'];
+        if (!is_demo()) {
+            $form = $this->model->displayForm(false);
+            $this->tpl_vars['template'] = $form['HTML_DATA'];
+        } else {
+            $this->tpl_vars['template'] = '<p>Не доступно в демо-режиме</p>';
+        }
     }
 }

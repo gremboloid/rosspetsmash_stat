@@ -23,7 +23,19 @@ use \Yii;
 * @author kotov
  */
 class LoginUser extends ActiveRecord
-{   
+{
+    # роли
+    /** администратор */
+    const ADMIN = 1;
+    /** редактор */
+    const EDITOR = 2;
+    /** аналитик */
+    const ANALITIC = 3;
+    /** читатель  */
+    const READER = 4;
+    /** гость */
+    const GUEST = 5; 
+    
     public static function tableName() {
         return 'TBLUSER';
     }
@@ -80,10 +92,16 @@ class LoginUser extends ActiveRecord
         return $this->surName. ' ' . $this->name . ' ' . $this->patronymicName;
     }
     public function isAdmin() {
-        return ($this->roleId == 1);
+        return ($this->roleId == self::ADMIN);
     }
     public function isAnalytic() {
-        return ($this->roleId == 3);
+        return ($this->roleId == self::ANALITIC);
+    }
+    public function isReader() {
+        return ($this->roleId == self::READER);
+    }
+    public function isDemo() {
+        return ($this->roleId == self::GUEST);
     }
     public function isRosspetsmash() {
         $contractor = new Contractor($this->contractorId);        

@@ -757,7 +757,7 @@ $('#SendEmail').click(function(e) {
        // обработчик кнопки (выгрузка классификатора)
     $('#getclassifier').on('click',function() {
 
-           window.location = global_data.baseURI + '/custom/get-classifier-csv';          
+           window.location = global_data.baseURI + '/custom/get-classifier-cs';          
     });
     if (typeof global_classifier_tree == 'string') {
         if ($('#classifier_tree').length == 1) {

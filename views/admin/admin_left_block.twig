@@ -19,11 +19,7 @@
 				{% endif %}
 			</div>
 		{% elseif block.type == 'filters' %}
-		<form id="{{ block.form_id }}" method="GET" action="">
-			{% if chpu == false %}
-			<input id="controller" name="controller" value="admin" type="hidden">
-			{% endif %}
-			
+		<form id="{{ block.form_id }}" method="GET" action="">			
 			<input id="element" name="element" value="{{ block.model }}" type="hidden">			
 			<input id="current_page" name="page" value="1" type="hidden">
 			<input id="search" name="search" value="{{ search }}" type="hidden">
@@ -64,7 +60,21 @@
 						{% endif %}
 					</div>					
 					{% endif %}					
-					
+					{% if filter.type == 'list' %}
+					<div class="sub_block_body">
+					{% for element in filter.elements %}
+						{% if element.type == 'select' %}
+						<div>
+							<select{% if element.id %} id="{{ element.id }}"{% endif %}{% if element.class_name %} class="{{ element.class_name }}"{% endif %}{% if element.name %} name="{{ element.name }}">{% endif %}
+							{% for option in element.options %}
+								<option value="{{ option.value }}"{% if option.value == element.selected %} selected=""{% endif %}>{{ option.text }}</option>
+							{% endfor %}
+						</select>
+						</div>
+						{% endif %}
+					{% endfor %}
+					</div>
+					{% endif %}
 					{% if filter.type == 'test' %}
 					<p>Тест</p>					
 					{% endif %}

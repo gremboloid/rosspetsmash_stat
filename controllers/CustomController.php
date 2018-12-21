@@ -181,7 +181,8 @@ class CustomController extends FrontController
         $mailer = new Mailer();        
         return $mailer->sendNewPassword($postData['email']);
     }
-    public function actionGetClassifierCsv() {
+    
+    public function actionGetClassifierCs() {
         if (Yii::$app->user->isGuest) {
             die('access denied');
         }
@@ -189,6 +190,8 @@ class CustomController extends FrontController
         $classifierService->getClassifierCsv();
         die();
     }
+     
+     
     public function actionGetExcelContractors()
     {
         if (Yii::$app->user->isGuest) {

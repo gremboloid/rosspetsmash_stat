@@ -36,7 +36,18 @@ function is_analytic() {
     return $user->getIdentity()->isAnalytic();
 }
 /**
- * Проверка, является лм пользователь аналитиком
+ * Проверка, вошел ли пользователь под гостевой учетной пользователь 
+ * @return bool
+ */
+function is_demo() {
+    $user = Yii::$app->user;
+    if ($user->isGuest) {
+        return false;
+    }
+    return $user->getIdentity()->isDemo();
+}
+/**
+ * Входит ли организация пользователя в ассоциацию
  * @return bool
  */
 function is_rosspetsmash() {

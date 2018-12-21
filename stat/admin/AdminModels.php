@@ -97,7 +97,7 @@ class AdminModels extends AdminDirectory
         $model_type_selected = $this->filter_array['model_type'] ? $this->filter_array['model_type'] : 0;
         $contractors_list = ContractorService::getActualContractors([['TBLCONTRACTOR','Id','value'],['TBLCONTRACTOR','Name','text']]);
         $model_type_list = ModelType::getRowsArray([['TBLMODELTYPE','Id','value'],['TBLMODELTYPE','Name','text']]);
-        array_unshift($contractors_list, ['value' => 0, 'text' => 'Все производители']);
+        array_unshift($contractors_list, ['value' => 0, 'text' => 'Выбраны все']);
         array_unshift($model_type_list, ['value' => 0, 'text' => 'Выбраны все']);
         parent::setLeftBlockVars();
         $this->left_block_vars['blocks_list'][0]['refs'] = [
@@ -121,21 +121,28 @@ class AdminModels extends AdminDirectory
                             
                         ]
                     ],
-                    [   
-                        'type' => 'select',
-                  //'header_text' => l('FILTERS_CONTRACTORS_PRESENT','admin'),
-                        'class_name' => 'rs-form-control',
-                        'name' => 'present',
-                        'options' => $contractorsPresent,
-                        'selected' => $contractorsPresentSelected                        
-                    ],
-                    [   'type' => 'select',
-                        'header_text' => l('FILTERS_CONTRACTORS','admin'),
-                        'class_name' => 'rs-form-control',
-                        'id' => 'select-contractor',
-                        'name' => 'contractor',
-                        'options' => $contractors_list,
-                        'selected' => $contractor_selected
+                    [   'type' => 'list',
+                        'header_text' => l('FILTERS_CONTRACTORS','admin'),                        
+                        'elements' => [
+                            [   
+                                'type' => 'select',
+                          //'header_text' => l('FILTERS_CONTRACTORS_PRESENT','admin'),
+                                'class_name' => 'rs-form-control',
+                                'name' => 'present',
+                                //'margin-bottom' => true,
+                                'options' => $contractorsPresent,
+                                'selected' => $contractorsPresentSelected                        
+                            ],
+                            [
+                                'type' => 'select',
+                                'class_name' => 'rs-form-control',
+                                'id' => 'select-contractor',
+                                'name' => 'contractor',
+                                'options' => $contractors_list,
+                                'selected' => $contractor_selected
+                            ]
+                        ],
+
                         
                     ],
                     [

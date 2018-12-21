@@ -79,22 +79,26 @@ class AdminUsers extends AdminDirectory
         ];
         $this->left_block_vars['blocks_list'][1]['hide'] = false;
         $this->left_block_vars['blocks_list'][1]['elements'] = [
-            [   'type' => 'select',
+            [   'type' => 'list',
+                'header_text' => l('FILTERS_CONTRACTORS','admin'),
+                'elements' => [
+                    [
+                        'type' => 'select',
                 //'header_text' => l('FILTERS_CONTRACTORS_PRESENT','admin'),
-                'class_name' => 'rs-form-control',
-                'name' => 'present',
-                'options' => $contractorsPresent,
-                'selected' => $contractorsPresentSelected
-                        
-            ],
-            [   'type' => 'select',
-                        'header_text' => l('FILTERS_CONTRACTORS','admin'),
+                        'class_name' => 'rs-form-control',
+                        'name' => 'present',
+                        'options' => $contractorsPresent,
+                        'selected' => $contractorsPresentSelected                        
+                    ],                    
+                    [
+                        'type' => 'select',
                         'class_name' => 'rs-form-control',
                         'id' => 'select-contractor',
                         'name' => 'contractor',
                         'options' => $contractors_list,
                         'selected' => $contractor_selected
-                        
+                    ]
+                ]                        
             ],
             [   'type' => 'select',
                         'header_text' => l('FILTERS_ROLES','admin'),

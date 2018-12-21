@@ -26,7 +26,7 @@
 		<td><label for="form-confirm-data">Я подтверждаю корректность введенных данных</label></td>
 		<td class="tal" colspan="2"><input type="checkbox" name="confirm-data" value="1" id="form-confirm-data"></td>
 	</tr>
-	{% if table_id == 'new_form' or user_role == 1 %}
+	{% if (table_id == 'new_form' and user_role != 5) or user_role == 1 %}
 	<tr>
 		<td colspan ="2" class="tal"><div class="additional_block_btn btn btn-selector" id="input_form_save">{{ btn_send }}</div></td>
 		<td class="tar"><div class="additional_block_btn btn btn-cancel" id="input_form_cancel">{{ btn_cancel }}</div></td>

@@ -187,6 +187,7 @@ class DefaultOut extends ReportCreator
                 } else {
                     $value = $val;
                 }
+               // $value = !is_demo() ? $value : '';
                 $rows_list[$r_idx][] =                     [
                           'type' => 'space_text',
                           'value' => $value,
@@ -224,6 +225,7 @@ class DefaultOut extends ReportCreator
                 } else {
                     $value = $val;
                 }
+             //   $value = !is_demo() ? $value : '';
                 $rows_list[$r_idx][$h_idx] = [
                       'type' => 'text',
                       'value' => $value,
@@ -333,7 +335,8 @@ class DefaultOut extends ReportCreator
                                 $value2 = !$prop ? $val2 : $this->percentConvert(round($val2,2),true);
                                // $row_type = 'number';
                             }
-                                                        
+                             $value1 = !is_demo() ? $value1 : '';                           
+                             $value2 = !is_demo() ? $value2 : '';                           
                             $row2[] = [
                                 'type' => $row_type,
                                 'style' => $row_style,
@@ -399,6 +402,7 @@ class DefaultOut extends ReportCreator
                             }
                             $row_type = 'special_number';
                         }
+                        $value = !is_demo() ? $value : '';
                         $row[] = [
                             'type' => $row_type,
                             'style' => $row_style,
@@ -653,6 +657,8 @@ class DefaultOut extends ReportCreator
                                 } else {
                                     $value2 = !stristr($period, 'proportion') ? $val2 : $this->percentConvert(round($val2,2));
                                 }
+                                $value1 = !is_demo() ? $value1 : '';
+                                $value2 = !is_demo() ? $value1 : '';
                                 $row.='<td class="digit-val">'.$value1.'</td>';
                                 $row2.='<td class="digit-val">'.$value2.'</td>';                                                                
                              }
@@ -696,7 +702,8 @@ class DefaultOut extends ReportCreator
                         $value = Tools::addSpaces($val);
                     } else {
                         $value = !stristr($period, 'proportion') ? $val : ( $val ? $this->percentConvert(round($val,2)) : '-');
-                    }                                        
+                    }
+                    $value = !is_demo() ? $value : '';
                     $row.='<td class="digit-val">'.$value.'</td>';
                 }
             }            
@@ -724,7 +731,7 @@ class DefaultOut extends ReportCreator
               l('CLASSIFIER_SECTION','report');
       $this->tpl_vars['classifier'] = $this->classifier;
       $this->tpl_vars['data_count'] = count($this->dataunits);
-      $this->tpl_vars['units'] = l('UNIT','report');
+      $this->tpl_vars['units'] = l('UNIT','report');      
       foreach ($this->dataunits as $unit) {
       $this->tpl_vars['data_units'][] = l($unit,'words');
       $this->tpl_vars['colspan'] = $this->tpl_vars['subheader'] ? ' colspan='.$dataCount : '';

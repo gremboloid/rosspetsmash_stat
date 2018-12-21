@@ -129,6 +129,7 @@ class AllFormTypes extends ObjectModel
         $this->tpl_vars['comment'] = l('INPUT_FORM_COMMENT');
         $this->tpl_vars['comment_text'] = $comment;
         $this->tpl_vars['user_role'] = get_role();
+        $this->tpl_vars['demo'] = is_demo();
         $this->tpl_vars['check_admin'] = l('CHECK_ADMINISTRATOR');
         $this->tpl_vars['actuality'] = $this->inputForm->actuality;
         $this->tpl_vars['btn_send'] = l('INPUT_FORM_BUTTON_SEND');

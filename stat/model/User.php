@@ -226,6 +226,11 @@ class User extends ObjectModel
                 'onchange' => 'isPasswordEdit',
                 'value' => 0
                 ];
+        } else {
+            $this->form_elements['main_form']['elements_list']['editPassword'] = [     
+                'type' => 'hidden',            
+                'value' => 1      
+            ];
         }
         $this->form_elements['main_form']['elements_list']['password'] = [
             'label' => l('USER_PASSWORD'),

@@ -502,12 +502,14 @@ abstract class RootReport {
             return;
         }
         $dc = Convert::getNumbers($this->reportParams->datasource->dataBaseTypeId);
-        $this->saveReportLog();
+        if (!is_demo()) {
+            $this->saveReportLog();
+        }
         
         // не применять фильтры для следующик производителей и типов отчета
         $ctrs = [ 508,514 ] ;
         $dataTypes = [ 5 ];
-        if (is_admin() || is_analytic()) {
+        if (is_admin() || is_analytic() || is_demo()) {
             $this->user_filter_enable = false;
         } else if(in_array($ctr, $ctrs)) {
             if (in_array($dc, $dataTypes)) {
