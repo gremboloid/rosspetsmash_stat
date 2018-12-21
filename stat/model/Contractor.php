@@ -52,7 +52,7 @@ class Contractor extends ObjectModel
                 [ 'TBLREGION' , 'r'],
                 [ 'TBLCITY' , 'c'],
             ],
-            'where' => [ 
+            'where' => [
                 ['param' => 'tc.CityId','staticValue' => 'c.Id'],
                 ['param' => 'c.RegionId','staticValue' => 'r.Id'],
             ]

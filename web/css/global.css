@@ -575,8 +575,11 @@ li#company {
   padding-left: 5px;
   vertical-align: 1px; }
 
-th.Number, th.SummaryInformation {
+th.Number {
   width: 30px; }
+
+th.SummaryInformation {
+  width: 45px; }
 
 th.StrDate {
   width: 62px;
@@ -640,10 +643,21 @@ td.column-names {
   padding-left: 3%; }
 
 td.column-elements {
+  background-image: url("../img/tbl_btm_back.png");
+  background-position: bottom;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
   background-color: #c9d5e3; }
+
+td.column-elements.white {
+  background-color: #fff; }
 
 .summary-information-table {
   margin-bottom: 40px; }
+
+.summary-information-wrapper .row {
+  padding-left: 20px;
+  padding-right: 20px; }
 
 /* Вывод отчета в конструкторе  */
 .report_table_content table {

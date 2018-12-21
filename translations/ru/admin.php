@@ -83,9 +83,11 @@ $_ADMIN['FILTERS_COUNTRY'] = 'Страна';
 $_ADMIN['FILTERS_MODEL_TYPE'] = 'Тип производства';
 
 // сводная информация
-$_ADMIN['CONTRACTOR_SUMMARY_HEAD'] = 'Предприятий на портале, всего';
+$_ADMIN['CONTRACTOR_SUMMARY_HEAD'] = 'Предприятий зарегистрировано, всего';
+$_ADMIN['CONTRACTOR_SUMMARY_PRESENT_HEAD'] = 'из них присутствуют на портале, всего';
 $_ADMIN['CONTRACTOR_SUMMARY_SUBHEAD'] = 'в том числе';
-$_ADMIN['MODELS_SUMMARY_HEAD'] = 'Моделей на портале, всего';
+$_ADMIN['MODELS_SUMMARY_HEAD'] = 'Моделей зарегистрировано, всего';
+$_ADMIN['MODELS_SUMMARY_PRESENT_HEAD'] = 'из них присутствуют на портале, всего';
 $_ADMIN['MODELS_SUMMARY_SUBHEAD'] = 'в том числе в разделах классификатора';
 // Раздел новостей
 $_ADMIN['NEWS_HEAD'] = 'Заголовок';

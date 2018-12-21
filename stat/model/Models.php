@@ -42,6 +42,7 @@ class Models extends ObjectModel implements IChangeClassifier
                 ['tm','ModelTypeId'],
                 ['tb','ContractorId'],
                 ['tc','Name','ContractorName'],
+                ['tc','Present']
             ],
             'from' => [
                 [ self::$table , 'tm'],

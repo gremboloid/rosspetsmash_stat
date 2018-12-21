@@ -78,6 +78,7 @@ class AdminModels extends AdminDirectory
         if ($val = (int)Tools::getValue('model_type','GET')) {
             $this->filter_array['model_type'] = $val;
         }
+        $this->filter_array['present'] = Tools::getValue('present','GET') ? 1 : 0;
         $this->hidden_inputs[] = [
             'id' => 'classifier',
             'name' => 'classifier',
@@ -85,7 +86,11 @@ class AdminModels extends AdminDirectory
         ];
     }
     protected function setLeftBlockVars() {
-        
+        $contractorsPresent = [
+          ['value' => 0, 'text' => 'Все производители'],
+          ['value' => 1, 'text' => 'Присутствующие на портале']
+        ];
+        $contractorsPresentSelected = ($this->filter_array['present'] !== false) ? $this->filter_array['present'] : 1;
         $classifier = new Classifier($this->filter_array['classifier']);
         $classifier_name = $classifier->getName();
         $contractor_selected = $this->filter_array['contractor'] ? $this->filter_array['contractor'] : 0;
@@ -115,6 +120,14 @@ class AdminModels extends AdminDirectory
                             'class_name' => 'constructor_action'
                             
                         ]
+                    ],
+                    [   
+                        'type' => 'select',
+                  //'header_text' => l('FILTERS_CONTRACTORS_PRESENT','admin'),
+                        'class_name' => 'rs-form-control',
+                        'name' => 'present',
+                        'options' => $contractorsPresent,
+                        'selected' => $contractorsPresentSelected                        
                     ],
                     [   'type' => 'select',
                         'header_text' => l('FILTERS_CONTRACTORS','admin'),
