@@ -77,6 +77,7 @@ $_ADMIN['FILTERS'] = 'Фильтры';
 $_ADMIN['FILTERS_CLASSIFIER'] = 'Раздел классификатора';
 $_ADMIN['FILTERS_CONTRACTORS'] = 'Производитель';
 $_ADMIN['FILTERS_ROLES'] = 'Уровень доступа';
+$_ADMIN['FILTERS_CONTRACTORS_PRESENT'] = 'Статус производителей';
 $_ADMIN['FILTERS_CONTRACTORS_CATEGORY'] = 'Категория производителей';
 $_ADMIN['FILTERS_CONTRACTORS_ALL_CATEGORIES'] = 'Выбраны все';
 $_ADMIN['FILTERS_COUNTRY'] = 'Страна';

@@ -62,7 +62,7 @@ class AdminContractors extends AdminDirectory
         $this->left_block_vars['blocks_list'][1]['hide'] = false;
         $this->left_block_vars['blocks_list'][1]['elements'] = [
                     [   'type' => 'select',
-                        //'header_text' => l('FILTERS_CONTRACTORS_PRESENT','admin'),
+                        'header_text' => l('FILTERS_CONTRACTORS_PRESENT','admin'),
                         'class_name' => 'rs-form-control',
                         'name' => 'present',
                         'options' => $contractors_present,
