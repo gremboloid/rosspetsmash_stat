@@ -51,7 +51,7 @@ class AdminUsers extends AdminDirectory
         if ($val = (int) Tools::getValue('role','GET')) {
             $this->filter_array['role'] = $val;
         }
-        $val = Tools::getValue('present','GET');
+        $val = Tools::getValue('present','GET',true);
         if ($val !== false) {
             $this->filter_array['present'] = (int)$val;              
         }
