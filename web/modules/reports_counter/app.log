@@ -1,0 +1,56 @@
+2019-01-05 10:23:11 [46.44.51.130][-][-][error][yii\db\Exception] PDOException: SQLSTATE[HY000]: General error: 1843 OCIStmtExecute: ORA-01843: not a valid month
+ (/tmp/php_ext/pdo_oci/oci_statement.c:159) in /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Command.php:1258
+Stack trace:
+#0 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Command.php(1258): PDOStatement->execute()
+#1 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Command.php(1148): yii\db\Command->internalExecute('SELECT COUNT(*)...')
+#2 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Command.php(386): yii\db\Command->queryInternal('')
+#3 /home/www/stat.rosspetsmash.ru/stat/db/OracleDb.php(132): yii\db\Command->query()
+#4 /home/www/stat.rosspetsmash.ru/stat/db/OracleDb.php(68): app\stat\db\OracleDb->querySelect('SELECT COUNT(*)...', Array)
+#5 /home/www/stat.rosspetsmash.ru/modules/reports_counter/reports_counter.php(51): app\stat\db\OracleDb->getRow(Object(app\stat\db\QuerySelectBuilder), true)
+#6 /home/www/stat.rosspetsmash.ru/stat/Module.php(68): app\modules\ReportsCounter->configure()
+#7 /home/www/stat.rosspetsmash.ru/modules/reports_counter/reports_counter.php(24): app\stat\Module->init()
+#8 /home/www/stat.rosspetsmash.ru/stat/Module.php(362): app\modules\ReportsCounter->init()
+#9 /home/www/stat.rosspetsmash.ru/controllers/FrontController.php(77): app\stat\Module::load()
+#10 /home/www/stat.rosspetsmash.ru/controllers/IndexController.php(29): app\controllers\FrontController->setParams()
+#11 /home/www/stat.rosspetsmash.ru/controllers/FrontController.php(66): app\controllers\IndexController->setParams()
+#12 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/base/Controller.php(155): app\controllers\FrontController->beforeAction(Object(yii\base\InlineAction))
+#13 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('', Array)
+#14 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('', Array)
+#15 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#16 /home/www/stat.rosspetsmash.ru/web/index.php(16): yii\base\Application->run()
+#17 {main}
+
+Next yii\db\Exception: SQLSTATE[HY000]: General error: 1843 OCIStmtExecute: ORA-01843: not a valid month
+ (/tmp/php_ext/pdo_oci/oci_statement.c:159)
+The SQL being executed was: SELECT COUNT(*) AS "Count" FROM "TBLREPORTSLOG" "t" WHERE TRUNC("t"."Date",'MONTH') = TO_DATE('0.2019','mm.YYYY') in /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Schema.php:664
+Stack trace:
+#0 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Command.php(1263): yii\db\Schema->convertException(Object(PDOException), 'SELECT COUNT(*)...')
+#1 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Command.php(1148): yii\db\Command->internalExecute('SELECT COUNT(*)...')
+#2 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/db/Command.php(386): yii\db\Command->queryInternal('')
+#3 /home/www/stat.rosspetsmash.ru/stat/db/OracleDb.php(132): yii\db\Command->query()
+#4 /home/www/stat.rosspetsmash.ru/stat/db/OracleDb.php(68): app\stat\db\OracleDb->querySelect('SELECT COUNT(*)...', Array)
+#5 /home/www/stat.rosspetsmash.ru/modules/reports_counter/reports_counter.php(51): app\stat\db\OracleDb->getRow(Object(app\stat\db\QuerySelectBuilder), true)
+#6 /home/www/stat.rosspetsmash.ru/stat/Module.php(68): app\modules\ReportsCounter->configure()
+#7 /home/www/stat.rosspetsmash.ru/modules/reports_counter/reports_counter.php(24): app\stat\Module->init()
+#8 /home/www/stat.rosspetsmash.ru/stat/Module.php(362): app\modules\ReportsCounter->init()
+#9 /home/www/stat.rosspetsmash.ru/controllers/FrontController.php(77): app\stat\Module::load()
+#10 /home/www/stat.rosspetsmash.ru/controllers/IndexController.php(29): app\controllers\FrontController->setParams()
+#11 /home/www/stat.rosspetsmash.ru/controllers/FrontController.php(66): app\controllers\IndexController->setParams()
+#12 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/base/Controller.php(155): app\controllers\FrontController->beforeAction(Object(yii\base\InlineAction))
+#13 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('', Array)
+#14 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('', Array)
+#15 /home/www/stat.rosspetsmash.ru/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#16 /home/www/stat.rosspetsmash.ru/web/index.php(16): yii\base\Application->run()
+#17 {main}
+Additional Information:
+Array
+(
+    [0] => HY000
+    [1] => 1843
+    [2] => OCIStmtExecute: ORA-01843: not a valid month
+ (/tmp/php_ext/pdo_oci/oci_statement.c:159)
+)
+
+2019-01-05 10:23:11 [46.44.51.130][-][-][info][application] $_GET = []
+
+$_POST = []

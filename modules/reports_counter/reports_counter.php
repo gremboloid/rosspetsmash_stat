@@ -30,7 +30,6 @@ class ReportsCounter extends Module {
     protected function configure() {
         parent::configure();
         $months = l('MONTHS2','words');
-        $pYear = date('Y');
       /*  if (date('m')!= 1)
             $prevMonth = date('m')-1;
         else
@@ -40,6 +39,10 @@ class ReportsCounter extends Module {
         }*/
         $pYear = date('Y');
         $prevMonth = (int) date('m') - 1;
+		if (!$prevMonth) {
+			$prevMonth = 12;
+                        $pYear--;
+		}
         $firstday = mktime(0, 0, 0, $prevMonth,1,$pYear );
         $lastday = mktime(23, 59, 59, date('m')-1,date('t'),date('Y') );
         $step = ($lastday - $firstday) / 10;
