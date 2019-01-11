@@ -59,10 +59,6 @@ class ModelController extends FrontController
         return $model->displayForm();
     }
     public function actionSaveModel() {
-        /*if (!Yii::$app->request->isAjax || 
-            !is_admin()) {
-            return Tools::getErrorMessage('request error',1,false);
-        }*/
         if (!Yii::$app->request->isPost) {
             return  Tools::getErrorMessage('request error',1);          
         }
@@ -74,9 +70,9 @@ class ModelController extends FrontController
         $modelParent = DEFAULT_NAMESPACE_FOR_MODELS . 'ObjectModel';
         if (!(class_exists($modelClassName) && is_subclass_of($modelClassName, $modelParent))) {
             return Tools::getErrorMessage('request error',1); 
-        }
-         $model = new $modelClassName($postData['id']);
-        $res = $model->saveModelObject($postData['form']);
+        }        
+        $model = new $modelClassName($postData['id']);      
+        $res = $model->saveModelObject($postData['form']);        
         return $res;
     }
     public function actionDeleteModel () 

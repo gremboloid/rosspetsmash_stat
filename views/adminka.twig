@@ -41,7 +41,7 @@
 			{% endfor %}
 		</div>
 	{% endif %}
-        {% if modal_flash %}
+    {% if modal_flash %}
 	<div class="message-window{% if modal_flash_message.className %} {{ modal_flash_message.className }}{% endif %}">{{ modal_flash_message.message }}</div>
 	{% endif %}
 			<div class="content{% if left_block_enable %} columns{% else %} clearfix{% endif %}">

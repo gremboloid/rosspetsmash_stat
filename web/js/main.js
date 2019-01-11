@@ -347,8 +347,11 @@ $('#SendEmail').click(function(e) {
                                     $msg.modal(); 
                                 }
                                 if(result.STATUS == 1) {
-                                    $('.winclose').trigger('click');
-                                    $('#saveOk-activate').trigger('click');
+                                    global_data.utils.ajax.write_session_value('FLASH_SAVE_MODAL',{                            
+                                        status : 0,
+                                        message : 'Форма успешно сохранена'
+                                        },reload
+                                    );
                                     //$('.close-button').trigger('click');
                                     //$('.winclose').trigger('click');
                                 }
@@ -747,9 +750,23 @@ $('#SendEmail').click(function(e) {
                 type: 'POST',
                 dataType: "json",
                 data: { id: ifId } ,
-                success: function(response) {
-                    showMessage(response.message);
-                    location.reload();
+                success: function(res) {
+                   var msg = $.parseJSON(global_data.messages),status,flash_msg; 
+                   
+                    // return;
+                                        
+                    if (res.hasOwnProperty('errorCode')) {
+                        status = 1;
+                        flash_msg = msg.save_model;
+                    } else {
+                        status = 0;
+                        flash_msg = res.message;
+                    }             
+                    global_data.utils.ajax.write_session_value('FLASH_SAVE_MODAL',{                            
+                            'status' : status,
+                            'message' : flash_msg
+                        },reload
+                    );                                  
                 }
             });
         });

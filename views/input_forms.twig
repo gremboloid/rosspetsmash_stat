@@ -172,6 +172,9 @@
 								</ul>
 							</div>
 						{% endif %}
+                                                {% if modal_flash %}
+                                                    <div class="message-window{% if modal_flash_message.className %} {{ modal_flash_message.className }}{% endif %}">{{ modal_flash_message.message }}</div>
+                                                {% endif %}
 						<div class="table_wrapper">
 						{% if table_array is iterable %}
 							<table class="directory_tbl input-form-list"><thead>
@@ -221,15 +224,10 @@
 	</div>
 	{% endblock %}
 		{% block modals %}
-				<a id="saveOk-activate" class="hide noclose" data-modal href="#saveOk"></a>
 				<a id="confirmSave-activate" class="hide noclose" data-modal href="#confirmSave"></a>
 				<a id="confirmDeleteModel-activate" class="hide noclose" data-modal href="#confirmDeleteModel"></a>
 				<a id="confirmDeleteForm-activate" class="hide noclose" data-modal href="#confirmDeleteForm"></a>
 				
-				<div id="saveOk" class="modal noclose" style="">
-					<h3>Форма успешно сохранена</h3>			
-					<button id="save-form-ok-button" class="btn btn-default mdl-inform-ok">OK</button>					
-				</div>
 				
 				<div id="confirmSave" class="modal noclose" style="">
 					<h3>Вы действительно хотите сохранить форму?</h3>			
