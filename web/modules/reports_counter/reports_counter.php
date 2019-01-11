@@ -45,6 +45,7 @@ class ReportsCounter extends Module {
 		}
         $firstday = mktime(0, 0, 0, $prevMonth,1,$pYear );
         $lastday = mktime(23, 59, 59, date('m')-1,date('t'),date('Y') );
+        $numberOfLastDay = (new \DateTime())->setTimestamp($lastday)->format('d');
         $step = ($lastday - $firstday) / 10;
         $curday = $firstday;
         $colInLastMonth = getDb()->getRow( new QuerySelectBuilder([
@@ -56,8 +57,8 @@ class ReportsCounter extends Module {
         
         static::$template_vars['month'] = mb_strtolower($months[$prevMonth]);
         static::$template_vars['year'] = mb_strtolower($pYear);
-        static::$template_vars['date1'] = '01.'.date('m').'.'.$pYear;
-        static::$template_vars['date2'] = date('d').'.'.date('m').'.'.$pYear;
+        static::$template_vars['date1'] = '01.'.$prevMonth.'.'.$pYear;
+        static::$template_vars['date2'] = $numberOfLastDay.'.'.$prevMonth.'.'.$pYear;
         
         
         if (date('w') > 0)
