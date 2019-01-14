@@ -97,7 +97,8 @@ class Classifier extends ObjectModel implements IChangeClassifier
         return getDb()->getRows(new QuerySelectBuilder([
                 'select' => $select,
                 'from' => self::$table,
-                'where' => [['param' => 'ClassifierId','staticNumber' => $this->getId() ]]
+                'where' => [['param' => 'ClassifierId','staticNumber' => $this->getId() ]],
+                'orderBy' => [['textValue' => '"OrderIndex" DESC NULLS LAST']]
             ]));
     }
 
