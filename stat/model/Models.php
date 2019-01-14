@@ -127,6 +127,7 @@ class Models extends ObjectModel implements IChangeClassifier
         
         $this->form_elements['main_form']['elements_list']['isPrototype'] = [
             'label' => l('MODELS_PROTOTYPE'),
+            'onchange' => 'isModelPrototype',
             'type' => 'radio',            
             'value' => $prototype          
         ];
@@ -135,8 +136,10 @@ class Models extends ObjectModel implements IChangeClassifier
             'label' => l('MODELS_ELEMENT_YEAR'),
             'type' => 'number',            
             'size' => 60,
-            'value' => $this->year ? $this->year : (!$id ? date('Y') : '')
+            'value' => $this->year ? $this->year : (!$id ? date('Y') : ''),
+            'hide' => (bool) $prototype
         ];
+        
         
         $this->form_elements['main_form']['elements_list']['modelTypeId'] = [
             'label' => l('MODELS_TYPE'),

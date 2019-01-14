@@ -189,6 +189,14 @@ var isPasswordEdit = function(e) {
         $('#block_password').add('#block_repeatPassword').addClass('hide');
     }
 };
+// действия в зависимости от того, выбрана ли опытные образец
+var isModelPrototype = function (e) {
+    if (e.value == 1) {
+        $('#block_year').addClass('hide');
+    } else {
+        $('#block_year').removeClass('hide');    
+    }
+};
 
 //Расширкние JQuery
 /**
