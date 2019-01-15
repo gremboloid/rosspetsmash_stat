@@ -51,8 +51,9 @@ class DatePeriod {
             $this->periodStep = $obj->period_step;
         }
         // инициализация значений "по умолчанию"
+        $defParams = Period::getDefaultEndMonthAndYear();
         $this->defaultStartMonth = 1;
-        $this->defaultEndMontrh = Period::getDefaultEndMonth();
+        $this->defaultEndMontrh = $defParams['month'];
     }
     
     /**
@@ -114,10 +115,11 @@ class DatePeriod {
     */
     public function getJSONString()
     {
+        $periodParams = Period::getDefaultEndMonthAndYear();
         $count = $this->getPeriodsCount();
-        $jString = '{"default_params": {"start_period": {"month":1,"year":'.date('Y').
-                    '}, "end_period": {"month":'.Period::getDefaultEndMonth().
-                                        ',"year":'.date('Y').'} }';
+        $jString = '{"default_params": {"start_period": {"month":1,"year":'.$periodParams['year'].
+                    '}, "end_period": {"month":'.$periodParams['month'].
+                                        ',"year":'.$periodParams['year'].'} }';
         $jString.=',';
         $jString.= '"periods_list":[';
         for ($i=0;$i<$count;$i++)

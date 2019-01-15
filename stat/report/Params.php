@@ -117,7 +117,8 @@ class Params
         
         // начальная инициализация
         $startMonth = 1;
-        $firstYear = date('Y');
+        $monthParams = Period::getDefaultEndMonthAndYear();
+        $firstYear = $monthParams['year'];
         $secondYear = $firstYear -1;
         $countries = array();
         $regions = array();
@@ -130,8 +131,8 @@ class Params
         $selectedReport = '';
         
         $this->typeReportList = Container::getReportsList($user);
-        $this->defaultValues['periods'] = '{"periods_list" : [{"start_period" : {"month" :'.$startMonth.',"year":'.$firstYear.'},"end_period" : {"month" :'.Period::getDefaultEndMonth().',"year":'.$firstYear.'} },
-            {"start_period" : {"month" :'.$startMonth.',"year":'.$secondYear.'},"end_period" : {"month" :'.Period::getDefaultEndMonth().',"year":'.$secondYear.'} }  ] }';
+        $this->defaultValues['periods'] = '{"periods_list" : [{"start_period" : {"month" :'.$startMonth.',"year":'.$firstYear.'},"end_period" : {"month" :'.$monthParams['month'].',"year":'.$firstYear.'} },
+            {"start_period" : {"month" :'.$startMonth.',"year":'.$secondYear.'},"end_period" : {"month" :'.$monthParams['month'].',"year":'.$secondYear.'} }  ] }';
         $this->paramsJson = Sessions::getReportParams();
         if ($this->paramsJson) {
             $this->params = json_decode($this->paramsJson,true);

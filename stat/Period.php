@@ -84,13 +84,22 @@ class Period {
      * Получить числовое значение конечного месяца  по умолчанию
      * @return int
      */
-        public static function getDefaultEndMonth() 
+    public static function getDefaultEndMonthAndYear() 
     {
-        date("m") == 1 ? $endMonth = date("m") : $endMonth = date("m") - 1;
-        if (date('d')<10) {
-            $endMonth ==1 ? $endMonth = 12 : $endMonth--;
-        }
-        return intval($endMonth);
+        $endMonth = date("m");
+        $endYear = date('Y');
+        if (date('d')<16) {            
+            if ($endMonth ==1) {
+                $endMonth = 12;                
+                $endYear = date('Y') - 1;
+            } else { 
+                $endMonth--;
+                $endYear = date('Y');
+            }
+        }                            
+        return [ 
+            'month' =>intval($endMonth),
+            'year' =>intval($endYear),
+            ];
     }
-    
 }
