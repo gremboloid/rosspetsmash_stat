@@ -1416,7 +1416,7 @@ tr.summary .price_model {
 
 .modal.modal-form {
   width: 60%;
-  min-width: 600px; }
+  min-width: 700px; }
 
 .modal-form fieldset {
   font-size: 14px;
@@ -1487,10 +1487,9 @@ tr.summary .price_model {
 form sup {
   color: #CC0000;
   font-weight: bold;
-  font-size: 140%;
+  font-size: 80%;
   vertical-align: text-top;
-  position: static;
-  margin-left: 3px; }
+  position: static; }
 
 .form_edit_list_block {
   width: 220px;
@@ -1640,8 +1639,8 @@ input[type="radio"], input[type="checkbox"] {
 .nav i, .dropdown-menu i {
   padding-right: 5px; }
 
-.rs-form-control.pb5 {
-  padding-bottom: 5px; }
+.mb {
+  margin-bottom: 5px; }
 
 .flx {
   display: -webkit-flex;

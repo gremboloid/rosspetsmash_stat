@@ -10,16 +10,16 @@
 				{% if not hide %}
 					{% if val.type != 'hidden' and val.type != 'options_group' and val.type != 'script' %}					
 					<div id="block_{{ key }}" class="elements-block{% if val.hide %} hide{% endif %}">
-						<label>{{ val.label }}</label>
+						<label>{{ val.label }}{% if val.required %}<sup>*</sup>{% endif %}</label>
 						<div class="margin-form{% if val.css_wrapper %} {{ val.css_wrapper }}{% endif %}">
 							{% if val.type == 'text' %}
-							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text"{% if val.required %} class="req"{% endif %}>{% if val.required %}<sup>*</sup>{% endif %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text"{% if val.required %} class="req"{% endif %}>
 							{% elseif val.type == 'password' %}
-							<input id="{{ key }}"{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="password"{% if val.required %} class="req"{% endif %}>{% if val.required %}<sup>*</sup>{% endif %}
+							<input id="{{ key }}"{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="password"{% if val.required %} class="req"{% endif %}>
 							{% elseif val.type == 'mail' %}
-							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text" class="mail{% if val.required %} req{% endif %}">{% if val.required %}<sup>*</sup>{% endif %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text" class="mail{% if val.required %} req{% endif %}">
 							{% elseif val.type == 'date' %}
-							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text" class="format-date{% if val.required %} req{% endif %}">{% if val.required %}<sup>*</sup>{% endif %}
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text" class="format-date{% if val.required %} req{% endif %}">
 							{% elseif val.type == 'number' %}
 							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} maxlength="5" name="{{ key }}" value="{{ val.value }}" type="number">							
 							{% elseif val.type == 'simple' %}
