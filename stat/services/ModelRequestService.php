@@ -8,6 +8,7 @@ use app\stat\model\OperatorsConfig;
 use app\stat\model\Contractor;
 use app\stat\model\Brand;
 use app\stat\ViewHelper;
+use yii\helpers\Url;
 /**
  * Description of ModelREquestService
  *
@@ -32,6 +33,7 @@ class ModelRequestService
     {
         $brand = new Brand($modelRequest->brandId);
         $tplVars['request_id'] = $modelRequest->getId();
+        $tplVars['link'] = Url::base(true).'/admin/requests/info/';
         $tplVars['contractor_name'] = (new Contractor($brand->contractorId))->name;                
         $viewHelper = new ViewHelper(_MAIL_TEMPLATES_DIR_,'model_request_admin',$tplVars);
         return $viewHelper->getRenderedTemplate();

@@ -17,13 +17,13 @@
 					</ul>
 				</div>
 				{% if admin %}
-				<a href="/admin"><div class="containers last-element-container">
+				<a id="admin" href="/admin"><div class="containers last-element-container">
 					<div class="last-element-image-container">
 						<div class="last-element-image"></div>
 					</div>
 					<div class="last-element">
 						{{ administration }}
-					</div>{% if root %}<span class="notify-count" title="{{ unprocessed_requests }}">{{ models_request_count }}</span>{% endif %}
+					</div>{% if root %}<span id="notify-count" data-url="{{ url}}" class="notify-count" title="{{ unprocessed_requests }}">{{ models_request_count }}</span>{% endif %}
 				</div></a>
 				{% endif %}
 			</div>

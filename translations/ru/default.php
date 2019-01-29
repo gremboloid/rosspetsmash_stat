@@ -301,7 +301,7 @@ $_DEFAULT['MODEL_REQUEST_HEAD'] = 'Запрос на добавление нов
 $_DEFAULT['MODEL_REQUEST_NEW'] = 'Данные модели';
 $_DEFAULT['MODEL_REQUEST_TYPE'] = 'Происхождения модели';
 $_DEFAULT['MODEL_LOCALIZATION_LEVEL'] = 'Уровень локализации';
-$_DEFAULT['MODEL_REQUEST_RUSSIAN'] = 'Производится или собирается в РФ';
+$_DEFAULT['MODEL_REQUEST_RUSSIAN'] = 'Производится в РФ';
 $_DEFAULT['MODEL_REQUEST_IMPORT'] = 'Импортируется (из стран ближнего и дальнего зарубежья в РФ)';
 
 $_DEFAULT['CONTRACTORS_CATEGORY_NAMES_HEAD'] = 'Категория производителей';

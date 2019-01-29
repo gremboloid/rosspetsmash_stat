@@ -158,7 +158,7 @@ class ModelRequest extends ObjectModel
             'elements' => $model_types
         ];
         $this->form_elements['main_form']['elements_list']['localizationLevel'] = [
-            'label' => l('MODEL_LOCALIZATION_LEVEL') .' (0-100)',
+            'label' => l('MODEL_LOCALIZATION_LEVEL') .' (0-100%)',
             'type' => 'text',
             'size' => 30,
             'validateParams' => 

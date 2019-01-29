@@ -34,6 +34,16 @@ $(function(){
     $(window).on('resize',function(){
         columnsAlignment();
     }); 
+    // обработка клика по уведомлениям о количестве запросов
+    $('#notify-count').click(function(event){
+        var url = $(this).data('url');
+        document.location = url;
+    });
+    $('#admin').click(function(event){              
+        if ($(event.target).attr("id") == 'notify-count') {
+             event.preventDefault();
+        }
+    });
     // показ модального окна при клике на ссылку
     $('a[data-modal]').click(function(event) {
         var mdl_settings = {

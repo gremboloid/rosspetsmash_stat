@@ -4,6 +4,7 @@ namespace app\stat\helpers;
 
 use \Yii;
 use app\stat\services\ModelRequestService;
+use yii\helpers\Url;
 
 /**
  * Вспомрогательный класс для подготовки данных к отображению в видах
@@ -70,6 +71,7 @@ class ControllerViewHelper
            $requestService = new ModelRequestService();
            $resArray['models_request_count'] = $requestService->getUnprcessedRequestsCount();
            $resArray['unprocessed_requests'] = l('UNPROCESSED_REQUESTS_PRESENTS','messages');
+           $resArray['url'] = Url::base(true) . '/admin/requests';
        }
        return $resArray;
     }

@@ -309,7 +309,7 @@ input#user_email {
   position: absolute;
   top: 0;
   right: 5px;
-  padding: 8px 5px;
+  padding: 8px 6px;
   background-color: #0e5984;
   border-radius: 8px;
   font-size: 8px;
@@ -869,6 +869,9 @@ td.digit-val {
   border: 1px solid #0e5984;
   margin-bottom: 3em;
   text-align: center; }
+
+.message-window p {
+  margin: 0; }
 
 .message-inform {
   background-color: #e7f7f3; }
@@ -1645,7 +1648,7 @@ body {
   color: #0e5984; }
 
 .checkbox input {
-  min-height: 20px;
+  min-height: 22px;
   padding-left: 20px;
   display: block;
   margin-bottom: 5px;
@@ -2029,6 +2032,12 @@ a.clickable {
 .left_sub_block.disabled .sub_block_body {
   color: #b3b3b3; }
 
+.new_model_request > .sub_block_body {
+  margin-top: 0;
+  height: 22px;
+  min-height: 0;
+  line-height: 1.5; }
+
 .disabled .constructor_action {
   display: none; }
 
@@ -2298,7 +2307,7 @@ fieldset > fieldset > legend {
 .rs-form-control {
   display: block;
   width: 100%;
-  height: 20px;
+  height: 22px;
   padding: 0;
   font-size: 12px;
   line-height: 1.42857143;
@@ -2332,7 +2341,7 @@ fieldset > fieldset > legend {
 
 .select-inline-element {
   font-size: 12px;
-  height: 28px;
+  height: 22px;
   line-height: 1.42857143;
   border: 1px solid #ccc;
   padding: 2px 4px;
@@ -2424,7 +2433,7 @@ fieldset > fieldset > legend {
   overflow: auto; }
 
 .checkable {
-  min-height: 20px;
+  min-height: 22px;
   padding-left: 40px;
   display: block;
   margin: 1px 0; }
