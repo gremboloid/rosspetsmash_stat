@@ -125,12 +125,12 @@ class Tools {
         return trim($string,',') . ']';
     }
     /**
-     * 
-     * @param type $message Текст сообщения
-     * @param type $code Код ошибки 
-     * @param type $json формат вывода
-     * @return array|string массив или объект Json
-     */
+    * 
+    * @param type $message Текст сообщения
+    * @param type $code Код ошибки 
+    * @param type $json формат вывода
+    * @return array|string массив или объект Json
+    */
     public static function getErrorMessage($message,$code=0,$json=true,$array=false) {
         $error = [
                     'errorCode' => $code,
@@ -257,9 +257,9 @@ public static function getOldDate($inpDate, $n)
  * @param int $num индекс вложенности 
  * @return string protocol
  */
-    public static function getValFromURI($num=0)
+    public static function getValFromURI($num = 0,$external = '')
     {
-        $ret = self::getFilteredUrl();
+        $ret = self::getFilteredUrl($external);
         $path_array = explode("/", trim ($ret,"/"));
         if (count ($path_array)-1 < $num) {
             return '';
@@ -271,9 +271,9 @@ public static function getOldDate($inpDate, $n)
  *  Вернуть очищенное от параметров значение URI
  * @return string
  */
-    public static function getFilteredUrl()
+    public static function getFilteredUrl($external = '')
     {
-        $ret = self::getUri();
+        $ret = self::getUri($external);
         $position = strpos($ret,'?');
         return  $position ? substr($ret,0,$position) : $ret;
     
@@ -282,8 +282,11 @@ public static function getOldDate($inpDate, $n)
   * Вернуть полную строку URI
   * @return string
   */
-    public static function getUri()
+    public static function getUri($external = '')
     {
+        if (!empty($external)) {            
+            return (string) $external;
+        }
         if (isset($_SERVER['HTTP_X_REWRITE_URL'])) 
         {
             $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
@@ -330,12 +333,13 @@ public static function getOldDate($inpDate, $n)
      * Вернуть строку GET запроса
      * @return string
      */
-    public static function getRequestParamsFromUri()
+    public static function getRequestParamsFromUri($external = '')
     {
-        $ret = self::getUri();
+        $ret = self::getUri($external);
         $position = strpos($ret,'?');
         return $position ? substr($ret,$position, strlen($ret)) : '';
     }
+    
     public static function cleanCache ( $cacheFileName = null ) {
         if (!$cacheFileName) {
             array_map('unlink', glob(_CACHE_DIR_ . '*.dat'));

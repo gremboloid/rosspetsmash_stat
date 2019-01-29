@@ -23,7 +23,7 @@
 					</div>
 					<div class="last-element">
 						{{ administration }}
-					</div>
+					</div>{% if root %}<span class="notify-count" title="{{ unprocessed_requests }}">{{ models_request_count }}</span>{% endif %}
 				</div></a>
 				{% endif %}
 			</div>

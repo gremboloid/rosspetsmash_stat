@@ -15,7 +15,7 @@ abstract class AdminForm extends AdminRoot
 {
     /** @var string */
     protected $_head_text;
-    protected $_form_id = 'form-for-config';
+    protected $form_name = 'form-for-config';
     protected $_model_name = 'config';
     /** @var string javaScript метод вызывающийся при обработки кнопки submit */
     protected $submit_button_method = 'saveConfig';
@@ -26,8 +26,12 @@ abstract class AdminForm extends AdminRoot
 
 
     public function __construct() {
-        parent::__construct();
+        parent::__construct();        
+    }
+    public function prepare()
+    {
         $this->formConfigure();
+        parent::prepare();
     }
 
     /**
@@ -35,15 +39,15 @@ abstract class AdminForm extends AdminRoot
      */   
     protected function formConfigure() {  
         $btns = l('BTN_ACTIONS');
+        $this->form_elements['main_form']['form_id'] = $this->form_name;
         $this->form_elements['submit_button'] = true;
         $this->form_elements['submit_button_method'] = $this->submit_button_method;
         $this->form_elements['submit_button_text'] = $btns['save'];
         $this->form_elements['main_form']['block_head_text'] = $this->name;
-        if (!empty($this->form_template_head)) {
-            $this->form_elements['model_name'] = $this->_model_name;
+        $this->form_elements['model_name'] = $this->_model_name;
           //  $this->form_template['form_type'] = 'modal';
-        }
-        $this->form_elements['main_form']['form_id'] = $this->_form_id;
+       // }
+       // $this->form_elements['main_form']['form_id'] = $this->_form_id;
 			
         
     }

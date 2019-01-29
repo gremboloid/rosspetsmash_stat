@@ -4,9 +4,11 @@ namespace app\controllers;
 
 use app\stat\Tools;
 use Yii;
-use app\stat\helpers\ModelsHelper;
+use app\stat\helpers\ObjectModelHelper;
 use app\stat\services\ReportsLogService;
 use app\stat\model\Models;
+use app\stat\model\ModelRequest;
+use app\stat\services\ModelService;
 /**
  * Description of ModelController
  *
@@ -35,21 +37,41 @@ class ModelController extends FrontController
         if (!class_exists($className)) {
              return Tools::getErrorMessage('Класс не существует',1); 
         }
-        $modelsHelper = ModelsHelper::getInstance(new $className((int) $postData['id']));
+        $modelsHelper = ObjectModelHelper::getInstance(new $className((int) $postData['id']));
         return $modelsHelper->getInfoBlock();
     }
+    public function actionModelFormRequest() {
+        $postData = Yii::$app->request->post();
+        if (!Yii::$app->request->isPost) {
+            return  Tools::getErrorMessage('request error',1);          
+        }
+        if (empty($modelRequestId = $postData['id'])) {
+            return Tools::getErrorMessage('request error',1); 
+        } 
+        if (!is_admin() ) {
+            return Tools::getErrorMessage('request error',1,false);
+        }        
+        $model = ModelService::getModelFromRequest(new ModelRequest($modelRequestId));            
+        $specialParams = [
+            'source' => 'Request',
+            'requestId' => $modelRequestId
+        ];
+        return $model->displayForm(true,$specialParams);
+        
+    }
    public function actionDisplayForm() {
+        $postData = Yii::$app->request->post();
+        if (empty($postData['model'])) {
+            return Tools::getErrorMessage('request error',1); 
+        } 
         if (!Yii::$app->request->isAjax || 
-                !is_admin()) {
+                !(is_admin() || $postData['model'] == 'ModelRequest')) {
             return Tools::getErrorMessage('request error',1,false);
         }
         if (!Yii::$app->request->isPost) {
             return  Tools::getErrorMessage('request error',1);          
         }
-        $postData = Yii::$app->request->post();
-        if (empty($postData['model'])) {
-            return Tools::getErrorMessage('request error',1); 
-        }        
+       
         $modelClassName = DEFAULT_NAMESPACE_FOR_MODELS . $postData['model'];
         $modelParent = DEFAULT_NAMESPACE_FOR_MODELS . 'ObjectModel';
         if (!(class_exists($modelClassName) && is_subclass_of($modelClassName, $modelParent))) {
@@ -71,9 +93,33 @@ class ModelController extends FrontController
         if (!(class_exists($modelClassName) && is_subclass_of($modelClassName, $modelParent))) {
             return Tools::getErrorMessage('request error',1); 
         }        
-        $model = new $modelClassName($postData['id']);      
+        $model = new $modelClassName($postData['id']);        
         $res = $model->saveModelObject($postData['form']);        
         return $res;
+    }
+    public function actionSaveModelRequest() 
+    {
+        if (!Yii::$app->request->isPost) {
+            return  Tools::getErrorMessage('request error',1);          
+        }
+        $postData = Yii::$app->request->post();
+        if (empty($postData['form'])) {
+            return Tools::getErrorMessage('request error',1); 
+        }
+        $model = new Models();
+        $model->attachEvent(Models::AFTER_INSERT, function(Models $modelObject) use ($postData){
+            if ($modelObject->id) {
+                $requestForm = new ModelRequest($modelObject->request_data['requestId']);
+                $requestForm->set('publicated',1);
+                $requestForm->saveObject();
+                return;
+            }
+        });
+        $res = $model->saveModelObject($postData['form']);        
+        return $res;
+       // $modelId = $model->id;
+        //$model->attachEvent(Models::BEFORE_INSERT, function )
+        
     }
     public function actionDeleteModel () 
     {

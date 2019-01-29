@@ -18,6 +18,7 @@ abstract class  AdminRoot {
     protected $template_file = "admin";
     /** присутствует левый сайдбар */
     protected $left_block = true;
+    protected $form_name;
     protected $left_block_template = "admin_left_block";
     /** @var string имя ассоциированной с разделом таблицей, если имеется */
     public $table;  
@@ -83,10 +84,10 @@ abstract class  AdminRoot {
             'block_name' => l('FAST_LINK', 'admin'),
             'type' => 'ref_list',
             'refs' => [
-                ['name' => 'Классификатор', 'link' => 'classifier'],
-                ['name' => 'Реестр производителей', 'link' => 'contractors'],
-                ['name' => 'Реестр пользователей', 'link' => 'users'],
-                ['name' => 'Реестр моделей', 'link' => 'models'],
+                ['name' => 'Классификатор', 'link' => '/admin/classifier'],
+                ['name' => 'Реестр производителей', 'link' => '/admin/contractors'],
+                ['name' => 'Реестр пользователей', 'link' => '/admin/users'],
+                ['name' => 'Реестр моделей', 'link' => '/admin/models'],
             ]
         ];
     }

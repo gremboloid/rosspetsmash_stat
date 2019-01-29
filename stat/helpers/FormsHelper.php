@@ -14,7 +14,7 @@ use app\stat\model\ModelContractorForm;
 use app\stat\model\CountryContractorForm;
 use app\stat\model\ContractorGeografy;
 use app\stat\model\Models;
-use app\stat\helpers\ModelsHelper;
+use app\stat\helpers\ObjectModelHelper;
 use app\stat\ViewHelper;
 /**
  * Description of FormsHelper
@@ -179,16 +179,16 @@ class FormsHelper {
         switch ($form_type) {
             case 1:
             case 2:
-                $mt_flag = ModelsHelper::MODELS_WITHOUT_IMPORT;
+                $mt_flag = ObjectModelHelper::MODELS_WITHOUT_IMPORT;
                 break;
             case 5:
-                $mt_flag = ModelsHelper::ONLY_IMPORT;
+                $mt_flag = ObjectModelHelper::ONLY_IMPORT;
                 break;
             default:
-                $mt_flag = ModelsHelper::ALL_MODELS;
+                $mt_flag = ObjectModelHelper::ALL_MODELS;
                 break;
         }
-        $modelsHelper = new ModelsHelper();
+        $modelsHelper = new ObjectModelHelper();
         //filtered_models = \Rosagromash\Tools::getValuesFromArray(ModelContractorForm::getRowsArray(null,null,null,[['param' => 'ContractorId','bindingValue' => $contractor]]),'ModelId');
         $filtered_models = Tools::getValuesFromArray($modelsHelper->getModelsListByContractor($contractor,$classifier,null,$mt_flag),'Id');
 

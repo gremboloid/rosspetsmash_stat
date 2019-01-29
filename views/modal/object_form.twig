@@ -3,7 +3,7 @@
 	<div><h2>{{ head_text }}</h2></div>
 	{% endif %}
 	{% if main_form and main_form.elements_list is iterable %}
-	<form id="{{ main_form.form_id}}" class="{{ form_class }}" name="{{ model_name }}"{% if main_form.element_id %} data-element="{{ main_form.element_id }}"{% endif %} action="">
+	<form id="{{ main_form.form_id }}" class="{{ form_class }}" name="{{ model_name }}"{% if main_form.element_id %} data-element="{{ main_form.element_id }}"{% endif %} action="">
 		<fieldset>
 			<legend>{{ main_form.block_head_text }}</legend>						
 			{% for key,val in main_form.elements_list %}
@@ -13,7 +13,7 @@
 						<label>{{ val.label }}{% if val.required %}<sup>*</sup>{% endif %}</label>
 						<div class="margin-form{% if val.css_wrapper %} {{ val.css_wrapper }}{% endif %}">
 							{% if val.type == 'text' %}
-							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text"{% if val.required %} class="req"{% endif %}>
+							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text"{% if val.required %} class="req"{% endif %}{% if val.validateParams %}{% for p,v in val.validateParams %} {{ p }}="{{ v }}"{% endfor %}{% endif %}>
 							{% elseif val.type == 'password' %}
 							<input id="{{ key }}"{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="password"{% if val.required %} class="req"{% endif %}>
 							{% elseif val.type == 'mail' %}
@@ -21,7 +21,7 @@
 							{% elseif val.type == 'date' %}
 							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" value="{{ val.value }}" type="text" class="format-date{% if val.required %} req{% endif %}">
 							{% elseif val.type == 'number' %}
-							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} maxlength="5" name="{{ key }}" value="{{ val.value }}" type="number">							
+							<input class="digits{% if val.required %} req{% endif %}"{% if val.size %} style="width:{{ val.size }}px;"{% endif %} maxlength="5" name="{{ key }}" value="{{ val.value }}" type="number">							
 							{% elseif val.type == 'simple' %}
 							<p{% if val.class%} class="{{ val.class }}"{% endif %}>{{ val.text }}</p>							
 							{% elseif val.type == 'radio' %}
@@ -34,7 +34,7 @@
 							{% elseif val.type == 'textarea' %}
 							<textarea{% if val.size %} style="width:{{ val.size }}px;"{% endif %} {% if val.class %}class="{{ val.class }}" {% endif %}name="{{ key }}" cols="30" rows="5">{{ val.value }}</textarea>														
 							{% elseif val.type == 'select' %}
-								<select{% if val.size %} style="width:{{ val.size }}px;"{% endif %} id="{{ key }}"{% if val.class %} class="{{ val.class }}" {% endif %}name="{{ key }}">
+								<select{% if val.size %} style="width:{{ val.size }}px;"{% endif %} id="{{ key }}"{% if val.class %} class="{{ val.class }}" {% endif %}name="{{ key }}"{% if val.onchange %} onchange="{{ val.onchange }}(this);"{% endif %}>
 								{% for opt_element in val.elements %}
 									{% if not val.selected %}
 									<option value="{{ opt_element.value }}">{{ opt_element.text|raw }}</option>
@@ -43,6 +43,11 @@
 									{% endif %}								
 								{% endfor %}
 								</select>	
+							{% elseif val.type == 'modal_select' %}
+							<div class="action_buttons">
+                                <button id="{{ val.js_add_id }}">{{ val.button_text }}</button>
+								<input name="{{ key }}" value="{{ val.value }}" {% if val.required %}class="req" {% endif %}type="text" style="visibility:hidden;">																
+							</div>
 							{% elseif val.type == 'edit_list' %}
 							<input{% if val.size %} style="width:{{ val.size }}px;"{% endif %} name="{{ key }}" id="{{ key }}" class="form_edit_list_added" value="" type="text">
 							<div id="action_buttons">
@@ -52,7 +57,7 @@
 								{% if val.elements is iterable %}
 								{% for val1 in val.elements %}
 								<div class="{{ val.id }}_block">
-									<input id="{{ val.id }}{{ loop.index0 }}" class="{{ val.id}}_element" name="{{ val.id}}[{{ loop.index0 }}]" readonly="" value="{{ val1.text }}">
+									<input id="{{ val.id }}{{ loop.index0 }}" class="{{ val.id}}_element"{% if val.size %} style="width:{{ val.size - 25 }}px;"{% endif %} name="{{ val.id}}[{{ loop.index0 }}]" readonly="" value="{{ val1.text }}">
 									<div title="Удалить" class="icon_remove"></div>
 								</div>
 								{% endfor %}
@@ -103,55 +108,20 @@
 			{% endfor%}
 			</fieldset>
 	</form>
+<div class="stat-descriptions">
+<p><sup>*</sup> - Поля, обязательные для заполнения</p>
+</div>	
+	{% endif %}
+	{% if dop_block is defined and dop_block is iterable %}
+		{% for val in dop_block %}
+		{{ val|raw }}
+		{% endfor %}
 	{% endif %}
 	{% if sub_block is iterable %}
 		{% for block in sub_block %}
 			{% if block.elements_list is iterable %}
 				{% for key,val in block.elements_list %}
-					{% if val.type == 'table-form' %}
-					<form id="{{ key}}" name="{{ key }}" action="">
-					<fieldset>
-						<legend>{{ block.block_head_text }}</legend>
-										<table style="width:100%" cellspacing="0" cellpadding="0" border="0">
-					<tbody>
-						<tr>
-						{% for h_name in val.table_headers %}
-							<td>{{ h_name }}</td>
-						{% endfor %}
-						</tr>						
-						{% for str in val.table_vals %}
-						<tr>
-							{% for cell in str %}
-								{% if cell.type == 'text' %}
-									<td><input name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px" type="text" value={{ cell.value }}></td>
-								{% elseif cell.type == 'string' %}
-								<td><p style="width:{{ cell.size }}px">{{ cell.text}}</p></td>
-								{% elseif cell.type == 'checkbox' %}
-									<td><input name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px" value="{{ cell.value }}" type="checkbox"></td>					
-								{% elseif cell.type == 'select' %}
-								<td>
-									<select name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px">
-									{% for c_el in cell.elements %}
-										<option value="{{ c_el.value }}">{{ c_el.text|raw }}</option>
-									{% endfor %}
-									</select>
-								</td>
-								{% endif %}
-							{% endfor%}	
-							</tr>							
-						{% endfor%}						
-						
-						{% if val.action_buttons %}
-						<tr>
-						<td colspan="{{ val.table_headers|length }}"><button id="add-attribite" type="button" class="btn btn-default small"><i class="glyphicon glyphicon-asterisk"></i>Добавить</button></td>
-							<td colspan="5"><img src="image/add.gif" alt="" onclick="GetUpdateBehaviors();" width="107" height="21" border="0"></td>
-						</tr>
-						{% endif %}
-					</tbody>
-				</table>
-					</fieldset>
-					</form>
-					{% elseif val.type == 'table' %}
+					{% if val.type == 'table' %}
 					<div class="modal-block-container">
 					<div class="modal-block-header">{{ block.block_head_text }}</div>
 						<div class="modal-block-body">

@@ -1,14 +1,53 @@
- // вспомогательные функции
+// глобальная настройка
+var global_data = {};
+global_data.baseSettings = {
+    classifierId: 0,
+    classifierName: '',
+    leaf : false
+};
 
- 
+// вспомогательные функции
+
+// функция отображения модального окна для показа дерева классификатора
+var showClassifierModal = function () {
+        $('#classifiermodal-activate').trigger('click'); 
+      //  $('#classifiermodal').ajaxModal();
+        var jsData = $.parseJSON(global_classifier_tree);        
+        var //$buildedTree = $('.classifier_tree').buildTree(jsData,$('#classifier-search'));
+            $buildedTree = $('.classifier_tree').buildTree.call($('.classifier_tree'),jsData,$('#classifier-search'));
+            $buildedTree.on('select_node.jstree',function(event,data){
+            global_data.baseSettings.classifierId=data.node.id; 
+            global_data.baseSettings.classifierName=data.node.text; 
+            global_data.baseSettings.leaf = (data.node.children.length === 0);
+        });        
+    }
 // Вывод всплывающего информационного сообщения
 var showMessage = function(message) {
-    $('<div class="center"><p>' + message +'</p>'+ global_data.close_button+'</div>').modal();
+    $('<div class="center"><p>' + message +'</p>'+ global_data.close_button+'</div>').modal({
+        closeExisting : false,
+        blockerClass: 'ajaxBlocker'
+    });
+}
+//Сохранение модели из запроса
+var saveModelRequest = function() {
+    saveModel('Request');
 }
  // сохранение модели
-var saveModel = function() {
+var saveModel = function(method) {
+    var path = '/model/save-model';
+    if (method === 'Request') {
+        path = '/model/save-model-request'
+    }
     var $frm = $('#form-for-model'),
         model = $frm.attr('name');
+    var $techChars = $('#techCharacteristic'),
+        enabledForm;
+    $frm.validate();    
+    if ($techChars.length === 1) {
+        $techChars.validate();
+    }
+    addFormValidationRules();
+    enabledForm = ($techChars.length === 1) ? $techChars.valid() : true;
     if (typeof tinyMCE === 'object') {
         if (tinyMCE.editors.length > 0) {
             $.each(tinyMCE.editors,function(idx,elem) {
@@ -16,10 +55,8 @@ var saveModel = function() {
                 $('#'+id_el).val(elem.getContent());
             });
         }
-    }
-    $frm.validate();
-    addFormValidationRules();
-    if($frm.valid()) {
+    }        
+    if($frm.valid() && enabledForm) {
         var elements = $frm.serialize(),
            frmParams = {  
                         form : {
@@ -30,25 +67,22 @@ var saveModel = function() {
         if ($frm.hasClass('edit_form')) {
             frmParams.id = $frm.data('element');
         }
-        var $techChars = $('#techCharacteristic');
         if ($techChars.length === 1) {
             frmParams.form.tech_data = $techChars.serialize();
         }
         $.ajax({
-            url: global_data.baseURI + '/model/save-model',
+            url: global_data.baseURI + path,
             type: 'POST',
             dataType: 'json',
             data: frmParams,
             success: function(res) {
                 var msg = $.parseJSON(global_data.messages); 
+                console.log(msg);
                // return;
                 if (res.hasOwnProperty('STATUS')) {
                     var flash_msg;
-                    if (res.STATUS == 1) {
-                        flash_msg = msg.save_model;
-                    } else {
-                        flash_msg = res.MESSAGE;
-                    }
+                    flash_msg = res.MESSAGE;
+
                     global_data.utils.ajax.write_session_value('FLASH_SAVE_MODAL',{                            
                             status : res.STATUS,
                             message : flash_msg
@@ -77,7 +111,13 @@ var addFormValidationRules = function() {
     });
     $('#repeatPassword').rules("add",{
         equalTo: "#password"
-    });
+    });/*
+	$('.digit').map( function(idx,elem) {
+		$(elem).rules("add",{
+			//	digits : true,
+
+		});
+	});*/
     
 } 
 /**
@@ -197,7 +237,15 @@ var isModelPrototype = function (e) {
         $('#block_year').removeClass('hide');    
     }
 };
-
+// действия в зависимости от выбранной страны происхождения модели
+var isLocalizationExist = function(e) {
+    var $bl = $('#block_localizationLevel');
+    if (e.value == 1) {
+        $bl.addClass('hide');
+    } else {
+        $bl.removeClass('hide');
+    }
+};
 //Расширкние JQuery
 /**
  * Открывает модальное окно с заданным содержимым 
@@ -205,7 +253,11 @@ var isModelPrototype = function (e) {
  */
 $.fn.ajaxModal = function() {
     var obj=this;      
-    obj.modal();     
+    obj.modal({
+        closeExisting : false,
+        blockerClass: 'ajaxBlocker',
+        clickClose: false
+    });     
     obj.on('modal:after-close',function () {
         this.remove();
     });
@@ -224,11 +276,9 @@ $.fn.ajaxModal = function() {
                         $(elem).addClass('hide');
                     } else {
                         elem.removeClass('hide');
-                    }
-                    
+                    }                    
                 });
-            }
-            
+            }            
         });
     }
     if ($contractorSelection.length == 1) {
@@ -251,26 +301,30 @@ $.fn.ajaxModal = function() {
  */
 $.fn.buildTree = function (treeData,searchElem) {
     var treeObj = this;
+    var firstStart = !(treeObj.hasClass('jstree'));
     treeObj.jstree({
-                    "plugins" : [ "search" ],
-                    'core' : {
-                            'data' : treeData } }).on('ready.jstree',function(){
-
-                                if (searchElem != null) { 
-                                    var to = false;
-                                    searchElem.on('keyup', function() {
-                                    if(to) { clearTimeout(to); }
-                                    to = setTimeout (function (){
-                                        var v = searchElem.val();                                                                   
-                                        treeObj.jstree(true).search(v);
-                                        },250); 
-                                    });
-                                }   
-                                treeObj.on('select_node.jstree',function (event,data) {
-                                    return data.instance.toggle_node(data.node);
-                                    });
-                                });
-    return treeObj;
+        "plugins" : [ "search" ],
+        'core' : {
+                'data' : treeData } 
+    });
+    if (firstStart) {
+        treeObj.on('ready.jstree',function(){
+            if (searchElem != null) { 
+                var to = false;                                    
+                searchElem.on('keyup', function() {
+                if(to) { clearTimeout(to); }
+                to = setTimeout (function (){
+                    var v = searchElem.val();                                                                   
+                    treeObj.jstree(true).search(v);
+                    },250); 
+                });
+            }   
+            treeObj.on('select_node.jstree',function (event,data) {
+                return data.instance.toggle_node(data.node);
+                });
+            });
+        }
+return treeObj;
 }
 /**
  * Установка значений периода по умолчанию
@@ -322,6 +376,14 @@ $(function() {
                    success: sc
                });
            }
+        },
+        getMessage : function (str) {
+            if (typeof global_data.loadedMessages != 'object') {
+                global_data.loadedMessages = JSON.parse(global_data.messages);
+            }
+            if (global_data.loadedMessages.hasOwnProperty(str)) {
+                return global_data.loadedMessages[str];
+            }
         },
         /**
          * разбиение чисел по разрядам для инпутов
@@ -495,12 +557,72 @@ $(function() {
                 $frm.validate();
                 addFormValidationRules();
                 if($frm.valid()) {
-                    var elements = $frm.serialize();
+                   //var elements = $frm.serialize();
                     $frm.submit();
                 }
             });
+        },
+        initForms : {
+            initClassifierSelect : function() {
+                $('#add_classifier_id').on('click',function(e){
+                    e.preventDefault();
+                    var $classifierModal = showClassifierModal();
+                    $('#select-classifier').off('click');
+                    // обработка выбора классификатора
+                    $('#select-classifier').on('click',function(e){
+                        var cId = parseInt(global_data.baseSettings.classifierId);
+                        if (!global_data.baseSettings.leaf) {
+                            showMessage('Должен быть выбран раздел классификатор не имеющий подразделов');
+                            return;
+                        }
+                        var ajaxData = {
+                            classifierId : cId
+                        }
+                        $.ajax({
+                            url: global_data.baseURI + '/model-request/get-form-characteristic',
+                            type: 'POST',
+                            data: ajaxData,
+                            dataType: 'json',
+                            success: function(response) {
+                                var $formChar = $('#techCharacteristic');
+                                $formChar.remove();
+                                if (response.hasOwnProperty('errorCode')) {
+                                    return;
+                                }                                       
+                                $('#form-for-model').after(response.message);                    
+                            }
+                        });            
+                        $('.close-modal').trigger('click');
+                        $('#block_classifierId .dop-text').html('<span>Выбранный раздел классификатора: </span>' + global_data.baseSettings.classifierName);
+                        $('#add_classifier_id').text('Изменить');
+                        $('input[name="classifierId"]').val(cId);            
+                      //  console.log(cId);
+
+                    });        
+                });
+            },
+            initBrandSelect : function() {
+                var $changedElement = $('.ajax_changed');
+                if ($changedElement.length > 0) {
+                    $changedElement.change(function(){
+                    $.ajax({
+                            url: global_data.baseURI + '/custom/get-contractor-name',
+                            type: 'GET',  
+                        dataType: 'json',
+                            data: { id : $(this).val() },
+                            success: function(response) {
+                                console.log(response)
+                                $('.comtractor_position').text(response);
+                                if (response.hasOwnProperty('errorCode')) {
+                                    console.log(response.message);
+                                    return;
+                                }
+                                $('.contractor_position').text(response.message);
+                            }
+                        });
+                    });
+                }
+        }
         }
     }
 });
-
-

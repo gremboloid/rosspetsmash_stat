@@ -38,8 +38,8 @@ class ContractorCategoryNames extends ObjectModel
             ]
         ];
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $this->form_elements['main_form']['elements_list']['name'] = [
             'label' => l('CONTRACTORS_CATEGORY_ELEMENT_NAME'),
             'type' => 'text',

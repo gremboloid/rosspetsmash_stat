@@ -1,0 +1,48 @@
+{% if elements_list is iterable %}
+    {% for key,val in elements_list %}
+    <form id="{{ key}}" name="{{ key }}" action="">
+    <fieldset>
+            <legend>{{ block_head_text }}</legend>
+                                            <table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+            <tr>
+            {% for h_name in val.table_headers %}
+                    <td>{{ h_name }}</td>
+            {% endfor %}
+            </tr>						
+            {% for element in val.table_vals %}
+            <tr>
+                    {% for cell in element.list %}
+                            {% if cell.type == 'text' %}
+                                    <td><div class="margin-form"><input{% if element.required %} class="req"{% endif %} name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px" type="text" value="{{ cell.value }}"></div></td>
+                            {% elseif cell.type == 'simple' %}
+							<td><input name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px" type="text" value="{{ cell.value }}"></td>
+                            {% elseif cell.type == 'string' %}
+                            <td><p style="width:{{ cell.size }}px">{{ cell.text}}{% if element.required and loop.index == 1 %}<sup>*</sup>{% endif %}</p></td>
+                            {% elseif cell.type == 'checkbox' %}
+                                    <td><input name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px" value="{{ cell.value }}" type="checkbox"></td>					
+                            {% elseif cell.type == 'select' %}
+                            <td>
+                                    <select name="{{ cell.name }}" id="{{ cell.name }}" style="width:{{ cell.size }}px">
+                                    {% for c_el in cell.elements %}
+                                            <option value="{{ c_el.value }}">{{ c_el.text|raw }}</option>
+                                    {% endfor %}
+                                    </select>
+                            </td>
+                            {% endif %}
+                    {% endfor%}	
+                    </tr>							
+            {% endfor%}						
+
+            {% if val.action_buttons %}
+            <tr>
+            <td colspan="{{ val.table_headers|length }}"><button id="add-attribite" type="button" class="btn btn-default small"><i class="glyphicon glyphicon-asterisk"></i>Добавить</button></td>
+                    <td colspan="5"><img src="image/add.gif" alt="" onclick="GetUpdateBehaviors();" width="107" height="21" border="0"></td>
+            </tr>
+            {% endif %}
+    </tbody>
+    </table>
+    </fieldset>
+    </form>
+    {% endfor %}
+{% endif %}

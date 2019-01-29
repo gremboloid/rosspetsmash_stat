@@ -86,17 +86,16 @@ class Period {
      */
     public static function getDefaultEndMonthAndYear() 
     {
-        $endMonth = date("m");
-        $endYear = date('Y');
-        if (date('d')<16) {            
-            if ($endMonth ==1) {
-                $endMonth = 12;                
-                $endYear = date('Y') - 1;
-            } else { 
-                $endMonth--;
-                $endYear = date('Y');
-            }
-        }                            
+        $dt = new \DateTime(date('Y').'-'.date('m').'-05');
+        if (date('d')<16) { 
+            $dt->sub(new \DateInterval('P2M'));
+        } else {
+            $dt->sub(new \DateInterval('P1M'));
+        }
+                
+        $endMonth = $dt->format('m');
+        $endYear = $dt->format('Y');
+                
         return [ 
             'month' =>intval($endMonth),
             'year' =>intval($endYear),

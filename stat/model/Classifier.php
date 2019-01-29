@@ -7,6 +7,7 @@ use app\stat\Tools;
 use app\stat\Convert;
 use app\stat\Sessions;
 use app\stat\services\ClassifierService;
+use app\stat\helpers\ClassifierCharacteristicHelper;
 /**
  * Description of Classifier
  *
@@ -27,6 +28,8 @@ class Classifier extends ObjectModel implements IChangeClassifier
     /** @var bool показывать действия в дополнительном блоке модального окнна  */
     protected $actions;
     protected $model_name = 'Classifier';
+    
+    const ROOT_ELEMENT = 41;
 
 
     protected static $table = "TBLCLASSIFIER";
@@ -127,8 +130,8 @@ class Classifier extends ObjectModel implements IChangeClassifier
           return Tools::getMessage('Перенос разделов классификатора выполнен успешно');
         
     }
-        protected function formConfigure() {
-        parent::formConfigure();
+        protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $id = $this->id;
         if (!$id) {
             $parent_classifier_id = Sessions::getParentClassifierId();
@@ -189,7 +192,14 @@ class Classifier extends ObjectModel implements IChangeClassifier
 
         
         // Блок технических характеристики
-
+        $classifierCharavteristicHelper = new ClassifierCharacteristicHelper();
+        try {
+            $this->form_elements['dop_block'][0] = $classifierCharavteristicHelper->getHtmlForm(); 
+        } catch (\DomainException $e) {
+            
+        }
+        
+        
         $this->form_elements['sub_block'][0] = array();
         $this->form_elements['sub_block'][0]['block_head_text'] = l('PERFOMANCE_HEAD');
 
@@ -211,49 +221,8 @@ class Classifier extends ObjectModel implements IChangeClassifier
             ['text' => l('YES','words'), 'value' => 1]
         ];
         
-        $table_vals = array();
-            $table_vals[0][0] = [
-               'name' => 'NameChar',
-                'type' => 'text',
-                'size' => 150
-                
-            ];
-            $table_vals[0][1] = [
-               'name' => 'TypeData',
-                'type' => 'select',
-                'size' => 100,
-                'elements' => $td_options
-                
-            ];
-            $table_vals[0][2] = [
-               'name' => 'Restriction',
-                'type' => 'text',
-                'size' => 150
-                
-            ];
-            $table_vals[0][3] = [
-               'name' => 'UnitOfMeasureId',
-                'type' => 'select',
-                'size' => 100,
-                 'elements' => $un_options
-                
-            ];
-            $table_vals[0][4] = [
-               'name' => 'Necessarily',
-                'type' => 'select',
-                'size' => 50,
-                'elements' => $req_options
-                
-            ];
         $action_buttons = array();
-        
-        $this->form_elements['sub_block'][0]['elements_list']['techCharacteristic'] = [
-             'type' => 'table-form',
-             'table_headers' => $table_headers,
-             'table_vals' => $table_vals,
-             'action_buttons' => true
-         ];
-        
+
         if ($this->actions) {
             $table_headers[] = l('ACTIONS');
             $this->form_elements['actions'] = true;
@@ -301,14 +270,7 @@ class Classifier extends ObjectModel implements IChangeClassifier
             }
         }
         Sessions::setValueToVar('TECH_CHARS', json_encode($tech_chars));
-        
-        
-        //$available_headers =   
-              /* $available_vals[0][0] = [              
-                'type' => 'string',
-                'size' => 150                
-            ];*/
-        
+
         $this->form_elements['sub_block'][1]['elements_list']['techCharacteristicAvailable'] = [
             'type' => 'table',
             'rows_class' => 'attr',
@@ -342,7 +304,6 @@ class Classifier extends ObjectModel implements IChangeClassifier
             foreach ($attrs_list as $attr) {
                 $attrs_arr = [
                     'name' => $attr->name,
-                    'classifierId' => $attr->classifierId,
                     'typeDataId' => $attr->typeDataId,
                     'unitOfMeasureId' => $attr->unitOfMeasureId,
                     'possibleValue' => $attr->possibleValue,
@@ -351,7 +312,7 @@ class Classifier extends ObjectModel implements IChangeClassifier
                 if ($id) {
                     $attrs_arr['classifierId'] = $id;
                 } else {
-                    $attrs_arr['classifierId'] = (int) $res['STATUS']['NEW_ID'];
+                    $attrs_arr['classifierId'] = (int) $res['NEW_ID'];
                 }
             }
             $attr_elem = PerformanceAttr::getInstance($attrs_arr);

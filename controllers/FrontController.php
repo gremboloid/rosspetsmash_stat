@@ -6,7 +6,7 @@ use yii\web\Controller;
 use Yii;
 use app\models\user\LoginUser;
 use app\stat\Module;
-use app\stat\helpers\ViewHelper;
+use app\stat\helpers\ControllerViewHelper;
 use app\stat\Configuration;
 use app\stat\model\Contractor;
 use app\stat\Sessions;
@@ -86,7 +86,8 @@ class FrontController extends Controller
         } else {
             $contractorName = '';
         }
-       $this->tpl_vars = ViewHelper::getVarsForCommonController($this->controllerName, $contractorName);
+        $this->tpl_vars['controller'] = $this->controllerName;
+       $this->tpl_vars = ControllerViewHelper::getVarsForCommonController($this->controllerName, $contractorName);
        $this->tpl_vars['messages'] = $this->messages;
        $this->tpl_vars['messagesJSON'] = json_encode($this->messages);
                // обработка флеш сообщений

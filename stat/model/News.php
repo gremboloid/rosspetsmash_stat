@@ -40,8 +40,8 @@ class News extends ObjectModel
             ]
         ];
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         if (is_resource($this->content) ) {
             $content = stream_get_contents($this->content);
         } else {

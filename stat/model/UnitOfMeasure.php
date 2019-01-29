@@ -3,8 +3,10 @@
 namespace app\stat\model;
 
 /**
+ * 
  * Description of UnitOfMeasure
- *
+ * @property string $name
+ * @property string $shortName
  * @author kotov
  */
 class UnitOfMeasure extends ObjectModel
@@ -33,8 +35,8 @@ class UnitOfMeasure extends ObjectModel
             ]
         ];
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
          $this->form_elements['main_form']['elements_list']['name'] = [
             'label' => l('UNITOFMEASURE_ELEMENT_NAME'),
             'type' => 'text',

@@ -68,6 +68,14 @@ function is_russian() {
     }
     return $user->getIdentity()->isRussian();
 }
+function is_root() {
+    $user = Yii::$app->user;
+    if ($user->isGuest) {
+        return false;
+    }
+    return $user->getIdentity()->isRoot();
+}
+
 function get_role() {
     $user = Yii::$app->user;
     if ($user->isGuest) {

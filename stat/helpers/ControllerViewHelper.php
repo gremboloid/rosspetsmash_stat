@@ -3,14 +3,14 @@
 namespace app\stat\helpers;
 
 use \Yii;
-use app\stat\model\Contractor;
+use app\stat\services\ModelRequestService;
 
 /**
  * Вспомрогательный класс для подготовки данных к отображению в видах
  *
  * @author kotov
  */
-class ViewHelper
+class ControllerViewHelper
 {
     /**
      * 
@@ -64,8 +64,13 @@ class ViewHelper
        $resArray['reports_uri'] = Yii::$app->request->baseUrl . '/reports';
        $resArray['forms_uri'] = Yii::$app->request->baseUrl . '/forms';
        $resArray['admin'] = is_admin();
+       $resArray['root'] = is_root();
        $resArray['analytic'] = is_analytic();
-       
+       if (is_root()) {
+           $requestService = new ModelRequestService();
+           $resArray['models_request_count'] = $requestService->getUnprcessedRequestsCount();
+           $resArray['unprocessed_requests'] = l('UNPROCESSED_REQUESTS_PRESENTS','messages');
+       }
        return $resArray;
     }
     

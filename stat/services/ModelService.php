@@ -2,6 +2,14 @@
 
 namespace app\stat\services;
 
+use app\stat\model\Brand;
+use app\stat\model\Contractor;
+use app\stat\services\ClassifierService;
+use app\stat\model\ModelRequest;
+use app\stat\model\Models;
+use app\stat\model\ModelType;
+use app\stat\ViewHelper;
+use app\stat\Mailer;
 /**
  * Description of ModelService
  *
@@ -52,5 +60,55 @@ class ModelService {
         }
         $aResult = getDb()->querySelect($sql);
         return $aResult;
+    }
+    /**
+     * Вернуть заполненную данными из запроса модель
+     * @param ModelRequest $request
+     * @return Models
+     */
+    public static function getModelFromRequest(ModelRequest $request) 
+    {
+        $model = new Models();
+        $model->name = $request->name;
+        $model->internationalName = $request->internationalName;
+        $model->fullName = $request->fullName;
+        $model->classifierId = $request->classifierId;
+        $model->brandId = $request->brandId;
+        $model->commemt = $request->comment;
+        $model->year = $request->year;
+        $model->isPrototype = $request->isPrototype;
+        if ($request->modelTypeId === ModelRequest::MODEL_FROM_RUSSIAN) {
+            $model->modelTypeId  ($request->localizationLevel >= 49) ? 
+                    ModelType::RUSSIAN_PRODUCTION : 
+                ModelType::ASSEMBLY_PRODUCTION;
+        } else {
+            $model->modelTypeId = ModelType::FOREIGN_PRODUCTION;
+        }
+        return $model;
+    }
+    /**
+     * Отправка сообщения на электронную почту редактора при заведении новой модели
+     * @param Models $model
+     */
+    public function sendEmailToEditor(Models $model) 
+    {       
+        $contractor = new Contractor( (new Brand($model->brandId))->contractorId);
+        $editor = ContractorService::getEditor($contractor);
+        $header = l('NEW_MODEL_ADDED','messages');
+        $messageTemplate = $this->getMessageForEditor($model, $contractor);
+        $mailer = new Mailer();
+        $mailer->sendMessage($editor->email, $header, $messageTemplate);
+        return;
+        
+    }
+    protected function getMessageForEditor(Models $model,Contractor $contractor)
+    {
+        $tplVars = [
+            'company' => $contractor->name,
+            'model_name' => $model->name,
+            'classifier' => ClassifierService::getParentClassifierString($model->classifierId)
+        ];
+        $viewHelper = new ViewHelper(_MAIL_TEMPLATES_DIR_,'ansver_for_request',$tplVars);
+        return $viewHelper->getRenderedTemplate();        
     }
 }

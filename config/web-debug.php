@@ -17,6 +17,15 @@ return [
     'defaultRoute' => 'index',
     'components' => [
         'db' => $db,
+        'log' => [
+            'traceLevel' => YII_DEBUG ? E_ERROR + E_WARNING + E_NOTICE : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning', 'info' ],
+                ],
+            ],
+        ],
         'user' => [
             'identityClass' => 'app\models\user\UserIdentity',
             'enableAutoLogin' => false
@@ -32,6 +41,8 @@ return [
                 ],
                  'news/<id:\d+>' => 'news',
                 '<_c:admin>/<_a:[\w-]+>' => '<_c>',
+                '<_c:admin>/<_a:[\w-]+>/<_b:[\w-]+>' => '<_c>',
+                '<_c:admin>/<_a:[\w-]+>/<_b:[\w-]+>/<_d:[\d]+>' => '<_c>',
                 '<_c:[\w\-]+>/<_a:[\w-]+>' => '<_c>/<_a>',
                 
             ]

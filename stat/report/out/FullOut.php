@@ -51,11 +51,8 @@ class FullOut extends ReportCreator
         unset ($this->data['Contractors']);
         $cols = count ($this->data);
         $all_cols = $cols;
-        $periods_count = count ($this->data) / 3;
-        
-        // заголовок таблицы
-        
-        
+        $periods_count = count ($this->data) / 3;        
+        // заголовок таблицы                
         $rows_list = [ [],
                 [
                     [
@@ -632,16 +629,12 @@ class FullOut extends ReportCreator
                                        
                                         
                                     }
-                                     $c_list = $this->getContractorsArrayForExcel($sub3_head, $type, $idx,3);
-                                        $contractor = array_merge($contractor,$c_list); 
-                                        $c_idx = count($contractor);
-                                                
-                                                
-                                            }
-                                            
-                                        }
-                                        
-                                    }
+                                    $c_list = $this->getContractorsArrayForExcel($sub3_head, $type, $idx,3);
+                                    $contractor = array_merge($contractor,$c_list); 
+                                    $c_idx = count($contractor);     
+                                }                                            
+                            }
+                        }
                                     $ft_idx++;
                                     $st_idx++;
                                     $c_idx = count($contractor);
@@ -933,7 +926,7 @@ class FullOut extends ReportCreator
                 }
                 $total1 = '<tr><td class="total"><div class="elem-level1">ИТОГО: </div></td>';
                 for ($i=0;$i< $cols; $i++) {
-                    $data = $this->data[$i][$type][$h_text]['Root'][$unit];
+                    $data = $this->data[$i][$type][$h_text]['Root'][$unit]  == '' ? '–' : $this->data[$i][$type][$h_text]['Root'][$unit];
                     $data = str_replace( ',', ' ',$data);
                     $data = str_replace( '.', ',',$data);
                     $data = preg_replace('/\,$/', '.',$data);
@@ -991,7 +984,7 @@ class FullOut extends ReportCreator
                               $firstTable.='<tr><td><div class="elem-level2">'.$ft_head.'</div></td>';
                         }
                         for ($i=0;$i< $cols; $i++) {
-                            $data = $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit];
+                            $data = $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit] == '' ? '–' : $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit];
                             $data = str_replace( ',', ' ',$data);
                             $data = str_replace( '.', ',',$data);
                             $data = preg_replace('/\,$/', '.',$data);
@@ -1015,7 +1008,7 @@ class FullOut extends ReportCreator
                             $contractor.='</thead>';
                             $contractor.='<td class="total"><div class="elem-level1">Всего </div></td>';
                             for ($i=0;$i< $cols; $i++) {
-                                $data = $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit];
+                                $data = $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit] == '' ? '–' :  $data = $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit];
                                 $data = str_replace( ',', ' ',$data);
                                 $data = str_replace( '.', ',',$data);
                                 $data = preg_replace('/\,$/', '.',$data);
@@ -1104,7 +1097,7 @@ class FullOut extends ReportCreator
                                 $contractor.='</thead>';
                                 $contractor.='<td class="total">Всего </td>';
                                 for ($i=0;$i< $cols; $i++) {
-                                    $data = $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit];
+                                    $data = $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit] == '' ? '–' : $this->data[$i][$type][$h_text][$sub_head]['Root'][$unit];
                                     $data = str_replace( ',', ' ',$data);
                                     $data = str_replace( '.', ',',$data);
                                     $data = preg_replace('/\,$/', '.',$data);

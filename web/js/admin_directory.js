@@ -1,18 +1,7 @@
 $(function() {
-
-    var classifierId = 0,
-        ajax = global_data.utils.ajax;
+    var ajax = global_data.utils.ajax;
     var modelName = $('.directory_tbl').attr('id');
-    var leaf = false;
-    // функция отображения модального окна для показа дерева классификатора
-    var showClassifierModal = function () {
-        $('#classifiermodal-activate').trigger('click');        
-        var jsData = $.parseJSON(global_classifier_tree);        
-        $('.classifier_tree').buildTree(jsData,$('#classifier-search')).on('select_node.jstree',function(event,data){
-            classifierId=data.node.id; 
-            leaf = (data.node.children.length == 0);
-        });        
-    }
+
     // обработка нажатия ENTER в строке поиска
     $('#directory-search').keyup(function(event) {
         if(event.keyCode == 13){
@@ -70,7 +59,7 @@ $(function() {
     });
     // обработка выбора классификатора
     $('#select-classifier').click(function(e){
-        var cId = parseInt(classifierId);
+        var cId = parseInt(global_data.baseSettings.classifierId);
         var selectOption = $('#select-rows-count').children('option:selected'); 
         if ($('#select-classifier').hasClass('filter')) {
            if (!!(cId)) {
@@ -81,7 +70,7 @@ $(function() {
            }
         }
 	else {
-            if (!leaf && modelName != 'Classifier') {
+            if (!global_data.baseSettings.leaf && modelName != 'Classifier') {
                 showMessage('Должен быть выбран раздел классификатор не имеющий подразделов');
                 return;
             }         
@@ -90,7 +79,7 @@ $(function() {
                         type: 'POST',
                         dataType: 'json',
                         data: {
-                            id : classifierId
+                            id : global_data.baseSettings.classifierId
                         },
                         success: function(response) {
                                     $('#classifier_section').text(response.message);
@@ -152,7 +141,7 @@ $(function() {
                     data: {
                         object: {
                             elements: elementsList,
-                            classifier : classifierId,
+                            classifier : global_data.baseSetting.classifierId,
                             model: modelName 
                         }
                     },
@@ -180,51 +169,61 @@ $(function() {
         $('#rows_count').val(select_option.val());
         $('#dyr-filter-submit').trigger('click');
     });
+    // всплывающее окно для информера
+    $('.rowDetailInfo').click(function(){
+        var $currentRow = $(this).parents('tr');
+        window.location = '/admin/requests/info/' + global_data.utils.getNumbers($currentRow.attr('id'));
+        return;
+        if (this.id != 'directory_add_btn') {
+            var $currentRow = $(this).parents('tr');
+             var elementId = global_data.utils.getNumbers($currentRow.attr('id'));
+         }
+         console.log(modelName);
+        var ajaxData = {
+            object : modelName,
+            id : elementId
+         };
+         $.ajax({
+            url: global_data.baseURI + '/model/display-info-block',
+            type: 'POST',
+            data: ajaxData,
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                var $informer = $('<div class="inform-block">' + response.HTML_DATA + '</div>');
+                $('.table_wrapper').prepend($informer);
+                
+                
+                
+            }
+        });
+         
+    });
     // добавление или изменение элемента справочника
      $('#directory_add_btn').add('.editModel').click(function() {
-         var ajaxData = {
-            model : modelName
-         };
-         if (this.id != 'directory_add_btn') {
-             var elementId = global_data.utils.getNumbers($(this).parents('tr').attr('id'));
-         }
-         ajaxData.id  = elementId;
+         var ajaxData = {};
+        ajaxData.model = modelName;
+        if (this.id != 'directory_add_btn') {
+            var elementId = global_data.utils.getNumbers($(this).parents('tr').attr('id'));        
+            ajaxData.id  = elementId;
+        }
          $.ajax({
             url: global_data.baseURI + '/model/display-form',
             type: 'POST',
             data: ajaxData,
             dataType: 'json',
-            success: function(response) {
-               console.log(response);
+            success: function(response) {               
                if (response.hasOwnProperty('STATUS')) {
                    if (response.STATUS != 1) {
                         showMessage(response.MESSAGE) ;
                         return;
                     }
                     $(response.HTML_DATA).ajaxModal();
-                    var isNewForm = ( $('#form-for-model').hasClass('new_form')) ? true : false;
+                    global_data.utils.initForms.initClassifierSelect();
+                    var isNewForm = ( $('#form-for-model').hasClass('new_form')) ? true : false;                    
                     global_data.utils.addEmailButton();
-                    // реакция на изменения бренда в форме
-                    var $changedElement = $('.ajax_changed');
-                    if ($changedElement.length > 0) {
-                        $changedElement.change(function(){
-                        $.ajax({
-                                url: global_data.baseURI + '/custom/get-contractor-name',
-                                type: 'GET',  
-                            dataType: 'json',
-                                data: { id : $(this).val() },
-                                success: function(response) {
-                                    console.log(response)
-                                    $('.comtractor_position').text(response);
-                                    if (response.hasOwnProperty('errorCode')) {
-                                        console.log(response.message);
-                                        return;
-                                    }
-                                    $('.contractor_position').text(response.message);
-                                }
-                            });
-                        });
-                    } 
+                    // реакция на изменения бренда в форме                    
+                    global_data.utils.initForms.initBrandSelect();
                     // добавление визуального редактора при необходимости                            
                     var $mceEdit = $('.mce-editable');
                     if ($mceEdit.length > 0) {  
@@ -272,7 +271,7 @@ $(function() {
                                     'necessarily' : $necessarily.val()
                                 };
                                 if (isNewForm) {
-                                    alert('new_form');
+                             //       alert('new_form');
                                 } else {
                                     newTechElement['classifierId'] = elementId;                                
                                 }

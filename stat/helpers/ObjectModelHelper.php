@@ -16,7 +16,7 @@ use app\stat\Tools;
  *
  * @author User
  */
-class ModelsHelper 
+class ObjectModelHelper 
 {
     const ALL_MODELS = 0;
     const ONLY_RUSSIAN = 1;

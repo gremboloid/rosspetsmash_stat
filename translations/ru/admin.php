@@ -5,21 +5,27 @@ $_ADMIN['CONTENT_HEADER'] = 'Настройки и управление порт
 $_ADMIN['CONTROL_PANEL'] = 'Панель управления';
 // меню админки
 $_ADMIN['DIRECTORIES'] = 'Справочники';
-$_ADMIN['PORTAL_SETTINGS'] = 'Администрирование';
+$_ADMIN['PORTAL_ADMINISTRATING'] = 'Администрирование';
 $_ADMIN['SUMMARY_INFORMATION'] = 'Сводная информация';
+$_ADMIN['PORTAL_SETTINGS'] = 'Настройки портала';
 $_ADMIN['STATISTIC'] = 'Статистика';
 // подменю админки
-$_ADMIN['GLOBAL_SETTINGS'] = 'Общие настройки';
 $_ADMIN['GLOBAL_SETTINGS_PORTAL_NAME'] = 'Название портала';
+
+$_ADMIN['CONTRACTORS_FORM_CONTROL'] = 'Сведения о заполнении форм';
+
+// Настройки
+$_ADMIN['SETTINGS_CATEGORY'] = 'Категории';
+$_ADMIN['GLOBAL_SETTINGS'] = 'Общие настройки';
+$_ADMIN['MAIL_SETTINGS'] = 'Настройки почтового сервера';
 $_ADMIN['MAIL_SETTINGS_ADMIN_EMAIL'] = 'Email администратора';
 $_ADMIN['MAIL_SETTINGS_SENDER_NAME'] = 'Имя отправителя';
 $_ADMIN['MAIL_SETTINGS_SMTP_SERVER'] = 'Сервер исходящей почты (SMTP)';
 $_ADMIN['MAIL_SETTINGS_SMTP_PORT'] = 'Порт SMTP';
 $_ADMIN['MAIL_SETTINGS_USERNAME'] = 'Имя пользователя';
 $_ADMIN['MAIL_SETTINGS_PASSWORD'] = 'Пароль';
-$_ADMIN['CONTRACTORS_FORM_CONTROL'] = 'Сведения о заполнении форм';
 
-
+$_ADMIN['OPERATORS_SETTINGS'] = 'Операторы по обработке запросов на добавление новых моделей';
 
 $_ADMIN['GLOBAL_SETTINGS_ROWS_COUNT'] = 'Число строк на странице';
 $_ADMIN['GLOBAL_SETTINGS_ROWS_COUNT_DESCRIPTION'] = 'Количество строк отображаемых на одной странице по умолчанию';
@@ -27,6 +33,7 @@ $_ADMIN['GLOBAL_SETTINGS_MAIN_PAGE_NEWS_COUNT'] = 'Количество ново
 
 $_ADMIN['MODULES_SETTINGS'] = 'Настройки модулей';
 $_ADMIN['NEWS'] = 'Новости/объявления';
+$_ADMIN['MODEL_REQUESTS'] = 'Запросы на добавление моделей';
 $_ADMIN['INDICATORS'] = 'Индикаторы';
 $_ADMIN['POLLS'] = 'Опросы';
 $_ADMIN['POLLS_GROUP'] = 'Группы для опросов';
@@ -93,7 +100,7 @@ $_ADMIN['MODELS_SUMMARY_SUBHEAD'] = 'в том числе в разделах к
 // Раздел новостей
 $_ADMIN['NEWS_HEAD'] = 'Заголовок';
 $_ADMIN['NEWS_DATE_CREATE'] = 'Дата создания';
-
+// Раздел запросов на внесние моделей
 // Индикаторы
 $_ADMIN['SELECT_INDICATORS'] = 'Источник данных';
 
@@ -113,3 +120,9 @@ $_ADMIN['CONTRACTORS_FORM_CONTROL_HEAD_FORM2'] = 'Отгрузка';
 $_ADMIN['CONTRACTORS_FORM_CONTROL_HEAD_FORM4'] = 'Экспорт';
 $_ADMIN['CONTRACTORS_FORM_CONTROL_HEAD_FORM5'] = 'Импорт';
 $_ADMIN['CONTRACTORS_FORM_CONTROL_HEAD_FORM12'] = 'Численность и з/п';
+
+// запрос о добавлении моделей
+$_ADMIN['GLOB_MODEL_REQUESTS_SETTINGS'] = 'Запросы на добавление моделей';
+$_ADMIN['PUBLICATED'] = 'Опубликовано';
+$_ADMIN['GLOB_MODEL_REQUESTS_INFO'] = 'Детальная информация о запросе';
+$_ADMIN['REQUESTS_INFO_HEAD'] = 'Запрос на добавление модели №';

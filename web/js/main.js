@@ -4,6 +4,7 @@ $(function(){
         utils = global_data.utils;
     columnsAlignment();
     utils.addDatePicker();
+    utils.addEmailButton();
     utils.sendForm();
 // Отображение выпадающего списка в статистике использования конструктора отчетов 
     var $repLog = $('.replog');
@@ -36,7 +37,9 @@ $(function(){
     // показ модального окна при клике на ссылку
     $('a[data-modal]').click(function(event) {
         var mdl_settings = {
+            closeExisting: false,
             fadeDuration: 250
+            
         };
         if ($(this).hasClass('noclose')) {
             mdl_settings.showClose = false;
@@ -85,8 +88,7 @@ $('#SendEmail').click(function(e) {
         
     } else {
     }
-});
-    
+});    
     // постраничная навигация
     $('.pagination-click').click(function(event) {
         event.preventDefault();
@@ -771,15 +773,31 @@ $('#SendEmail').click(function(e) {
             });
         });
     });
-       // обработчик кнопки (выгрузка классификатора)
+     // обработчик кнопки (выгрузка классификатора)
     $('#getclassifier').on('click',function() {
-
-           window.location = global_data.baseURI + '/custom/get-classifier-cs';          
+       window.location = global_data.baseURI + '/custom/get-classifier-cs';          
+    });
+    // вывод формы запроса на добавление новой модели
+    $('#request-new-model').on('click',function() {
+        console.log('request');
+        var ajaxData = {
+            model: 'ModelRequest'
+        };
+        $.ajax({
+            url: global_data.baseURI + '/model/display-form',
+            type: 'POST',
+            data: ajaxData,
+            dataType: 'json',
+            success: function(response) {
+                $(response.HTML_DATA).ajaxModal();
+            }
+        });        
     });
     if (typeof global_classifier_tree == 'string') {
         if ($('#classifier_tree').length == 1) {
             var jsData = $.parseJSON(global_classifier_tree);
             $('#classifier_tree').buildTree(jsData,$('#classifier-search'));
+            
         }
     }            
 });

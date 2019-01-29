@@ -7,9 +7,20 @@ use app\stat\Convert;
 use app\stat\Sessions;
 use app\stat\services\ClassifierService;
 use app\stat\model\ValuesPerfAttr;
+use app\stat\helpers\TechCharacteristicFormHelper;
+use app\stat\helpers\ModelHelper;
+use app\stat\services\ModelService;
 /**
  * Description of Models
- *
+ * @property string $name Description
+ * @property string $fullName Description
+ * @property string $internationalName Description
+ * @property int $classifierId Description
+ * @property int $brandId Description
+ * @property int $year Description
+ * @property int $modelTypeId
+ * @property int $isPrototype
+ * @property string $commemt Description
  * @author kotov
  */
 class Models extends ObjectModel implements IChangeClassifier
@@ -30,7 +41,10 @@ class Models extends ObjectModel implements IChangeClassifier
     protected $model_name = 'Models';
     protected $info_block_exist = true;
 
-    protected static $table = "TBLMODEL";
+    protected static $table = "TBLMODEL";       
+    
+    const FORM_SOURCE_USER_REQUEST = 'Request';
+	const MIN_YEAR = 1950;
     
     public function __construct($id = null) {
         parent::__construct($id);
@@ -55,8 +69,10 @@ class Models extends ObjectModel implements IChangeClassifier
             ]
         ];
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
+        $modelHelper = new ModelHelper();
+        $yearsList = $modelHelper->getYearsListForSerialProductionSelector(true);
        // extract($data_obj);
         $brands = Brand::getRowsArray([
             ['TBLBRAND','Id','value'],
@@ -76,8 +92,13 @@ class Models extends ObjectModel implements IChangeClassifier
             $model_types_id = $this->modelTypeId;
             $prototype = $this->isPrototype;
         } else {
-            $classifier_id = Convert::getNumbers(Sessions::getClassifierId());
-            if (!$contractor_id = Convert::getNumbers(Sessions::getContractorId())) {
+            $classifier_id = $this->classifierId ?? Convert::getNumbers(Sessions::getClassifierId());
+            if ($this->brandId) {
+                $brand = new Brand($this->brandId);
+                $contractor_id = $brand->contractorId;
+                $brand_id = $brand->getId();
+            }
+            elseif (!$contractor_id = Convert::getNumbers(Sessions::getContractorId())) {
                 $def_brnd = new Brand($brands[0]['value']);
                 $contractor_id = $def_brnd->contractorId;
                 $brand_id = $def_brnd->getId();
@@ -85,7 +106,14 @@ class Models extends ObjectModel implements IChangeClassifier
                $brand_id = Brand::getFieldByValue('ContractorId', $contractor_id);
             }
             $model_types_id = 1;
-            $prototype = 0;
+            $prototype = $this->isPrototype ?? 0;
+        }
+        if (!$classifier_id) {
+            $changeClassifierText = 'Выбрать';
+            $changeClassifierDescription = l('SELECT_CLASSIFIER');
+        } else {
+            $changeClassifierText = 'Изменить';
+            $changeClassifierDescription = l('CHANGE_CLASSIFIER') . ' ' . (new Classifier($classifier_id))->name;
         }
         $contractor = new Contractor($contractor_id);
         $def_contracror_name = $contractor->name;
@@ -101,14 +129,23 @@ class Models extends ObjectModel implements IChangeClassifier
             'required' => true,
             'type' => 'text',
             'size' => 300,
-            'value' => $this->fullName ? $this->fullName : ''
+            'value' => $this->fullName ? html_entity_decode($this->fullName) : ''
         ];
         $this->form_elements['main_form']['elements_list']['internationalName'] = [
             'label' => l('MODELS_ELEMENT_INTERNATIONALNAME'),
-            'required' => true,
             'type' => 'text',
             'size' => 300,
             'value' => $this->internationalName ? $this->internationalName : ''
+        ];
+        $this->form_elements['main_form']['elements_list']['classifierId'] = [
+            'label' => l('CLASSIFIER_SECTION'),
+            'type' => 'modal_select',
+            'size' => 300,
+            'js_add_id'=> 'add_classifier_id',
+            'required' => true,
+            'description' => $changeClassifierDescription,
+            'button_text' => $changeClassifierText,
+            'value' => $classifier_id
         ];
         $this->form_elements['main_form']['elements_list']['brandId'] = [
             'label' => l('MODELS_BRAND'),
@@ -123,24 +160,21 @@ class Models extends ObjectModel implements IChangeClassifier
             'type' => 'simple',
             'class' => 'contractor_position',
             'text' => $def_contracror_name
-        ];
-        
+        ];        
         $this->form_elements['main_form']['elements_list']['isPrototype'] = [
             'label' => l('MODELS_PROTOTYPE'),
             'onchange' => 'isModelPrototype',
             'type' => 'radio',            
             'value' => $prototype          
-        ];
-        
+        ];        
         $this->form_elements['main_form']['elements_list']['year'] = [
             'label' => l('MODELS_ELEMENT_YEAR'),
-            'type' => 'number',            
+            'type' => 'select',            
             'size' => 60,
-            'value' => $this->year ? $this->year : (!$id ? date('Y') : ''),
+            'selected' => $this->year ? $this->year : (!$id ? date('Y') : ''),
+            'elements' => $yearsList,
             'hide' => (bool) $prototype
-        ];
-        
-        
+        ];                
         $this->form_elements['main_form']['elements_list']['modelTypeId'] = [
             'label' => l('MODELS_TYPE'),
             'type' => 'select',
@@ -157,71 +191,23 @@ class Models extends ObjectModel implements IChangeClassifier
         ];
         
         if (!$this->getId()) {
-            $this->form_elements['main_form']['elements_list']['classifierId'] = [
-                'type' => 'hidden',
-                'value' => $classifier_id
-            ];
             $this->form_elements['main_form']['elements_list']['approved'] = [
                 'type' => 'hidden',
                 'value' => 1
             ];
         }
-        $table_headers = [
-            l('PERFOMANCE_NAME'),
-            l('PERFOMANCE_VALUE'),
-            l('PERFOMANCE_UNIT')
-        ];
-        $classifier_list = Tools::getValuesFromArray(ClassifierService::getClassifierParents($classifier_id),'Id');
-        $perfomance_attr_list = PerformanceAttr::getRowsArray(array(),['"ClassifierId" IN ('. implode(',', $classifier_list). ') ']);
-        if (count($perfomance_attr_list) < 1) {
-            return;
+        
+        if (key_exists('requestId', $specialParams)) {
+            $requestId = $specialParams['requestId'];
         }
-        $table_vals = array();
-        foreach ($perfomance_attr_list as $perfomance_attr) {
+        $techCharasteristicServive = new TechCharacteristicFormHelper($classifier_id, $this->id,$requestId);
+        try {
+            $this->form_elements['dop_block'][0] = $techCharasteristicServive->getHtmlForm(); 
+        } catch (\DomainException $e) {
             
-            $measure = new UnitOfMeasure($perfomance_attr['UnitOfMeasureId']);
-            $measure_text = $measure->shortName;
-            $val = '';
-            if ($id) {
-                $model_attr = ValuesPerfAttr::getRowsArray(['Value'],
-                    [
-                        ['param' => 'ModelId', 'staticNumber' => $id ],
-                        ['param' => 'PerformanceAttrId', 'staticNumber' => intval($perfomance_attr['Id']) ]
-                    ]);
-                if (count($model_attr) > 0) {
-                    $val = $model_attr[0]['Value'];
-                }
-            }
-            $row = [ 
-                0 => [   
-                    'type' => 'string',
-                     'size' => 150,
-                    'text' => $perfomance_attr['Name']
-                    ],
-                1 => [
-                    'name' => 'Char'.$perfomance_attr['Id'],
-                    'value' => $val,
-                    'type' => 'text'
-                ],
-                2 => [
-                    'text' => $measure_text,
-                    'type' => 'string',
-                    'size' => 150  
-                    ],
-            ];
-            $table_vals[] = $row;
-                    
         }
-        $this->form_elements['sub_block'][0] = array();        
-        $this->form_elements['sub_block'][0]['block_head_text'] = l('PERFOMANCE_HEAD');
-        $this->form_elements['sub_block'][0]['elements_list']['techCharacteristic'] = [
-            'type' => 'table-form',
-            'table_headers' => $table_headers,
-            'table_vals' => $table_vals
-         ];                        
     }
-    
-    
+        
     protected function informBlockConfigure() {
         parent::informBlockConfigure();
         $id = $this->getId();
@@ -279,8 +265,9 @@ class Models extends ObjectModel implements IChangeClassifier
     }
     public function saveModelObject($data,$form_elements=null,$return_json=true) 
     {
-        $id = $this->getId();
-        parse_str($data['frm_data'],$form_elements);  
+        $id = $this->getId(); 
+        parse_str($data['frm_data'],$form_elements);
+        $form_elements['internationalName'] = empty($form_elements['internationalName']) ? $form_elements['fullName'] : $form_elements['internationalName'];
         $res = parent::saveModelObject($data,$form_elements,false);
         if ($res['STATUS'] !== OBJECT_MODEL_SAVED) {
             return $res;
@@ -313,5 +300,21 @@ class Models extends ObjectModel implements IChangeClassifier
         }
         return json_encode($res);
     }
+    public function beforeDelete()
+    {
+        parent::beforeDelete();
+        $characteristicCount = ValuesPerfAttr::getRowsCount([['param' => 'ModelId','staticNumber' => $this->id]]);
+        if ($characteristicCount > 0) {
+            $query = 'DELETE FROM "TBLVALUESPERFATTR" "v" WHERE "v"."ModelId" = '.$this->id;
+            getDb()->dbQuery($query);
+        }
+    }
+    public function afterInsert()
+    {
+        parent::afterInsert();
+        $modelService = new ModelService();
+        $modelService->sendEmailToEditor($this);
+    }
+    
 
 }

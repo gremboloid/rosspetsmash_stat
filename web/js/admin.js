@@ -1,15 +1,12 @@
-
-
 // сохранение настроек портала
 var saveConfig = function() {
-    var $frm = $('#form-for-config');
-    
+    var $frm = $('#form-for-config');    
     $frm.validate();
-        addFormValidationRules();
+    addFormValidationRules();
     if($frm.valid()) {
         var elements = $frm.serialize();
         var params = {
-                    frm_data : elements               
+               frm_data : elements               
             };
             $.ajax({
             url: global_data.baseURI +'/custom/save-configuration',
@@ -170,4 +167,25 @@ $(function(){
            window.location = global_data.baseURI + '/custom/get-excel-contractors?cat='+ val + '&month=' + month + '&year=' + year + '&fltr=' + fltr;                     
        });
    }
+   // форма добавления модели с данными из запроса
+   $('#getModelForRequestForm').click(function() {
+       var ajaxData = {};
+       ajaxData.id = $(this).data('id');
+       console.log(ajaxData.id);
+        $.ajax({
+            url: global_data.baseURI + '/model/model-form-request',
+            type: 'POST',
+            data: ajaxData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.STATUS != 1) {
+                    showMessage(response.MESSAGE) ;
+                    return;
+                }
+                $(response.HTML_DATA).ajaxModal();
+                global_data.utils.initForms.initClassifierSelect();
+                global_data.utils.initForms.initBrandSelect();
+            }
+        });
+   });
 });

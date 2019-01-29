@@ -31,4 +31,10 @@ $_MESSAGES['CHECK_COUNT_VALUE'] = "Не заполнено значение \"К
 $_MESSAGES['CHECK_PRICE_VALUE'] = "Не заполнено значение \"Стоимость\"";
 // Флеш сообщения 
 $_MESSAGES['FLASH_AUTH_ERROR'] = "Неверно указано имя пользователя или пароль";
+$_MESSAGES['MODEL_NOT_FOUND'] = "Отсутствуют сведения о модели по данному адресу";
+// заголовки сообщений
+$_MESSAGES['NEW_MODEL_REQUEST_HEADER'] = 'Запрос на добавление модели №';
+$_MESSAGES['NEW_MODEL_ADDED'] = 'На портал была заведена новая модель';
+// прочая информация
+$_MESSAGES['UNPROCESSED_REQUESTS_PRESENTS'] = 'Имеются необработанные заявки на создание моделей';
 

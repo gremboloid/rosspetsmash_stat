@@ -11,10 +11,13 @@ define('_MODULES_URI_', __BASE_URI__.'modules/');
 define('_CACHE_DIR_', _ROOT_DIR_.'cache/');
 define('_REPORTS_TEMPLATES_DIR_', _ROOT_DIR_.'views/reports/');
 define('_FORMS_TEMPLATES_DIR_', _ROOT_DIR_.'views/forms/');
+define('_BLOCKS_TEMPLATES_DIR_', _ROOT_DIR_.'views/blocks/');
 define('_MODAL_TEMPLATES_DIR_', _ROOT_DIR_.'views/modal/');
+define('_MESSAGES_TEMPLATES_DIR_', _ROOT_DIR_.'views/messages/');
 define('_REPORTS_OUT_TEMPLATES_DIR_', _ROOT_DIR_.'views/reports/table/');
 define('_ADMIN_TEMPLATES_DIR_', _ROOT_DIR_.'views/admin/');
 define('_INFORM_TEMPLATES_DIR_', _ROOT_DIR_.'views/inform/');
+define('_MAIL_TEMPLATES_DIR_', _ROOT_DIR_.'views/mail/');
 define('_DEFAULT_LANG_' , 'ru');
 
 // статус валидации формы

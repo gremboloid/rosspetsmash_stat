@@ -140,16 +140,24 @@
 						</div>
 						<div class="left_sub_block">
 							<div class="sub_block_header">
-								<p>Список форм</p>
+								<p>{{ input_forms_list }}</p>
 							</div>	
 							<div class="sub_block_body">
-								<div class="list-of-forms">
+                                                            <div class="list-of-forms">
 								{% for frms in forms_list %}
-									<div class="new-form clickable" data-type="{{ frms.Id }}">{{  frms.Name }}</div>
+                                                                    <div class="new-form clickable" data-type="{{ frms.Id }}">{{  frms.Name }}</div>
 								{% endfor %}
-							</div>
+                                                            </div>
 							</div>
 						</div>
+                                                <div class="left_sub_block">
+                                                    <div class="sub_block_header">
+                                                        <p>{{ models_new }}</p>
+                                                    </div>
+                                                    <div class="sub_block_body">
+                                                        <a id="request-new-model" href="/model-request" class="clickable">{{ request_get }}</a>
+                                                    </div>
+                                                </div>
 					</div>					
 				</div>
 				
@@ -173,7 +181,7 @@
 							</div>
 						{% endif %}
                                                 {% if modal_flash %}
-                                                    <div class="message-window{% if modal_flash_message.className %} {{ modal_flash_message.className }}{% endif %}">{{ modal_flash_message.message }}</div>
+                                                    <div class="message-window{% if modal_flash_message.className %} {{ modal_flash_message.className }}{% endif %}">{{ modal_flash_message.message|raw }}</div>
                                                 {% endif %}
 						<div class="table_wrapper">
 						{% if table_array is iterable %}

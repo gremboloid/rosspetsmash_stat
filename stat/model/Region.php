@@ -40,8 +40,8 @@ class Region extends ObjectModel
             ]
         ];
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $countries_list = Country::getRowsArray([
             ['TBLCOUNTRY','Id','value'],
             ['TBLCOUNTRY','Name','text']

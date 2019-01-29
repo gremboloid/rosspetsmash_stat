@@ -99,8 +99,7 @@ class AdminClassifier extends AdminDirectory
         $this->left_block_vars['blocks_list'] = array_reverse($this->left_block_vars['blocks_list']);
         
     }
-    function setTemplateVars() { 
-        $classifierService = new ClassifierService(Yii::$app->user->getIdentity()->getContractorId());
+    function setTemplateVars() {         
         $actions = l('BTN_ACTIONS');
         $this->button_add_active = true;
         $current_classifier = new Classifier($this->filter_array['parent']);  
@@ -136,8 +135,7 @@ class AdminClassifier extends AdminDirectory
             'btnok_id' => 'select-classifier',
             'btnok_text' => $actions['select']
         ];
-        parent::setTemplateVars();
-        $this->tpl_vars['classifier_json'] = $classifierService->getClassifierListJSON();
+        parent::setTemplateVars();       
     }
 
     

@@ -70,11 +70,13 @@ $_DEFAULT['DO_CHOICE'] = 'Сделать выбор';
 $_DEFAULT['ACTIONS'] = 'Действия';
 $_DEFAULT['GOTO_CLASSIFIER'] = 'Перейти к классификатору';
 $_DEFAULT['EDIT_ROW'] = 'Редактировать запись';
+$_DEFAULT['ROW_DETAIL_INFO'] = 'Детальная информация';
 $_DEFAULT['DELETE_ROW'] = 'Удалить запись';
 $_DEFAULT['BTN_ACTIONS'] = array (
 	'add' => 'Добавить',
 	'select' => 'Выбрать',
 	'apply' => 'Применить',
+	'send' => 'Отправить',
 	'delete' => 'Удалить',
 	'change' => 'Изменить',
 	'save' => 'Сохранить',
@@ -82,6 +84,7 @@ $_DEFAULT['BTN_ACTIONS'] = array (
 	'close' => 'Закрыть',
 	'check_all' => 'Выделить все',
 	'uncheck_all' => 'Снять выделение');
+$_DEFAULT['BUTTON_SEND_FROM_REQUEST'] = 'Добавить модель по даннвым из запроса';
 $_DEFAULT['START_PERIOD'] = 'Начало периода';
 $_DEFAULT['END_PERIOD'] = 'Окончание периода';
 
@@ -120,14 +123,12 @@ $_DEFAULT['REMOVE_MODEL_FROM_FORM'] = 'Удалить модель из форм
 $_DEFAULT['ALL_ELEMENTS'] = 'Доступные элементы';
 $_DEFAULT['ADDED_ELEMENTS'] = 'Выбранные элементы';
 
-
-
-
 $_DEFAULT['ADD_FILTERS'] = 'Параметры вывода';
 $_DEFAULT['ALL_FORMS'] = 'Все формы';
 $_DEFAULT['VISIBLE_FORMS'] = 'Отображаемые формы';
 $_DEFAULT['INPUT_FORM_MODEL'] = 'Вид и модель техники';
 $_DEFAULT['INPUT_FORM_ADD_TYPE'] = 'Добавить вид техники';
+$_DEFAULT['INPUT_FORM_LIST'] = 'Список форм';
 $_DEFAULT['INPUT_FORM_COUNT'] = 'Количество';
 $_DEFAULT['INPUT_FORM_PRICE'] = 'Стоимость';
 $_DEFAULT['INPUT_FORM_VALUE'] = 'Значение';
@@ -151,6 +152,8 @@ $_DEFAULT['APPEND_DATE_INTERVAL'] = 'Применить временной ин�
 
 $_DEFAULT['NDS'] = 'с НДС';
 $_DEFAULT['NO_NDS'] = 'без НДС';
+
+$_DEFAULT['GET_REQUEST'] = 'Сделать запрос';
 
 $_DEFAULT['SELECT_ALL'] = 'Выбраны все';
 $_DEFAULT['CHECK_ADMINISTRATOR'] = 'Проверено администратором';
@@ -182,7 +185,7 @@ $_DEFAULT['MODELS_HEAD'] = 'Модель';
 $_DEFAULT['MODELS_NEW'] = 'Новая модель';
 $_DEFAULT['MODELS_EDIT'] = 'Изменить модель';
 $_DEFAULT['MODELS_ELEMENT_NAME'] = 'Короткое название';
-$_DEFAULT['MODELS_ELEMENT_FULLNAME'] = 'Полное название модели';
+$_DEFAULT['MODELS_ELEMENT_FULLNAME'] = 'Полное название';
 $_DEFAULT['MODELS_ELEMENT_INTERNATIONALNAME'] = 'Международное название';
 $_DEFAULT['MODELS_BRAND'] = 'Бренд';
 $_DEFAULT['MODELS_COMMENT'] = 'Комментарий';
@@ -194,7 +197,7 @@ $_DEFAULT['MODELS_PROTOTYPE'] = 'Опытный образец';
 $_DEFAULT['BRAND_HEAD'] = 'Бренд';
 $_DEFAULT['BRAND_NEW'] = 'Новый бренд';
 $_DEFAULT['BRAND_ELEMENT_NAME'] = 'Название';
-$_DEFAULT['BRAND_CONTRACTOR'] = 'Контрагент';
+$_DEFAULT['BRAND_CONTRACTOR'] = 'Компания';
 $_DEFAULT['BRAND_COUNTRY'] = 'Страна бренда';
 $_DEFAULT['BRAND_TYPE'] = 'Категория контрагента';
 $_DEFAULT['BRAND_ELEMENT_INTERNATIONALNAME'] = 'Международное написание';
@@ -293,6 +296,14 @@ $_DEFAULT['PREVIOUS_NEWS'] = 'Предыдущая новость';
 
 $_DEFAULT['INFORMATION_HEAD'] = 'Информационный раздел';
 
+$_DEFAULT['MODEL_REQUEST'] = 'Форма добавления новой модели';
+$_DEFAULT['MODEL_REQUEST_HEAD'] = 'Запрос на добавление новой модели';
+$_DEFAULT['MODEL_REQUEST_NEW'] = 'Данные модели';
+$_DEFAULT['MODEL_REQUEST_TYPE'] = 'Происхождения модели';
+$_DEFAULT['MODEL_LOCALIZATION_LEVEL'] = 'Уровень локализации';
+$_DEFAULT['MODEL_REQUEST_RUSSIAN'] = 'Производится или собирается в РФ';
+$_DEFAULT['MODEL_REQUEST_IMPORT'] = 'Импортируется (из стран ближнего и дальнего зарубежья в РФ)';
+
 $_DEFAULT['CONTRACTORS_CATEGORY_NAMES_HEAD'] = 'Категория производителей';
 $_DEFAULT['CONTRACTORS_CATEGORY_NAMES_NEW'] = 'Новая категория';
 $_DEFAULT['CONTRACTORS_CATEGORY_NAMES_EDIT'] = 'Редактировать категорию';
@@ -314,6 +325,8 @@ $_DEFAULT['CLASSIFIER_GROUPS'] = [
 	3 => 'Группа техники',	
 	4 => 'Подгруппа техники',	
 ];
+$_DEFAULT['SELECT_CLASSIFIER'] = 'Выберите раздел классификатора...';
+$_DEFAULT['CHANGE_CLASSIFIER'] = 'Выбранный рвздел классификатора: ';
 // модальные окна
 $_DEFAULT['CHANGE_PERIOD_LEGEND'] = 'Выберите период';
 

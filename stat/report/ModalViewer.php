@@ -10,7 +10,6 @@ use app\stat\model\Classifier;
 use app\stat\model\Country;
 use app\stat\ViewHelper;
 use app\stat\Sessions;
-use app\stat\report\Container;
 use app\stat\report\reports\RootReport;
 /**
  * Description of ModalViewer

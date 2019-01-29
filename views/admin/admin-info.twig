@@ -1,0 +1,35 @@
+﻿<div class="module">
+	<div class="content_subblock">
+		<div class="content_subheader">
+                {{ test|raw }}
+		</div>
+                {% if infoblock_exist == true %}
+                    <div class="information-block-container">
+                        <div class="information-block-head">
+                            <p>{{ information_block_header }}</p>
+                        </div>
+                        <div class="information-block-body">
+                        {% if inform_data.elements_list is iterable %}
+                        {% for k,el in inform_data.elements_list %}
+                            <div class="inf-element-name">
+                            {{ el.name }}
+                            </div>
+                            <div class="inf-element-val">
+                            {{ el.value }}
+                            </div>
+                        {% endfor %}
+                        {% endif %}
+                        </div>
+                        {% if buttons_list is iterable %}
+                        <div class="buttons-container">
+                            {% for btn in buttons_list %}
+                            <div id="{{ btn.id }}" class="additional_block_btn btn btn-selector"{% if btn.data is iterable%}{% for name,param in btn.data %} data-{{ name}}="{{ param }}"{% endfor %}{% endif%}>{{ btn.text }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                <p>{{ not_found_error }}</p>                
+                {% endif %}
+	</div>
+</div>

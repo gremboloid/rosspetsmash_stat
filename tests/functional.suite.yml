@@ -13,4 +13,4 @@ modules:
         - Yii2
     config:
         Yii2:            
-            configFile: 'config/web.php'
+            configFile: 'config/web-debug.php'

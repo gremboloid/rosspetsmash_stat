@@ -15,8 +15,6 @@ use app\stat\helpers\FormsHelper;
 use app\stat\helpers\ExportFormHelper;
 use app\stat\model\InputForm;
 
-
-
 /**
  * Description of FormsController
  *
@@ -36,13 +34,9 @@ class FormsController extends TableViewController
     protected $paginationParams = array();
     protected $defaultSortField = 'Period';
     protected $defaultSortType = 'DESC';
-
-
+    
     public $controller_name = 'forms';
-    
-    
-    
-    
+
     public function init() {              
         parent::init();
         $this->formConfig = new ViewFormsConfig(is_admin(), $this->contractor->getId());  
@@ -59,14 +53,13 @@ class FormsController extends TableViewController
         $sortBy = $this->helper->getSortFields();
         $formService = new InputFormService($this->formConfig->getFilters(),$sortBy);
         $formProvider = new InputFormTableProvider($formService);
-        $this->setTableDataProvider($formProvider);        
-        
+        $this->setTableDataProvider($formProvider);                
     }
-    
 
     public function actionIndex() {
          return $this->render('input_forms.twig', $this->tpl_vars);        
     }
+    
     public function initVars() {
         parent::initVars();        
         $contractorsList = ContractorService::getActualContractors([
@@ -95,6 +88,10 @@ class FormsController extends TableViewController
         $this->tpl_vars['date_interval'] =  l('DATE_INTERVAL');
         $this->tpl_vars['new_form'] =  l('ADD_NEW_FORM');
         $this->tpl_vars['report_period'] =  l('REPORT_PERIOD');
+        $this->tpl_vars['models_new'] = l('MODELS_NEW');
+        $this->tpl_vars['input_forms_list'] = l('INPUT_FORM_LIST');
+        $this->tpl_vars['request_get'] = l('GET_REQUEST');        
+        
         $this->tpl_vars['current_contractor_id'] = $this->contractor->getId();
         $this->tpl_vars['current_contractor_name'] = $this->contractor->getName();
         // Выбранные фильтры        

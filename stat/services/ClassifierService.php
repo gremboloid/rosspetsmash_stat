@@ -156,9 +156,6 @@ class ClassifierService {
      */
     public static function getClassifierParents($elementId,$rootElementPresent = true)
     {
-        if (!isset($elementId)) {
-            return false;       
-        }
         $rootElementFilter = '';
         if (!$rootElementPresent) {
             $rootElementFilter = 'WHERE LEVEL != 1';
@@ -364,6 +361,17 @@ class ClassifierService {
          header('Content-Disposition: attachment; filename=classifier.csv');
          header('Content-Type: application/x-unknown');
          echo $content;          
+    }
+    public static function getParentClassifierIdByLevel(int $classifierId,int $level = 2) 
+    {
+        $queryString = 'SELECT  c."Id" 
+                    FROM BIX.TBLCLASSIFIER c
+                   START WITH c."Id" = '.$classifierId.' CONNECT BY PRIOR c."ClassifierId" = c."Id"  ORDER BY LEVEL DESC';
+        $result = getDb()->querySelect($queryString);
+        if (count($result) >= $level + 1) {
+            return (int) $result[$level-1]['Id'];
+        }
+        return false;
     }
     
     

@@ -21,6 +21,12 @@ class PerformanceAttr extends ObjectModel
     protected $possibleValue;
     protected $necessarily;
     
+    const TYPE_STRING = 1;
+    const TYPE_NUMBER = 2;
+    const TYPE_DATE = 3;
+    const TYPE_BOOLEAN = 4;
+    const TYPE_ENUM = 5;
+    
     protected static $table = "TBLPERFORMANCEATTR";
     
     public static function getPerformanceAttrForClassifier ($classifier_id) 

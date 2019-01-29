@@ -4,6 +4,7 @@ namespace app\stat\services;
 
 use app\stat\model\Contractor;
 use app\stat\model\ContractorEmail;
+use app\stat\model\User;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -14,7 +15,8 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
  *
  * @author kotov
  */
-class ContractorService {
+class ContractorService 
+{
     /**
      * Получить актуальный список производителей
      * @param array $fields список возвращаемых полей
@@ -315,5 +317,24 @@ class ContractorService {
     $objWriter = new Xlsx($xls);                                
     $objWriter->save('php://output'); 
         
+    }
+    
+    /**
+     * Вернуть редактора для данного производителя
+     * @param Contractor $contractor
+     * @return User
+     * @throws \DomainException
+     */
+    public static function getEditor(Contractor $contractor)  
+    {
+        $userList = User::getRowsArray([
+            [User::getTableName(),'Id']
+        ],[[ 'param' => 'ContractorId' , 'staticNumber' => $contractor->id ],
+           [ 'param' => 'RoleId', 'staticNumber' => \app\models\user\LoginUser::EDITOR]]
+                );
+        if ($userList == 0) {
+            throw new \DomainException('Editor not found');
+        }
+        return new User($userList[0]['Id']);
     }
 }

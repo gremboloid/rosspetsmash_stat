@@ -658,7 +658,7 @@ class DefaultOut extends ReportCreator
                                     $value2 = !stristr($period, 'proportion') ? $val2 : $this->percentConvert(round($val2,2));
                                 }
                                 $value1 = !is_demo() ? $value1 : '';
-                                $value2 = !is_demo() ? $value1 : '';
+                                $value2 = !is_demo() ? $value2 : '';
                                 $row.='<td class="digit-val">'.$value1.'</td>';
                                 $row2.='<td class="digit-val">'.$value2.'</td>';                                                                
                              }

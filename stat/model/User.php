@@ -84,8 +84,8 @@ class User extends ObjectModel
         ];
     }
     
-     protected function formConfigure() {
-        parent::formConfigure();
+     protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $is_admin = is_admin();        
         $id = $this->getId();
         $contractors = Contractor::getRowsArray([

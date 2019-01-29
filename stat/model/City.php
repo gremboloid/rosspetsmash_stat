@@ -39,8 +39,8 @@ class City extends ObjectModel
             ]
         ];
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $id = $this->getId();
         $default_region_id = $id ? $this->regionId : 53;
         

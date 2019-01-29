@@ -52,16 +52,15 @@
 		</div>
 		<script type="text/javascript">
 	// <![CDATA[
-			var global_data = {
-				baseURI : '{{ base_uri|raw }}',
-				reportsURI : '{{ reports_uri|raw }}',
-				formsURI : '{{ forms_uri|raw }}',
-				chpu : '{{ chpu }}',
-				messages : '{{ messagesJSON|raw }}',
-				utils: {},
-				role: '{{ user_role }}',
-				close_button: '<a href="#" rel="modal:close" class="btn btn-default close-button">OK</a>'
-			}
+			
+					global_data.baseURI = '{{ base_uri|raw }}';
+					global_data.reportsURI = '{{ reports_uri|raw }}';
+					global_data.formsURI = '{{ forms_uri|raw }}';
+					global_data.chpu = '{{ chpu }}';
+					global_data.messages = '{{ messagesJSON|raw }}';
+					global_data.utils = {};
+					global_data.role = '{{ user_role }}';
+					global_data.close_button = '<a href="#" rel="modal:close" class="btn btn-default close-button">OK</a>';
 	// ]]>
 		</script>
 

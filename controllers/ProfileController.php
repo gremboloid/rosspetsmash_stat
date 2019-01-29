@@ -13,7 +13,7 @@ use Yii;
  */
 class ProfileController extends FormManagementController
 {
-    public $controller_name = 'profile';
+    public $controllerName = 'profile';
     
     protected $formId = 'form-for-config';
 

@@ -33,6 +33,7 @@ class TestController extends FrontController
     public function actionIndex() {    
       //  throw new \yii\base\ErrorException('Эта проблема критичная');
        // throw new \app\stat\exceptions\DefaultException('error');
+      //  Yii::info('Добавлен запрос №','RSTAT');
         return $this->render('test.twig', $this->tpl_vars);
     }
     public function actionTest() {

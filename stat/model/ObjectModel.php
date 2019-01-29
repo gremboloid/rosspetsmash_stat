@@ -41,30 +41,45 @@ abstract class ObjectModel {
     protected $info_block_exist = false;
     /** @var array Переменные для шаблона информационного блока модели */
     protected $info_elements = array();
-    protected $inform_block_data = null;  
+    protected $inform_block_data = null; 
+    /** @var boolean */
+    protected $inform_block_configured = false;
     /** @var bool Связанная со строкой в таблице */
     protected $binding_table = false;
     /** @var bool тип формы (true - новый объект, false - существующий) */
     protected $is_new_form = false;
     /** @var bool Флаг наличия формы редактирования для объекта модели */
     protected $form_exist = false;
-    protected $form_template_head = '';    
-    protected $form_data = null;     
+    protected $form_template_head = '';  
+    /**
+     * Данные из формы для сохранения
+     * @var array
+     */
+    protected $request_data = array();
+    /**
+     *
+     * @var данные формы
+     */
+    protected $form_data = null;
     /** @var array Переменные для подстановки в шаблон формы */ 
     protected $form_elements = array();
     /** @var array набор правил для отображения модели */
     protected $directory_rules = array();
-    protected $search_fields = 'Name';    
+    protected $search_fields = 'Name';
+    /** @var string */
+    protected $flashMessageOk;
 
-
-
-
+    // поддерживаемые события
+    const BEFORE_INSERT = 'beforeInsert';
+    const BEFORE_DELETE = 'beforeDelete';
+    const AFTER_INSERT = 'afterInsert';
+    const AFTER_DELETE = 'afterDelete';
+    /**
+     * привязанные события
+     * @var type 
+     */
+    public $events = [];
     // protected static $table = '';
-
-
-
-
-
 
     /**
      * Создает новый объект модели по первичному ключу
@@ -72,6 +87,7 @@ abstract class ObjectModel {
      * @param type $tblchk поле с первичным ключом, если ключ отличен от "Id"
      */
     public function __construct($id = null,$tblchk=null) {
+        $this->eventsInit();
         $dbInstance = getDb();
         $this->table_fields = $dbInstance->getFieldsFromTable(static::$table);
         $this->id_flag = $this->idExists(); 
@@ -102,7 +118,7 @@ abstract class ObjectModel {
             ]
         ];
         $result = $dbInstance->getRow($queryBuilder);
-                if (!empty($result))
+        if (!empty($result))
         {
             foreach ($result as $key => $value)
             {
@@ -291,13 +307,13 @@ abstract class ObjectModel {
      * Показ формы соответствующей модели
      * @return $array
      */
-    public function displayForm($getJSON  = true) {
+    public function displayForm($getJSON  = true,$specialParams = []) {
        if (!$this->form_exist) {           
            $this->form_data = [ 
                'STATUS' => FORM_NOT_EXIST,
                'MESSAGE' => l('ERROR_FORM_NOT_EXIST','messages')] ;
        } else {                   // конфигурирование связанной с моделью формы
-           $this->formConfigure();
+           $this->formConfigure($specialParams);
            $this->getFormData();
        }
        if ($getJSON) {
@@ -306,12 +322,16 @@ abstract class ObjectModel {
            return $this->form_data;
        }
     }
-    protected function formConfigure() 
+    protected function formConfigure($specialParams = []) 
     {
         $btns = l('BTN_ACTIONS');
         $this->form_elements['submit_button'] = true;
         $this->form_elements['site_url'] = _SITE_ROOT_URL_;
-        $this->form_elements['submit_button_method'] = 'saveModel';
+        if (isset($specialParams['source'])) {
+            $this->form_elements['submit_button_method'] = 'saveModel'.$specialParams['source'];
+        } else {
+            $this->form_elements['submit_button_method'] = 'saveModel';
+        }
         $this->form_elements['submit_button_text'] = $btns['save'];
         if (!empty($this->form_template_head)) {
             if (!$this->getId()) {
@@ -327,8 +347,13 @@ abstract class ObjectModel {
             $this->form_elements['main_form']['block_head_text'] = $this->is_new_form ?  l($this->form_template_head.'_NEW') :  l($this->form_template_head.'_EDIT');
             $this->form_elements['form_type'] = 'modal';
             $this->form_elements['main_form']['form_id'] = 'form-for-model';			
-        }
-        
+        }      
+        foreach ($specialParams as $param => $value) {
+            $this->form_elements['main_form']['elements_list'][$param] = [
+                'type' => 'hidden',
+                'value' => $value
+            ];
+        }                
     }
     protected function getFormData() 
     {
@@ -339,20 +364,28 @@ abstract class ObjectModel {
     }
     /**
     * 
-    * @param type $assoc_array
+    * @param array $assocArray
     * @return ObjectModel
     */
-   public static function getInstance($assoc_array) 
+   public static function getInstance(array $assocArray) 
    {
        $className = static::class;
        $result = new $className();
-       foreach ($assoc_array as $key=>$value) 
+       $result->load($assocArray);
+       return $result;       
+   }
+   /**
+    * 
+    */
+   public function load($assocArray = null)
+   {
+       $dara = is_array($assocArray) ? $assocArray : $this->request_data;
+       foreach ($dara as $key=>$value) 
        {
            $prop = lcfirst($key);
-           $result->$prop = $value;
-           array_push($result->update_fields, ucfirst($key));
+           $this->$prop = $value;
+           array_push($this->update_fields, ucfirst($key));
        }
-       return $result;       
    }
     public function setWritable() 
     {
@@ -364,6 +397,11 @@ abstract class ObjectModel {
      */
     public function addToDb($addId = false) 
     {
+        if (key_exists(self::BEFORE_INSERT, $this->events)) {
+            foreach ($this->events[self::BEFORE_INSERT] as $event) {                
+                call_user_func($event,$this);
+            }
+        }
         $data = array();
         if ($addId == false) {
             if (isset($this->id)) {
@@ -382,7 +420,16 @@ abstract class ObjectModel {
             }            
         }
         
-        return getDb()->insert($this::$table, $data, $this->id_flag);
+        $newId = getDb()->insert($this::$table, $data, $this->id_flag);
+        if (!empty($newId) && Validate::isInt($newId)) {
+            $this->id = $newId;
+        }
+        if (key_exists(self::AFTER_INSERT, $this->events)) {
+            foreach ($this->events[self::AFTER_INSERT] as $event) {
+               call_user_func($event,$this);                
+            }
+        }
+        return $newId;
     }
     /**
     * Установить поля, подлежащие изменению в БД
@@ -397,7 +444,9 @@ abstract class ObjectModel {
         if (!$this->id_flag) {
             return $this->updateDb();
         }
-        return (int) $this->id > 0 ? $this->updateDb() : $this->addToDb();      
+        return (int) $this->id > 0 ? 
+            ( $this->isExistInDb() ) ? $this->updateDb() : $this->addToDb(true) : 
+            $this->addToDb();
     }    
      /**
      * Сохранение объекта в БД
@@ -448,7 +497,8 @@ abstract class ObjectModel {
          }
          if ($result) {
              $jResult = [
-                 'STATUS' => OBJECT_MODEL_SAVED
+                 'STATUS' => OBJECT_MODEL_SAVED,
+                 'MESSAGE' => $this->flashMessageOk ?: l('WRITE_TO_DB','messages')
              ];
              if ($return_id) {
                  $jResult['NEW_ID'] = $result;
@@ -486,6 +536,9 @@ abstract class ObjectModel {
        // $obj->delete();
     }
     public function delete($arr=array()) {
+        foreach ($this->events[self::BEFORE_DELETE] as $event) {
+            call_user_func($event);
+        }
         if (property_exists($this, 'deleted')) {
             $this->set('deleted',1);
             return (bool) $this->updateDb(false);
@@ -534,20 +587,30 @@ abstract class ObjectModel {
         } else {
             return $this->inform_block_data;
         }        
-    }
+    }    
     /**
      * Конфигурирование информационного блока модели
      */
-    protected function informBlockConfigure() {        
+    protected function informBlockConfigure() {
+        $this->inform_block_configured = true;
+    }
+    /**
+     * 
+     * @return array
+     */
+    public function getInformBlockElements()
+    {
+        if (!$this->inform_block_configured) {
+            $this->informBlockConfigure();
+        }
+        return $this->info_elements;
     }
     protected function getInformBlockData() {       
         $inform_block_data = [ 'STATUS' => INFO_BLOCK_OK];
         $helper = new ViewHelper(_MODAL_TEMPLATES_DIR_,'model_inform',$this->info_elements);
         $inform_block_data['HTML_DATA'] = $helper->getRenderedTemplate();
         $this->inform_block_data = $inform_block_data;
-    }
-    
-    
+    }        
     /**
      * 
      * @return bool
@@ -582,28 +645,38 @@ abstract class ObjectModel {
             $where = array();            
             foreach ($filter as $el_key => $el_value)
             {
-                if (!empty($el_value) && !in_array($el_key, $ex_filter)) {
+                if (!in_array($el_key, $ex_filter)) {
                     switch ($el_key) 
-                    {
+                    {                        
                         case 'contractor':
+                            if (!empty($el_value))
                             array_push($where, ['param' => 'res.ContractorId','staticValue' => $el_value]);
                             break;
+                        case 'publicated':
+                            array_push($where, ['param' => 'res.Publicated','staticValue' => $el_value]);
+                            break;
                         case 'role':
+                            if (!empty($el_value))
                             array_push($where, ['param' => 'res.RoleId','staticValue' => $el_value]);
                             break;
                         case 'country':
+                            if (!empty($el_value))
                             array_push($where, ['param' => 'res.CountryId','staticValue' => $el_value]);
                             break;
                         case 'parent':
+                            if (!empty($el_value))
                             array_push($where, ['param' => 'res.ClassifierId','staticValue' => $el_value]);
                             break;
                         case 'present':
+                            if (!empty($el_value))
                             array_push($where, ['param' => 'res.Present','staticValue' => $el_value]);
                             break;
                         case 'model_type':
+                            if (!empty($el_value))
                             array_push($where, ['param' => 'res.ModelTypeId','staticValue' => $el_value]);
                             break;
                         case 'classifier':
+                            if (!empty($el_value))
                             array_push($where, ['param' => 'res.ClassifierId',
                                 'operation' => 'IN',
                                 'pureValue' => ' (SELECT c."Id" FROM "TBLCLASSIFIER" c
@@ -611,8 +684,10 @@ abstract class ObjectModel {
                                 ]);
                             break;
                         case 'search':
-                            if (is_string($this->search_fields)) {
-                                array_push($where, 'LOWER("res"."'.$this->search_fields.'") LIKE \'%'.mb_convert_case(trim($el_value),MB_CASE_LOWER).'%\'');
+                            if (!empty($el_value)) {
+                                if (is_string($this->search_fields)) {
+                                    array_push($where, 'LOWER("res"."'.$this->search_fields.'") LIKE \'%'.mb_convert_case(trim($el_value),MB_CASE_LOWER).'%\'');
+                                }
                             }
                             break;
                         default:
@@ -622,7 +697,7 @@ abstract class ObjectModel {
             }
              
             // применить доп. фильтры, если присутствуют
-            $this->applyAdditionalFilters($filter,$select,$from,$where);
+        $this->applyAdditionalFilters($filter,$select,$from,$where);
         }
         if (!$pageNumber)
         {
@@ -640,10 +715,10 @@ abstract class ObjectModel {
             }
         }
         if (Validate::isInt($pageNumber) &&
-            Validate::isInt($rows_count)) {
-           $sql = SimpleSQLConstructor::generateSimpleSQLQuery($select, $from, $where, $sortBy);
-           $sql = SimpleSQLConstructor::generatePageFilter($sql, $rows_count, $pageNumber,$rows_in_page);
-        return getDb()->querySelect($sql);           
+           Validate::isInt($rows_count)) {
+            $sql = SimpleSQLConstructor::generateSimpleSQLQuery($select, $from, $where, $sortBy);
+            $sql = SimpleSQLConstructor::generatePageFilter($sql, $rows_count, $pageNumber,$rows_in_page);
+            return getDb()->querySelect($sql);           
        }
        return array();
     }
@@ -669,17 +744,20 @@ abstract class ObjectModel {
      */
     public function saveModelObject($data,$form_elements=null,$return_json=true) {
         if (!$form_elements) {
-            parse_str($data['frm_data'],$form_elements);
+            parse_str($data['frm_data'], $this->request_data);
+        } else {
+            $this->request_data = $form_elements;
         }
         if (!$this->getId()) {
-            $new_object = $this->getInstance($form_elements);
-            $new_object->setWritable();            
-            $this->id = $new_object->addToDb();
+            $this->load();
+            $this->setWritable();     
+            $this->id = $this->addToDb();
             
             if ($this->id) {
                 $res = [
                     'STATUS' => OBJECT_MODEL_SAVED,
-                    'NEW_ID' => $this->id
+                    'NEW_ID' => $this->id,
+                    'MESSAGE' => $this->flashMessageOk ?: l('WRITE_TO_DB','messages')
                 ];
             } else {
                 $res = [ 
@@ -704,6 +782,7 @@ abstract class ObjectModel {
             } else {
                 $res = [
                             'STATUS' => OBJECT_MODEL_SAVED,
+                            'MESSAGE' => $this->flashMessageOk ?: l('WRITE_TO_DB','messages')
                         ];
             }
             if ($return_json) {
@@ -747,5 +826,42 @@ abstract class ObjectModel {
                }
            }
        }        
+    }
+    /**
+     * @param string $message
+     */
+    public function setFlashMessageOk($message) 
+    {
+        $this->flashMessageOk = $message;
+    }
+    /**
+     * Присутствует ли данный объект в базе
+     * @return boolean
+     */
+    public function isExistInDb() {
+        return $this->binding_table;
+    }
+    public function attachEvent($name, callable $callable) 
+    {
+        if (!key_exists($name, $this->events)) {
+            $this->events[$name] = [];
+        }
+        $this->events[$name][] = $callable;
+        return true;
+    }
+    public function eventsExist($name) 
+    {
+        return key_exists($name, $this->events) ? true : false;
+    }
+    public function beforeInsert() {}
+    public function afterInsert() {}    
+    public function beforeDelete() {}
+    public function afterDelete() {}
+    private function eventsInit() 
+    {
+        $this->events[self::BEFORE_INSERT][] = [$this,self::BEFORE_INSERT];
+        $this->events[self::BEFORE_DELETE][] = [$this,self::BEFORE_DELETE];
+        $this->events[self::AFTER_INSERT][] = [$this,self::AFTER_INSERT];
+        $this->events[self::AFTER_DELETE][] = [$this,self::AFTER_DELETE];
     }
 }

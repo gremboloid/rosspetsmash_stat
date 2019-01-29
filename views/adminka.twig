@@ -19,7 +19,7 @@
 						{% if val1.submenu is iterable %}
 							<ul class="nav menu hide">
 								{% for val2 in val1.submenu %}
-                                                                    <li class="i"><a href="/admin/{{ val2.element }}">{{ val2.text }}</a></li>								
+                                    <li class="i"><a href="/admin/{{ val2.element }}">{{ val2.text }}{% if val2.element == 'requests' and models_request_count > 0 %}<span class="notify-count">{{ models_request_count }}</span>{% endif %}</a></li>
 								{% endfor %}
 							</ul>
 						{% endif %}
@@ -42,7 +42,7 @@
 		</div>
 	{% endif %}
     {% if modal_flash %}
-	<div class="message-window{% if modal_flash_message.className %} {{ modal_flash_message.className }}{% endif %}">{{ modal_flash_message.message }}</div>
+	<div class="message-window{% if modal_flash_message.className %} {{ modal_flash_message.className }}{% endif %}">{{ modal_flash_message.message|raw }}</div>
 	{% endif %}
 			<div class="content{% if left_block_enable %} columns{% else %} clearfix{% endif %}">
 			{% if left_block_enable %}
@@ -100,4 +100,7 @@
 		{% endif %}
 		
 		{% block scripts %}	
+		<script>
+			var global_classifier_tree = {{ classifier_json|raw }}
+		</script>
 		{% endblock %}

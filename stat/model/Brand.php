@@ -6,7 +6,7 @@ namespace app\stat\model;
 use app\stat\services\ContractorService;
 /**
  * Description of Brand
- *
+ * @property int $contractorId Description
  * @author kotov
  */
 class Brand extends ObjectModel
@@ -48,8 +48,8 @@ class Brand extends ObjectModel
         }
         return $sResult;
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $default_brand_type_id = '';
         $default_contractor_id = '';
         $contractors = ContractorService::getActualContractors([

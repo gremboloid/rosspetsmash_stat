@@ -37,8 +37,8 @@ class Currency extends ObjectModel
     {
         return $this->name;
     }
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $this->form_elements['main_form']['elements_list']['fullName'] = [
             'label' => l('CURRENCY_ELEMENT_FULLNAME'),
             'type' => 'text',

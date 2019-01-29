@@ -104,8 +104,8 @@ class Contractor extends ObjectModel
     
     
     
-    protected function formConfigure() {
-        parent::formConfigure();
+    protected function formConfigure($specialParams = []) {
+        parent::formConfigure($specialParams);
         $actions = l('BTN_ACTIONS');
         $id = $this->getId();
         if ($id) {
@@ -174,14 +174,14 @@ class Contractor extends ObjectModel
             'type' => 'text',
              'description' => l('CONTRACTOR_ELEMENT_NAME_ADDITIONAL_TEXT'),
             'size' => 300,
-            'value' => $this->fullName ? htmlspecialchars($this->fullName) : '',
+            'value' => $this->fullName ? $this->fullName : '',
             'required' => true
         ];
         $this->form_elements['main_form']['elements_list']['name'] = [
             'label' => l('CONTRACTOR_ELEMENT_FULLNAME'),
             'type' => 'text',            
             'size' => 300,
-            'value' => $this->name ? htmlspecialchars($this->name) : '',
+            'value' => $this->name ? $this->name : '',
             'required' => true
         ];
         $this->form_elements['main_form']['elements_list']['internationalName'] = [

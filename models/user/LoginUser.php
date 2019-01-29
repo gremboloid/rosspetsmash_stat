@@ -35,6 +35,8 @@ class LoginUser extends ActiveRecord
     const READER = 4;
     /** гость */
     const GUEST = 5; 
+    /** Супер админ */
+    const ROOT = [236,80];
     
     public static function tableName() {
         return 'TBLUSER';
@@ -94,6 +96,10 @@ class LoginUser extends ActiveRecord
     public function isAdmin() {
         return ($this->roleId == self::ADMIN);
     }
+    public function isRoot() {
+        return in_array($this->getId(), self::ROOT);
+    }
+
     public function isAnalytic() {
         return ($this->roleId == self::ANALITIC);
     }
